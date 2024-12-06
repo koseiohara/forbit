@@ -1,21 +1,13 @@
-subroutine binopen(unit, file, action, record, nx, ny, nz, recl)
+subroutine binopen(unit, file, action, nx, ny, nz, recl)
     implicit none
 
     integer     , intent(out) :: unit
     character(*), intent(in) :: file
     character(*), intent(in) :: action
-    integer     , intent(in) :: record
     integer     , intent(in) :: nx
     integer     , intent(in) :: ny
     integer     , intent(in) :: nz
     integer     , intent(in) :: recl
-
-    if (record <= 0) then
-        write(*,'(A)') 'ERROR STOP'
-        write(*,'(A,I0)') 'Invalid initial record : ', record
-        write(*,'(A)') 'Argument "record" should be more than 0'
-        ERROR STOP
-    endif
 
     if (nx <= 0) then
         write(*,'(A)') 'ERROR STOP'
@@ -45,7 +37,7 @@ subroutine binopen(unit, file, action, record, nx, ny, nz, recl)
         ERROR STOP
     endif
 
-    open(NEWUNIT=unit   , &
+    open(NEWUNIT=unit         , &
        & FILE   =file         , &
        & ACTION =action       , &
        & FORM   ='UNFORMATTED', &
@@ -74,70 +66,47 @@ subroutine fclose(unit)
 end subroutine fclose
 
 
-subroutine fread_sp(unit, nx, ny, nz, record, recstep, input_data)
+subroutine fread(unit, nx, ny, nz, record, input_data)
     implicit none
 
-    integer, intent(in)    :: unit
-    integer, intent(in)    :: nx
-    integer, intent(in)    :: ny
-    integer, intent(in)    :: nz
-    integer, intent(inout) :: record
-    integer, intent(in)    :: recstep
-    real(4), intent(out)   :: input_data(nx,ny,nz)
+    integer, intent(in)  :: unit
+    integer, intent(in)  :: nx
+    integer, intent(in)  :: ny
+    integer, intent(in)  :: nz
+    integer, intent(in)  :: record
+    real(4), intent(out) :: input_data(nx,ny,nz)
 
     read(unit,rec=record) input_data(1:nx,1:ny,1:nz)
-    record = record + recstep
 
-end subroutine fread_sp
+end subroutine fread
 
 
-subroutine fread_dp(unit, nx, ny, nz, record, recstep, input_data)
+subroutine fwrite_sp(unit, nx, ny, nz, record, output_data)
     implicit none
 
-    integer, intent(in)    :: unit
-    integer, intent(in)    :: nx
-    integer, intent(in)    :: ny
-    integer, intent(in)    :: nz
-    integer, intent(inout) :: record
-    integer, intent(in)    :: recstep
-    real(8), intent(out)   :: input_data(nx,ny,nz)
-
-    read(unit,rec=record) input_data(1:nx,1:ny,1:nz)
-    record = record + recstep
-
-end subroutine fread_dp
-
-
-subroutine fwrite_sp(unit, nx, ny, nz, record, recstep, output_data)
-    implicit none
-
-    integer, intent(in)    :: unit
-    integer, intent(in)    :: nx
-    integer, intent(in)    :: ny
-    integer, intent(in)    :: nz
-    integer, intent(inout) :: record
-    integer, intent(in)    :: recstep
-    real(4), intent(in)    :: output_data(nx,ny,nz)
+    integer, intent(in) :: unit
+    integer, intent(in) :: nx
+    integer, intent(in) :: ny
+    integer, intent(in) :: nz
+    integer, intent(in) :: record
+    real(4), intent(in) :: output_data(nx,ny,nz)
 
     write(unit,rec=record) output_data(1:nx,1:ny,1:nz)
-    record = record + recstep
 
 end subroutine fwrite_sp
 
 
-subroutine fwrite_dp(unit, nx, ny, nz, record, recstep, output_data)
+subroutine fwrite_dp(unit, nx, ny, nz, record, output_data)
     implicit none
 
-    integer, intent(in)    :: unit
-    integer, intent(in)    :: nx
-    integer, intent(in)    :: ny
-    integer, intent(in)    :: nz
-    integer, intent(inout) :: record
-    integer, intent(in)    :: recstep
-    real(8), intent(in)    :: output_data(nx,ny,nz)
+    integer, intent(in) :: unit
+    integer, intent(in) :: nx
+    integer, intent(in) :: ny
+    integer, intent(in) :: nz
+    integer, intent(in) :: record
+    real(8), intent(in) :: output_data(nx,ny,nz)
 
     write(unit,rec=record) output_data(1:nx,1:ny,1:nz)
-    record = record + recstep
 
 end subroutine fwrite_dp
 
