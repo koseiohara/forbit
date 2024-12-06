@@ -10,7 +10,7 @@ FLAG = -warn all -O1 -traceback
 all : ${PYMOD}
 
 ${PYMOD} : ${FMOD}
-	${F2PY} -c -m ${PYMOD} ${FMOD}
+	${F2PY} -m ${PYMOD} -c ${FMOD}
 
  ${OBJS} : ${FMOD}
 	${FC} -c $< ${FLAG}
