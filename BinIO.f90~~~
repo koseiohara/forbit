@@ -1,36 +1,38 @@
 module BinIO
 
+    use iso_c_binding
+
     implicit none
 
     private
     public :: finfo, fopen, fclose, fread_sp, fread_dp, fwrite_sp, fwrite_dp, get_record, reset_record
 
-    type ::  finfo
+    type, bind(C) ::  finfo
         private
-        integer :: unit
-        character(256) :: file
-        character(16)  :: action
-        integer :: nx
-        integer :: ny
-        integer :: nz
-        integer :: record
-        integer :: recl
-        integer :: recstep
+        integer(c_int) :: unit
+        character(c_char,256) :: file(256)
+        character(c_char,16)  :: action(16)
+        integer(c_int) :: nx
+        integer(c_int) :: ny
+        integer(c_int) :: nz
+        integer(c_int) :: record
+        integer(c_int) :: recl
+        integer(c_int) :: recstep
     end type finfo
 
 
     contains
 
 
-    function fopen(file, action, record, nx, ny, nz, recl, recstep) result(ftype)
-        character(*), intent(in) :: file
-        character(*), intent(in) :: action
-        integer     , intent(in) :: record
-        integer     , intent(in) :: nx
-        integer     , intent(in) :: ny
-        integer     , intent(in) :: nz
-        integer     , intent(in) :: recl
-        integer     , intent(in) :: recstep
+    function fopen(file, action, record, nx, ny, nz, recl, recstep) result(ftype) bind(C)
+        character(c_char,len=*), intent(in) :: file
+        character(c_char,*), intent(in) :: action
+        integer(c_int)     , intent(in) :: record
+        integer(c_int)     , intent(in) :: nx
+        integer(c_int)     , intent(in) :: ny
+        integer(c_int)     , intent(in) :: nz
+        integer(c_int)     , intent(in) :: recl
+        integer(c_int)     , intent(in) :: recstep
 
         type(finfo) :: ftype
 
@@ -88,9 +90,9 @@ module BinIO
     end function fopen
 
 
-    subroutine fclose(ftype)
+    subroutine fclose(ftype) bind(C)
         type(finfo), intent(inout) :: ftype
-        logical :: open_status
+        logical(c_bool) :: open_status
 
         INQUIRE(ftype%unit      , &  !! IN
               & OPENED=open_status)  !! OUT
@@ -113,10 +115,10 @@ module BinIO
     end subroutine fclose
 
 
-    function fread_sp(ftype) result(input_data)
+    function fread_sp(ftype) result(input_data) bind(C)
         type(finfo), intent(inout) :: ftype
 
-        real(4) :: input_data(ftype%nx,ftype%ny,ftype%nz)
+        real(c_float) :: input_data(ftype%nx,ftype%ny,ftype%nz)
 
         read(ftype%unit,rec=ftype%record) input_data(1:ftype%nx,1:ftype%ny,1:ftype%nz)
         ftype%record = ftype%record + ftype%recstep
@@ -124,10 +126,10 @@ module BinIO
     end function fread_sp
 
 
-    function fread_dp(ftype) result(input_data)
+    function fread_dp(ftype) result(input_data) bind(C)
         type(finfo), intent(inout) :: ftype
 
-        real(8) :: input_data(ftype%nx,ftype%ny,ftype%nz)
+        real(c_double) :: input_data(ftype%nx,ftype%ny,ftype%nz)
 
         read(ftype%unit,rec=ftype%record) input_data(1:ftype%nx,1:ftype%ny,1:ftype%nz)
         ftype%record = ftype%record + ftype%recstep
@@ -135,9 +137,9 @@ module BinIO
     end function fread_dp
 
 
-    subroutine fwrite_sp(ftype, output_data)
+    subroutine fwrite_sp(ftype, output_data) bind(C)
         type(finfo), intent(inout) :: ftype
-        real(4), intent(in)    :: output_data(ftype%nx,ftype%ny,ftype%nz)
+        real(c_float), intent(in)    :: output_data(ftype%nx,ftype%ny,ftype%nz)
 
         write(ftype%unit,rec=ftype%record) output_data(1:ftype%nx,1:ftype%ny,1:ftype%nz)
         ftype%record = ftype%record + ftype%recstep
@@ -145,9 +147,9 @@ module BinIO
     end subroutine fwrite_sp
 
 
-    subroutine fwrite_dp(ftype, output_data)
+    subroutine fwrite_dp(ftype, output_data) bind(C)
         type(finfo), intent(inout) :: ftype
-        real(8), intent(in)    :: output_data(ftype%nx,ftype%ny,ftype%nz)
+        real(c_double), intent(in)    :: output_data(ftype%nx,ftype%ny,ftype%nz)
 
         write(ftype%unit,rec=ftype%record) output_data(1:ftype%nx,1:ftype%ny,1:ftype%nz)
         ftype%record = ftype%record + ftype%recstep
@@ -155,19 +157,19 @@ module BinIO
     end subroutine fwrite_dp
 
 
-    function get_record(ftype) result(record)
+    function get_record(ftype) result(record) bind(C)
         type(finfo), intent(in)  :: ftype
-        integer :: record
+        integer(c_int) :: record
 
         record = ftype%record
 
     end function get_record
 
 
-    subroutine reset_record(ftype, increment, newrecord)
+    subroutine reset_record(ftype, increment, newrecord) bind(C)
         type(finfo), intent(inout) :: ftype
-        integer    , intent(in)   , optional :: increment
-        integer    , intent(in)   , optional :: newrecord
+        integer(c_int)    , intent(in)   , optional :: increment
+        integer(c_int)    , intent(in)   , optional :: newrecord
 
         if (present(increment)) then
             ftype%record = ftype%record + increment
