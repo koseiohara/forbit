@@ -3,26 +3,12 @@ module BinIO
     implicit none
 
     private
-    public :: finfo, fopen, fclose, fread_sp, fread_dp, fwrite_sp, fwrite_dp, get_record, reset_record
-
-    type ::  finfo
-        private
-        integer :: unit
-        character(256) :: file
-        character(16)  :: action
-        integer :: nx
-        integer :: ny
-        integer :: nz
-        integer :: record
-        integer :: recl
-        integer :: recstep
-    end type finfo
-
+    public :: fopen, fclose, fread_sp, fread_dp, fwrite_sp, fwrite_dp
 
     contains
 
 
-    function fopen(file, action, record, nx, ny, nz, recl, recstep) result(ftype)
+    function fopen(file, action, record, nx, ny, nz, recl) result(unit)
         character(*), intent(in) :: file
         character(*), intent(in) :: action
         integer     , intent(in) :: record
@@ -30,9 +16,8 @@ module BinIO
         integer     , intent(in) :: ny
         integer     , intent(in) :: nz
         integer     , intent(in) :: recl
-        integer     , intent(in) :: recstep
 
-        type(finfo) :: ftype
+        integer :: unit
 
         if (record <= 0) then
             write(*,'(A)') 'ERROR STOP'
@@ -69,42 +54,25 @@ module BinIO
             ERROR STOP
         endif
 
-        open(NEWUNIT=ftype%unit   , &
+        open(NEWUNIT=unit   , &
            & FILE   =file         , &
            & ACTION =action       , &
            & FORM   ='UNFORMATTED', &
            & ACCESS ='DIRECT'     , &
            & RECL   =recl           )
 
-        ftype%file    = file
-        ftype%action  = action
-        ftype%record  = record
-        ftype%nx      = nx
-        ftype%ny      = ny
-        ftype%nz      = nz
-        ftype%recl    = recl
-        ftype%recstep = recstep
-
     end function fopen
 
 
-    subroutine fclose(ftype)
-        type(finfo), intent(inout) :: ftype
+    subroutine fclose(unit)
+        integer, intent(inout) :: unit
         logical :: open_status
 
-        INQUIRE(ftype%unit      , &  !! IN
+        INQUIRE(unit      , &  !! IN
               & OPENED=open_status)  !! OUT
 
         if (open_status) then
-            close(ftype%unit)
-            
-            ftype%unit    = 0
-            ftype%file    = 'ERROR'
-            ftype%action  = 'ERROR'
-            ftype%record  = -999
-            ftype%recl    = -999
-            ftype%recstep = -999
-
+            close(unit)
             return
         else
             return
@@ -113,75 +81,64 @@ module BinIO
     end subroutine fclose
 
 
-    function fread_sp(ftype) result(input_data)
-        type(finfo), intent(inout) :: ftype
+    subroutine fread_sp(unit, nx, ny, nz, record, recstep, input_data)
+        integer, intent(in)    :: unit
+        integer, intent(in)    :: nx
+        integer, intent(in)    :: ny
+        integer, intent(in)    :: nz
+        integer, intent(inout) :: record
+        integer, intent(in)    :: recstep
+        real(4), intent(out)   :: input_data(nx,ny,nz)
 
-        real(4) :: input_data(ftype%nx,ftype%ny,ftype%nz)
+        read(unit,rec=record) input_data(1:nx,1:ny,1:nz)
+        record = record + recstep
 
-        read(ftype%unit,rec=ftype%record) input_data(1:ftype%nx,1:ftype%ny,1:ftype%nz)
-        ftype%record = ftype%record + ftype%recstep
-
-    end function fread_sp
-
-
-    function fread_dp(ftype) result(input_data)
-        type(finfo), intent(inout) :: ftype
-
-        real(8) :: input_data(ftype%nx,ftype%ny,ftype%nz)
-
-        read(ftype%unit,rec=ftype%record) input_data(1:ftype%nx,1:ftype%ny,1:ftype%nz)
-        ftype%record = ftype%record + ftype%recstep
-
-    end function fread_dp
+    end subroutine fread_sp
 
 
-    subroutine fwrite_sp(ftype, output_data)
-        type(finfo), intent(inout) :: ftype
-        real(4), intent(in)    :: output_data(ftype%nx,ftype%ny,ftype%nz)
+    subroutine fread_dp(unit, nx, ny, nz, record, recstep, input_data)
+        integer, intent(in)    :: unit
+        integer, intent(in)    :: nx
+        integer, intent(in)    :: ny
+        integer, intent(in)    :: nz
+        integer, intent(inout) :: record
+        integer, intent(in)    :: recstep
+        real(8), intent(out)   :: input_data(nx,ny,nz)
 
-        write(ftype%unit,rec=ftype%record) output_data(1:ftype%nx,1:ftype%ny,1:ftype%nz)
-        ftype%record = ftype%record + ftype%recstep
+        read(unit,rec=record) input_data(1:nx,1:ny,1:nz)
+        record = record + recstep
+
+    end subroutine fread_dp
+
+
+    subroutine fwrite_sp(unit, nx, ny, nz, record, recstep, output_data)
+        integer, intent(in)    :: unit
+        integer, intent(in)    :: nx
+        integer, intent(in)    :: ny
+        integer, intent(in)    :: nz
+        integer, intent(inout) :: record
+        integer, intent(in)    :: recstep
+        real(4), intent(in)    :: output_data(nx,ny,nz)
+
+        write(unit,rec=record) output_data(1:nx,1:ny,1:nz)
+        record = record + recstep
 
     end subroutine fwrite_sp
 
 
-    subroutine fwrite_dp(ftype, output_data)
-        type(finfo), intent(inout) :: ftype
-        real(8), intent(in)    :: output_data(ftype%nx,ftype%ny,ftype%nz)
+    subroutine fwrite_dp(unit, nx, ny, nz, record, recstep, output_data)
+        integer, intent(in)    :: unit
+        integer, intent(in)    :: nx
+        integer, intent(in)    :: ny
+        integer, intent(in)    :: nz
+        integer, intent(inout) :: record
+        integer, intent(in)    :: recstep
+        real(8), intent(in)    :: output_data(nx,ny,nz)
 
-        write(ftype%unit,rec=ftype%record) output_data(1:ftype%nx,1:ftype%ny,1:ftype%nz)
-        ftype%record = ftype%record + ftype%recstep
+        write(unit,rec=record) output_data(1:nx,1:ny,1:nz)
+        record = record + recstep
 
     end subroutine fwrite_dp
-
-
-    function get_record(ftype) result(record)
-        type(finfo), intent(in)  :: ftype
-        integer :: record
-
-        record = ftype%record
-
-    end function get_record
-
-
-    subroutine reset_record(ftype, increment, newrecord)
-        type(finfo), intent(inout) :: ftype
-        integer    , intent(in)   , optional :: increment
-        integer    , intent(in)   , optional :: newrecord
-
-        if (present(increment)) then
-            ftype%record = ftype%record + increment
-            return
-        else if (present(newrecord)) then
-            ftype%record = newrecord
-            return
-        else
-            write(*,'(A)') 'ERROR STOP'
-            write(*,'(A)') 'Both "increment" and "newrecord" were not specified in the argument of reset_record()'
-            ERROR STOP
-        endif
-
-    end subroutine reset_record
 
 
 end module BinIO
