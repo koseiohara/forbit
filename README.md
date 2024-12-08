@@ -1,5 +1,5 @@
 # Direct Access for Binary files in Python
-Programer : Kosei Ohara  
+Programmer : Kosei Ohara  
 
 Python programers can read no-header binary files with this module like Fortran programers. This modules, `dabin.f90`, is based on Fortran, compiled by f2py, and wrapped by `fileio.py`.  
 Most users do not need to call dabin directly; instead, `fileio.py` will be called.
