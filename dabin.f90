@@ -1,34 +1,11 @@
-subroutine binopen(unit, file, action, nx, ny, nz, recl)
+subroutine fopen(unit, file, action, recl, endian)
     implicit none
 
     integer     , intent(out) :: unit
-    character(*), intent(in) :: file
-    character(*), intent(in) :: action
-    integer     , intent(in) :: nx
-    integer     , intent(in) :: ny
-    integer     , intent(in) :: nz
-    integer     , intent(in) :: recl
-
-    if (nx <= 0) then
-        write(*,'(A)') 'ERROR STOP'
-        write(*,'(A,I0)') 'Invalid Grid Size : NX=', nx
-        write(*,'(A)') 'Argument "nx" should be more than 0'
-        ERROR STOP
-    endif
-
-    if (ny <= 0) then
-        write(*,'(A)') 'ERROR STOP'
-        write(*,'(A,I0)') 'Invalid Grid Size : NY=', ny
-        write(*,'(A)') 'Argument "ny" should be more than 0'
-        ERROR STOP
-    endif
-
-    if (nz <= 0) then
-        write(*,'(A)') 'ERROR STOP'
-        write(*,'(A,I0)') 'Invalid Grid Size : NZ=', nz
-        write(*,'(A)') 'Argument "nz" should be more than 0'
-        ERROR STOP
-    endif
+    character(*), intent(in)  :: file
+    character(*), intent(in)  :: action
+    integer     , intent(in)  :: recl
+    character(*), intent(in)  :: endian
 
     if (recl <= 0) then
         write(*,'(A)') 'ERROR STOP'
@@ -42,15 +19,16 @@ subroutine binopen(unit, file, action, nx, ny, nz, recl)
        & ACTION =action       , &
        & FORM   ='UNFORMATTED', &
        & ACCESS ='DIRECT'     , &
-       & RECL   =recl           )
+       & RECL   =recl         , &
+       & CONVERT=endian         )
 
-end subroutine binopen
+end subroutine fopen
 
 
 subroutine fclose(unit)
     implicit none
 
-    integer, intent(inout) :: unit
+    integer, intent(in) :: unit
     logical :: open_status
 
     INQUIRE(unit      , &  !! IN
@@ -66,7 +44,7 @@ subroutine fclose(unit)
 end subroutine fclose
 
 
-subroutine fread(unit, nx, ny, nz, record, input_data)
+subroutine fread_sp(unit, nx, ny, nz, record, input_data)
     implicit none
 
     integer, intent(in)  :: unit
@@ -78,7 +56,22 @@ subroutine fread(unit, nx, ny, nz, record, input_data)
 
     read(unit,rec=record) input_data(1:nx,1:ny,1:nz)
 
-end subroutine fread
+end subroutine fread_sp
+
+
+subroutine fread_dp(unit, nx, ny, nz, record, input_data)
+    implicit none
+
+    integer, intent(in)  :: unit
+    integer, intent(in)  :: nx
+    integer, intent(in)  :: ny
+    integer, intent(in)  :: nz
+    integer, intent(in)  :: record
+    real(8), intent(out) :: input_data(nx,ny,nz)
+
+    read(unit,rec=record) input_data(1:nx,1:ny,1:nz)
+
+end subroutine fread_dp
 
 
 subroutine fwrite_sp(unit, nx, ny, nz, record, output_data)
@@ -89,7 +82,8 @@ subroutine fwrite_sp(unit, nx, ny, nz, record, output_data)
     integer, intent(in) :: ny
     integer, intent(in) :: nz
     integer, intent(in) :: record
-    real(4), intent(in) :: output_data(nx,ny,nz)
+    !real(4), intent(in) :: output_data(nx,ny,nz)
+    real(4), intent(in) :: output_data(:,:,:)
 
     write(unit,rec=record) output_data(1:nx,1:ny,1:nz)
 
@@ -104,7 +98,7 @@ subroutine fwrite_dp(unit, nx, ny, nz, record, output_data)
     integer, intent(in) :: ny
     integer, intent(in) :: nz
     integer, intent(in) :: record
-    real(8), intent(in) :: output_data(nx,ny,nz)
+    real(8), intent(in) :: output_data(:,:,:)
 
     write(unit,rec=record) output_data(1:nx,1:ny,1:nz)
 

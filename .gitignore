@@ -1,0 +1,7 @@
+*.ctl
+*.so
+*.swp
+*.dat
+*.bin
+*.grd
+__pycache__

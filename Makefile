@@ -1,5 +1,5 @@
-PYMOD = BinIO
-FMOD = BinIO.f90
+PYMOD = dabin
+FMOD = ${PYMOD}.f90
 OBJS = ${FMOD:.f90=.o}
 
 F2PY = f2py
