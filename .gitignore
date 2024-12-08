@@ -5,3 +5,4 @@
 *.bin
 *.grd
 __pycache__
+test.py
