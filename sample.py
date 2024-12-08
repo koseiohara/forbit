@@ -17,7 +17,6 @@ kind = 4
 nt = 10
 
 ifile = 'input.bin'
-ifile = '/mnt/jet11/kosei/JRA/JRA3Q/ALL/JRA3Q_1990_2020/JRA3Q_1990_2020_ALL_UGRD.bin'
 ofile = 'output.bin'
 
 # Input File
