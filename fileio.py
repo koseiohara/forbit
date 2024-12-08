@@ -154,17 +154,17 @@ class fileio:
     
     def fwrite_sp(self, dataArray):
         dataArray_sp = np.float32(dataArray)
-        self.dabin_fwrite(self.__unit, \
-                     self.__record   , \
-                     dataArray_sp      )
+        self.dabin_fwrite(self.__unit  , \
+                          self.__record, \
+                          dataArray_sp   )
 
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_dp(self, dataArray):
-        self.dabin_fwrite(self.__unit, \
-                     self.__record   , \
-                     dataArray         )
+        self.dabin_fwrite(self.__unit  , \
+                          self.__record, \
+                          dataArray      )
 
         self.__record = self.__record + self.__recstep
 
