@@ -1,24 +1,17 @@
 PYMOD = dabin
-FMOD = ${PYMOD}.f90
-OBJS = ${FMOD:.f90=.o}
+FMOD = dabin.f90
 
 F2PY = f2py
-
-FC = ifort
-FLAG = -warn all -O1 -traceback
 
 all : ${PYMOD}
 
 ${PYMOD} : ${FMOD}
-	${F2PY} -m ${PYMOD} -c ${FMOD}
+	${F2PY} -m $@ -c $<
 
- ${OBJS} : ${FMOD}
-	${FC} -c $< ${FLAG}
-
-
-.PHONY : cp clean
-
-cp : ${OBJS}
+.PHONY : clean re
 
 clean :
-	rm -fv *.o *.mod
+	rm -fv *.so
+
+re : clean all
+
