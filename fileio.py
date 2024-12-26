@@ -11,18 +11,19 @@ import dabin
 
 class fileio:
 
-    def __init__(self, filename, action, shape, kind, record, recstep, endian):
+    def __init__(self, filename, action, shape, kind, record, recstep, endian, order):
         
         shape = np.array(shape)
         dim   = np.size(shape)
 
         # Validate the arguments
-        self.__checker(filename, action, shape, kind, record, recstep, endian)
+        self.__checker(filename, action, shape, kind, record, recstep, endian, order)
 
         self.__file    = filename
         self.__shape   = shape[:]
         self.__record  = record
         self.__recstep = recstep
+        self.__order   = order.lower()
 
         # Record length
         recl = kind*np.prod(shape)
@@ -108,6 +109,9 @@ class fileio:
 
         self.__nanDetector(result)
 
+        if (self.__order == 'c'):
+            result = np.ascontiguousarray(result.transpose())
+
         return result
                      
     
@@ -120,6 +124,9 @@ class fileio:
         self.__record = self.__record + self.__recstep
 
         self.__nanDetector(result)
+
+        if (self.__order == 'c'):
+            result = np.ascontiguousarray(result.transpose())
 
         return result
                      
@@ -135,6 +142,9 @@ class fileio:
 
         self.__nanDetector(result)
 
+        if (self.__order == 'c'):
+            result = np.ascontiguousarray(result.transpose())
+
         return result
                      
     
@@ -149,22 +159,35 @@ class fileio:
 
         self.__record = self.__record + self.__recstep
 
+        if (self.__order == 'c'):
+            result = np.ascontiguousarray(result.transpose())
+
         return result
                      
     
     def fwrite_sp(self, dataArray):
-        dataArray_sp = np.float32(dataArray)
+        if (self.__order == 'c'):
+            result = np.asfortranarray(dataArray.transpose())
+        else:
+            result = dataArray.copy()
+
+        result = np.float32(result)
         self.dabin_fwrite(self.__unit  , \
                           self.__record, \
-                          dataArray_sp   )
+                          result         )
 
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_dp(self, dataArray):
+        if (self.__order == 'c'):
+            result = np.asfortranarray(dataArray.transpose())
+        else:
+            result = dataArray.copy()
+
         self.dabin_fwrite(self.__unit  , \
                           self.__record, \
-                          dataArray      )
+                          result         )
 
         self.__record = self.__record + self.__recstep
 
@@ -200,7 +223,7 @@ class fileio:
 
 
     # Validation
-    def __checker(self, filename, action, shape, kind, record, recstep, endian):
+    def __checker(self, filename, action, shape, kind, record, recstep, endian, order):
 
         if (type(filename) is not str):
             raise TypeError('The "filename" argument must be a string.')
@@ -237,4 +260,15 @@ class fileio:
 
         if (endian.lower() != 'little_endian' and endian.lower() != 'big_endian'):
             raise ValueError('The "endian" argument must be either "little_endian" or "big_endian".')
+
+        if (type(order) is not str):
+            raise TypeError('The "order" argument must be a string.')
+
+        if (order.lower() != 'c' and order.lower() != 'f'):
+            raise ValueError('The "order" argument must be either "c" or "f".')
+
+
+
+
+
 

@@ -26,7 +26,8 @@ iclass = fileio(filename=ifile          , \
                 kind    =kind           , \
                 record  =1              , \
                 recstep =1              , \
-                endian  ='little_endian'  )
+                endian  ='little_endian', \
+                order   ='C'              )
 
 # Output File
 oclass = fileio(filename=ofile          , \
@@ -35,7 +36,8 @@ oclass = fileio(filename=ofile          , \
                 kind    =kind           , \
                 record  =1              , \
                 recstep =1              , \
-                endian  ='little_endian'  )
+                endian  ='little_endian', \
+                order   ='C'              )
 
 work = np.empty(shape)
 # Read a file and write the data to another file
