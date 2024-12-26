@@ -57,6 +57,11 @@ By initializing this class, a binary file will be opened based on the arguments.
   Endian of file.  
   `'little_eidnan'` or `'big_endian'`.  
   Either lowercase or uppercase characters are acceptable.  
+- order  
+  `type=str`  
+  Order of memory.  
+  `"C"` and `"F"` are valid. `"C"` for Row-Major, and `"F"` for Column-Major.  
+  Although you set `order="C"`, argument `shape` must be defined in Column-Major.
 
 ### fileio.close
 Close the file. No argument is needed.
