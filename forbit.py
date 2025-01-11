@@ -1,5 +1,5 @@
 #
-# A class to call dabin sufficiently.
+# A class to call binio sufficiently.
 # See sample.py for usage
 #
 # Provided by Kosei Ohara
@@ -7,9 +7,9 @@
 
 
 import numpy as np
-import dabin
+import binio
 
-class fileio:
+class forbit:
 
     def __init__(self, filename, action, shape, kind, record, recstep, endian, order):
         
@@ -37,25 +37,25 @@ class fileio:
                        self.fread_dp_3dim]
 
         # List of fwrite related functions
-        dabin_fwrite_list = [dabin.fwrite_sp1, 
-                             dabin.fwrite_dp1, 
-                             dabin.fwrite_sp2, 
-                             dabin.fwrite_dp2, 
-                             dabin.fwrite_sp3, 
-                             dabin.fwrite_dp3]
+        binio_fwrite_list = [binio.fwrite_sp1, 
+                             binio.fwrite_dp1, 
+                             binio.fwrite_sp2, 
+                             binio.fwrite_dp2, 
+                             binio.fwrite_sp3, 
+                             binio.fwrite_dp3]
 
         # Determine functions based on the values of the kind and the dim
         precision = kind >> 2
         self.fread = fread_list[((dim-1)<<1)+precision-1]
 
-        self.dabin_fwrite = dabin_fwrite_list[((dim-1)<<1)+precision-1]
+        self.binio_fwrite = binio_fwrite_list[((dim-1)<<1)+precision-1]
         if (precision == 1):
             self.fwrite = self.fwrite_sp
         if (precision == 2):
             self.fwrite = self.fwrite_dp
 
         # Open a file and get a unit number
-        self.__unit = dabin.fopen(file  =filename, \
+        self.__unit = binio.fopen(file  =filename, \
                                   action=action  , \
                                   recl  =recl    , \
                                   endian=endian    )
@@ -66,7 +66,7 @@ class fileio:
 
 
     def close(self):
-        dabin.fclose(self.__unit)
+        binio.fclose(self.__unit)
 
         self.__unit    = -9999999
         self.__file    = 'ERROR'
@@ -76,7 +76,7 @@ class fileio:
 
 
     def fread_sp_1dim(self):
-        result = dabin.fread_sp1(self.__unit    , \
+        result = binio.fread_sp1(self.__unit    , \
                                  self.__shape[0], \
                                  self.__record    )
 
@@ -88,7 +88,7 @@ class fileio:
                      
     
     def fread_dp_1dim(self):
-        result = dabin.fread_dp1(self.__unit    , \
+        result = binio.fread_dp1(self.__unit    , \
                                  self.__shape[0], \
                                  self.__record    )
 
@@ -100,7 +100,7 @@ class fileio:
 
 
     def fread_sp_2dim(self):
-        result = dabin.fread_sp2(self.__unit    , \
+        result = binio.fread_sp2(self.__unit    , \
                                  self.__shape[0], \
                                  self.__shape[1], \
                                  self.__record    )
@@ -116,7 +116,7 @@ class fileio:
                      
     
     def fread_dp_2dim(self):
-        result = dabin.fread_dp2(self.__unit    , \
+        result = binio.fread_dp2(self.__unit    , \
                                  self.__shape[0], \
                                  self.__shape[1], \
                                  self.__record    )
@@ -132,7 +132,7 @@ class fileio:
                      
     
     def fread_sp_3dim(self):
-        result = dabin.fread_sp3(self.__unit    , \
+        result = binio.fread_sp3(self.__unit    , \
                                  self.__shape[0], \
                                  self.__shape[1], \
                                  self.__shape[2], \
@@ -149,7 +149,7 @@ class fileio:
                      
     
     def fread_dp_3dim(self):
-        result = dabin.fread_dp3(self.__unit    , \
+        result = binio.fread_dp3(self.__unit    , \
                                  self.__shape[0], \
                                  self.__shape[1], \
                                  self.__shape[2], \
@@ -172,7 +172,7 @@ class fileio:
             result = dataArray.copy()
 
         result = np.float32(result)
-        self.dabin_fwrite(self.__unit  , \
+        self.binio_fwrite(self.__unit  , \
                           self.__record, \
                           result         )
 
@@ -185,7 +185,7 @@ class fileio:
         else:
             result = dataArray.copy()
 
-        self.dabin_fwrite(self.__unit  , \
+        self.binio_fwrite(self.__unit  , \
                           self.__record, \
                           result         )
 

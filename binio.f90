@@ -1,6 +1,6 @@
 ! 
 ! Binary file reader for Python.
-! Compile with f2py and import this module by 'import dabin'
+! Compile with f2py and import this module by 'import binio'
 ! 
 ! Provided by Kosei Ohara
 ! 

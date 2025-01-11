@@ -1,5 +1,5 @@
-PYMOD = dabin
-FMOD = dabin.f90
+PYMOD = binio
+FMOD = binio.f90
 
 F2PY = f2py
 

@@ -1,8 +1,8 @@
-# Direct Access for Binary files in Python
+# FORtran-based Binary-io Interface Toolkit (FORBIT)
 Programmer : Kosei Ohara  
 
-Python programers can read no-header binary files with this module like Fortran programers. This modules, `dabin.f90`, is based on Fortran, compiled by f2py, and wrapped by `fileio.py`.  
-Most users do not need to call dabin directly; instead, `fileio.py` will be called.
+Python programers can read no-header binary files with this class like Fortran programers. This modules, `binio.f90`, is based on Fortran, compiled by f2py, and wrapped by `forbit.py`.  
+Most users do not need to call binio directly; instead, `forbit.py` will be called.
 
 ## Test Environment
 CentOS Linux 7  
@@ -16,15 +16,15 @@ Enter "make" to compile the source code
 ```shell-session
 $ make
 ```
-`dabin.cpython-37m-x86_64-linux-gnu.so` will be generated in my environment.
-After entering this command, dabin is ready to be called.  
+`binio.cpython-37m-x86_64-linux-gnu.so` will be generated in my environment.
+After entering this command, binio is ready to be called.  
 To remove `*.so` file, enter "make clean"
 ```shell-session
 $ make clean
 ```
 
 ## Arguments
-### fileio.\_\_init\_\_
+### forbit.\_\_init\_\_
 By initializing this class, a binary file will be opened based on the arguments.  
 - filename  
   `type=str`  
@@ -63,28 +63,28 @@ By initializing this class, a binary file will be opened based on the arguments.
   `"C"` and `"F"` are valid. `"C"` for Row-Major, and `"F"` for Column-Major.  
   Although you set `order="C"`, argument `shape` must be defined in Column-Major.
 
-### fileio.close
+### forbit.close
 Close the file. No argument is needed.
 
-### fileio.fread
-Read the file. No argument is needed. The shape of return is the same as specified in `fileio.__init__`.  
+### forbit.fread
+Read the file. No argument is needed. The shape of return is the same as specified in `forbit.__init__`.  
 Note that the returned object is Column-Major like `[nx,ny,nz]`.  
-Although various functions, such as `fread_sp_1dim` and `fread_dp_2dim`, are defined in this class, you only need to call `fread` as a suitable fread-related function is chosen in `fileio.__init__`.  
+Although various functions, such as `fread_sp_1dim` and `fread_dp_2dim`, are defined in this class, you only need to call `fread` as a suitable fread-related function is chosen in `forbit.__init__`.  
 If the input data contains `NaN`, warning message will be printed.  
 
-### fileio.fwrite
+### forbit.fwrite
 Write to the file.  
 Note that the array for the argument have to be Column-Major like `[nx,ny,nz]`.  
-Although 2 functions, `fwrite_sp` and `fwrite_dp`, are defined in this class, you only need to call `fwrite` as a suitable fwrite-related function is chosen in `fileio.__init__`.
+Although 2 functions, `fwrite_sp` and `fwrite_dp`, are defined in this class, you only need to call `fwrite` as a suitable fwrite-related function is chosen in `forbit.__init__`.
 - dataArray  
   `type=ndarray`  
   Output data.  
-  The shape of array must be the same as specified in `fileio.__init__`.  
+  The shape of array must be the same as specified in `forbit.__init__`.  
 
-### fileio.get\_record
+### forbit.get\_record
 Get the present record. No argument is needed. The type of return will be `int`.  
 
-### fileio.reset\_record
+### forbit.reset\_record
 Update the record.  
 To update the record manually, this function have to be called because the record is encapsulated.  
 Two options are available, but both `newRecord` and `increment` are provided, `increment` value will be ignored.  
