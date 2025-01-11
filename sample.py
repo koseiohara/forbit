@@ -1,12 +1,12 @@
 #
-# Sample program to use dabin.f90 and fileio.py
+# Sample program to use binio.f90 and forbit.py
 #
 # Provided by Kosei Ohara
 #
 
 import numpy as np
 
-from fileio import fileio
+from forbit import forbit
 
 nx = 288
 ny = 145
@@ -20,7 +20,7 @@ ifile = 'input.bin'
 ofile = 'output.bin'
 
 # Input File
-iclass = fileio(filename=ifile          , \
+iclass = forbit(filename=ifile          , \
                 action  ='read'         , \
                 shape   =shape          , \
                 kind    =kind           , \
@@ -30,7 +30,7 @@ iclass = fileio(filename=ifile          , \
                 order   ='C'              )
 
 # Output File
-oclass = fileio(filename=ofile          , \
+oclass = forbit(filename=ofile          , \
                 action  ='write'        , \
                 shape   =shape          , \
                 kind    =kind           , \
