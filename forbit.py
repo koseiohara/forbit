@@ -268,7 +268,3 @@ class forbit:
             raise ValueError('The "order" argument must be either "c" or "f".')
 
 
-
-
-
-
