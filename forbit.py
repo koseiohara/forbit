@@ -197,8 +197,8 @@ class forbit:
         if (np.any(np.isnan(dataArray))):
             print('')
             print('Warning from fread : Input data contains NaN value.')
-            print('    File Name : {}'.format(self.__filename))
-            print('    Record    : {}'.format(self.record))
+            print('    File Name : {}'.format(self.__file))
+            print('    Record    : {}'.format(self.__record))
             print('')
 
 
