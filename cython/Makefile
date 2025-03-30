@@ -8,6 +8,8 @@ FFLAG = -O3 -Wall
 export CC = gcc
 PC = compiler.py
 
+LIB_INSTALL = ${HOME}/PythonLib/lib/
+
 #%.o : %.f90
 #	${FC} -c $< ${FFLAG} -fPIC
 #
@@ -28,4 +30,8 @@ clean :
 	rm -fv *.mod ${TARGET}.c *.so
 	rm -rfv build
 
+re : clean all
+
+install :
+	cp *.so ${LIB_INSTALL}
 
