@@ -57,7 +57,7 @@ By initializing this class, a binary file will be opened based on the arguments.
 - endian  
   `type=str`  
   Endian of file.  
-  `'little_eidnan'` or `'big_endian'`.  
+  `'little_endian'` or `'big_endian'`.  
   Either lowercase or uppercase characters are acceptable.  
 
 ### forbit.close
