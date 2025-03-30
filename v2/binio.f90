@@ -52,7 +52,7 @@ module binio
             file_cp(i:i) = file(i)
         enddo
 
-        if (action == 'r') then
+        if (action == 'r' .OR. action == 'R') then
             available_action = 'read'
         else
             available_action = 'write'

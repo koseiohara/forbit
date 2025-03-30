@@ -114,19 +114,17 @@ cdef class forbit:
     cdef char __file[FILELEN_MAX+1]
     cdef char* __action
     cdef char* __endian
-    cdef char __order
     cdef int  __unit
     cdef int  __shape[3]
     cdef int  __kind
     cdef int  __record
     cdef int  __recstep
 
-    cdef object fread
-    cdef object fwrite
+    cdef public object fread
+    cdef public object fwrite
 
 
-    #def __init__(self, const char* filename, const char* action, object shape, const int kind, const int record, const int recstep, const char* endian, const char order):
-    def __init__(self, filename, action, object shape, const int kind, const int record, const int recstep, endian, order):
+    def __init__(self, filename, action, object shape, const int kind, const int record, const int recstep, endian):
         #cdef size_t filename_size = strlen(filename)
         cdef np.ndarray shape_cp
         cdef int shape_size
@@ -136,25 +134,25 @@ cdef class forbit:
         cdef int precision
         cdef int work_filelen_max=FILELEN_MAX
 
+
         if (isinstance(filename, str)):
             filename = filename.encode('utf-8')
         else:
             raise TypeError('Invalid data type in the argument of forbit : filename')
 
         if (isinstance(action, str)):
+            if (action.lower() != 'read' and action.lower() != 'write'):
+                raise ValueError('Invalid string in the argument of forbit : action')
             action = action.encode('utf-8')
         else:
             raise TypeError('Invalid data type in the argument of forbit : action')
 
         if (isinstance(endian, str)):
+            if (endian.lower() !='little_endian' and endian.lower() != 'big_endian'):
+                raise ValueError('Invalid string in the argument of forbit : endian')
             endian = endian.encode('utf-8')
         else:
             raise TypeError('Invalid data type in the argument of forbit : endian')
-
-        if (isinstance(order, str)):
-            order = order.encode('utf-8')
-        else:
-            raise TypeError('Invalid data type in the argument of forbit : order')
 
         shape_cp = np.array(shape, dtype=np.intc)
         shape_size = shape_cp.size
@@ -173,7 +171,6 @@ cdef class forbit:
         self.__file = <char*>filename
         self.__action = <char*>action
         self.__endian = <char*>endian
-        self.__order  = <char>order[0]
 
         recl = kind
         for i in range(shape_size):
