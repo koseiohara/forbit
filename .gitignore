@@ -1,8 +1,11 @@
 *.ctl
+*.mod
+*.o
 *.so
 *.swp
 *.dat
 *.bin
 *.grd
 __pycache__
+build
 test.py
