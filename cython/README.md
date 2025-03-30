@@ -60,7 +60,7 @@ By initializing this class, a binary file will be opened based on the arguments.
   `'little_eidnan'` or `'big_endian'`.  
   Either lowercase or uppercase characters are acceptable.  
 
-### forbit.fclose
+### forbit.close
 Close the file. No argument is needed.
 
 ### forbit.fread
