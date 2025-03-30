@@ -92,20 +92,12 @@ cdef extern from 'binio.h':
                                 double* output_data);
 
 
-#ctypedef fused shape_t:
-#    np.ndarray[np.int32_t, ndim=1]
-#    np.ndarray[np.int64_t, ndim=1]
-#    list
-#    tuple
-
 
 ctypedef fused real_t:
     np.float32_t
     np.float64_t
 
 
-#cdef const int filelen_max = 255
-#cdef int filelen_max = 255
 DEF FILELEN_MAX = 255
 
 
@@ -125,7 +117,6 @@ cdef class forbit:
 
 
     def __init__(self, filename, action, object shape, const int kind, const int record, const int recstep, endian):
-        #cdef size_t filename_size = strlen(filename)
         cdef np.ndarray shape_cp
         cdef int shape_size
         cdef int i
@@ -157,17 +148,9 @@ cdef class forbit:
         shape_cp = np.array(shape, dtype=np.intc)
         shape_size = shape_cp.size
 
-        #cdef object[6] fread_list
-        #cdef object[6] fwrite_list
-        #cdef object fread_list[6]
-        #cdef object fwrite_list[6]
-
-        #shape_size = np.array(shape).size
         if (shape_size > 3):
             raise ValueError("Invalid number of dimensions")
         
-        #strncpy(self.__file, filename, FILELEN_MAX)
-        #self.__file[FILELEN_MAX] = b'\0'
         self.__file = <char*>filename
         self.__action = <char*>action
         self.__endian = <char*>endian
@@ -181,12 +164,12 @@ cdef class forbit:
         self.__record  = record
         self.__recstep = recstep
 
-        binio_fopen(&self.__unit       ,
+        binio_fopen(&self.__unit     ,
                     &work_filelen_max,
-                    self.__file        ,
-                    self.__action      ,
-                    &recl              ,
-                    self.__endian      )
+                    self.__file      ,
+                    self.__action    ,
+                    &recl            ,
+                    self.__endian    )
 
         fread_list = [self.fread_sp1,
                       self.fread_dp1,
@@ -220,11 +203,10 @@ cdef class forbit:
         cdef np.ndarray[np.float32_t,ndim=1] result
         result = np.empty(self.__shape[0], dtype=np.float32)
 
-        binio_fread_sp1(&self.__unit    ,
-                        &self.__shape[0],
-                        &self.__record  ,
-                        <float*> PyArray_DATA(result)          )
-                        #result          )
+        binio_fread_sp1(&self.__unit                 ,
+                        &self.__shape[0]             ,
+                        &self.__record               ,
+                        <float*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
@@ -235,11 +217,10 @@ cdef class forbit:
         cdef np.ndarray[np.float64_t,ndim=1] result
         result = np.empty(self.__shape[0], dtype=np.float64)
 
-        binio_fread_dp1(&self.__unit    ,
-                        &self.__shape[0],
-                        &self.__record  ,
-                        <double*> PyArray_DATA(result)          )
-                        #result          )
+        binio_fread_dp1(&self.__unit                  ,
+                        &self.__shape[0]              ,
+                        &self.__record                ,
+                        <double*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
@@ -250,12 +231,11 @@ cdef class forbit:
         cdef np.ndarray[np.float32_t,ndim=2] result
         result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float32)
 
-        binio_fread_sp2(&self.__unit    ,
-                        &self.__shape[0],
-                        &self.__shape[1],
-                        &self.__record  ,
-                        <float*> PyArray_DATA(result)          )
-                        #result          )
+        binio_fread_sp2(&self.__unit                 ,
+                        &self.__shape[0]             ,
+                        &self.__shape[1]             ,
+                        &self.__record               ,
+                        <float*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
@@ -266,12 +246,11 @@ cdef class forbit:
         cdef np.ndarray[np.float64_t,ndim=2] result
         result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float64)
 
-        binio_fread_dp2(&self.__unit    ,
-                        &self.__shape[0],
-                        &self.__shape[1],
-                        &self.__record  ,
-                        <double*> PyArray_DATA(result)          )
-                        #result          )
+        binio_fread_dp2(&self.__unit                  ,
+                        &self.__shape[0]              ,
+                        &self.__shape[1]              ,
+                        &self.__record                ,
+                        <double*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
@@ -287,8 +266,7 @@ cdef class forbit:
                         &self.__shape[1],
                         &self.__shape[2],
                         &self.__record  ,
-                        <float*> PyArray_DATA(result)          )
-                        #result          )
+                        <float*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
@@ -299,12 +277,12 @@ cdef class forbit:
         cdef np.ndarray[np.float64_t,ndim=3] result
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float64)
 
-        binio_fread_dp3(&self.__unit    ,
-                        &self.__shape[0],
-                        &self.__shape[1],
-                        &self.__shape[2],
-                        &self.__record  ,
-                        <double*> PyArray_DATA(result)          )
+        binio_fread_dp3(&self.__unit                  ,
+                        &self.__shape[0]              ,
+                        &self.__shape[1]              ,
+                        &self.__shape[2]              ,
+                        &self.__record                ,
+                        <double*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
@@ -312,102 +290,73 @@ cdef class forbit:
 
 
     def fwrite_sp1(self, np.ndarray[real_t, ndim=1] arr):
-        #cdef float[:] arr_view = arr
         cdef np.ndarray[np.float32_t,ndim=1] arr_cp = arr
 
-        binio_fwrite_sp1(&self.__unit    ,
-                         &self.__shape[0],
-                         &self.__record  ,
+        binio_fwrite_sp1(&self.__unit                 ,
+                         &self.__shape[0]             ,
+                         &self.__record               ,
                          <float*> PyArray_DATA(arr_cp))
-                         #<float*> arr_view.data)
-                         #&arr_view[0])
-                         #arr.astype(np.float32) )
-                         #np.float32(arr) )
 
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_dp1(self, np.ndarray[real_t, ndim=1] arr):
-        #cdef double[:] arr_view = arr
         cdef np.ndarray[np.float64_t,ndim=1] arr_cp = arr
 
-        binio_fwrite_dp1(&self.__unit    ,
-                         &self.__shape[0],
-                         &self.__record  ,
+        binio_fwrite_dp1(&self.__unit                  ,
+                         &self.__shape[0]              ,
+                         &self.__record                ,
                          <double*> PyArray_DATA(arr_cp))
-                         #<double*> arr_view.data)
-                         #&arr_view[0])
-                         #arr.astype(np.float64) )
-                         #np.float64(arr) )
 
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_sp2(self, np.ndarray[real_t, ndim=2] arr):
-        #cdef float[:,:] arr_view = arr
         cdef np.ndarray[np.float32_t,ndim=2] arr_cp = arr
 
-        binio_fwrite_sp2(&self.__unit    ,
-                         &self.__shape[0],
-                         &self.__shape[1],
-                         &self.__record  ,
+        binio_fwrite_sp2(&self.__unit                 ,
+                         &self.__shape[0]             ,
+                         &self.__shape[1]             ,
+                         &self.__record               ,
                          <float*> PyArray_DATA(arr_cp))
-                         #<float*> arr_view.data)
-                         #&arr_view[0])
-                         #arr.astype(np.float32) )
-                         #np.float32(arr) )
 
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_dp2(self, np.ndarray[real_t, ndim=2] arr):
-        #cdef double[:,:] arr_view = arr
         cdef np.ndarray[np.float64_t,ndim=2] arr_cp = arr
 
-        binio_fwrite_dp2(&self.__unit    ,
-                         &self.__shape[0],
-                         &self.__shape[1],
-                         &self.__record  ,
+        binio_fwrite_dp2(&self.__unit                  ,
+                         &self.__shape[0]              ,
+                         &self.__shape[1]              ,
+                         &self.__record                ,
                          <double*> PyArray_DATA(arr_cp))
-                         #<double*> arr_view.data)
-                         #&arr_view[0])
-                         #arr.astype(np.float64) )
-                         #np.float64(arr) )
 
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_sp3(self, np.ndarray[real_t, ndim=3] arr):
-        #cdef float[:,:,:] arr_view = arr
         cdef np.ndarray[np.float32_t,ndim=3] arr_cp = arr
 
-        binio_fwrite_sp3(&self.__unit    ,
-                         &self.__shape[0],
-                         &self.__shape[1],
-                         &self.__shape[2],
-                         &self.__record  ,
+        binio_fwrite_sp3(&self.__unit                 ,
+                         &self.__shape[0]             ,
+                         &self.__shape[1]             ,
+                         &self.__shape[2]             ,
+                         &self.__record               ,
                          <float*> PyArray_DATA(arr_cp))
-                         #<float*> arr_view.data)
-                         #&arr_view[0])
-                         #arr.astype(np.float32) )
-                         #np.float32(arr) )
 
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_dp3(self, np.ndarray[real_t, ndim=3] arr):
-        #cdef double[:,:,:] arr_view = arr
         cdef np.ndarray[np.float64_t,ndim=3] arr_cp = arr
 
-        binio_fwrite_dp3(&self.__unit    ,
-                         &self.__shape[0],
-                         &self.__shape[1],
-                         &self.__shape[2],
-                         &self.__record  ,
+        binio_fwrite_dp3(&self.__unit                  ,
+                         &self.__shape[0]              ,
+                         &self.__shape[1]              ,
+                         &self.__shape[2]              ,
+                         &self.__record                ,
                          <double*> PyArray_DATA(arr_cp))
-                         #<double*> arr_view.data)
-                         #arr.astype(np.float64) )
-                         #np.float64(arr) )
 
         self.__record = self.__record + self.__recstep
 
@@ -424,7 +373,7 @@ cdef class forbit:
             self.__record = self.__record + <int>increment
             return
 
-        raise ValueError("In forbit.reset_record() :\nAt least one of 'newRecord' or 'increment' must be provided")
+        raise ValueError("In forbit.reset_record()\nAt least one of 'newRecord' or 'increment' must be provided")
 
 
 
