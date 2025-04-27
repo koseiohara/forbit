@@ -7,6 +7,7 @@
 *.bin
 *.grd
 __pycache__
+forbit.c
 build
 test.py
 test_v2

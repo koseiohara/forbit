@@ -19,18 +19,22 @@ module binio
     contains
 
 
-    subroutine binio_fopen(unit, filelen, file, action, recl, endian) bind(C)
+    !subroutine binio_fopen(unit, filelen, file, action, recl, endian) bind(C)
+    subroutine binio_fopen(unit, file, action, recl, endian) bind(C)
         integer(c_int)   , intent(out) :: unit
-        integer(c_int)   , intent(in)  :: filelen
+        !integer(c_int)   , intent(in)  :: filelen
         character(c_char), intent(in)  :: file(*)
-        character(c_char), intent(in)  :: action
+        character(c_char), intent(in)  :: action(*)
         integer(c_int)   , intent(in)  :: recl
-        character(c_char), intent(in)  :: endian
+        character(c_char), intent(in)  :: endian(*)
 
         integer, parameter :: filelen_max = 256
         character(filelen_max) :: file_cp
-        character(16)          :: available_action
-        character(16)          :: available_endian
+        character(16)          :: action_cp
+        character(16)          :: endian_cp
+        integer :: filelen
+        integer :: actlen
+        integer :: endianlen
         integer :: i
 
         if (recl <= 0) then
@@ -40,37 +44,53 @@ module binio
             ERROR STOP
         endif
 
-        if (filelen > filelen_max) then
-            write(*,'(A)')    '<ERROR STOP>'
-            write(*,'(A,I0)') 'Length of filename is too long : ', filelen
-            write(*,'(A,I0)') 'The maximum length is ', filelen_max
-            ERROR STOP
-        endif
+        !if (filelen > filelen_max) then
+        !    write(*,'(A)')    '<ERROR STOP>'
+        !    write(*,'(A,I0)') 'Length of filename is too long : ', filelen
+        !    write(*,'(A,I0)') 'The maximum length is ', filelen_max
+        !    ERROR STOP
+        !endif
 
-        file_cp = repeat(' ', filelen_max)
-        do i = 1, filelen
-            file_cp(i:i) = file(i)
-        enddo
+        !file_cp = repeat(' ', filelen_max)
+        !do i = 1, filelen
+        !    file_cp(i:i) = file(i)
+        !enddo
+        filelen   = charlen(file, filelen_max)
+        actlen    = charlen(action, 16)
+        endianlen = charlen(endian, 16)
 
-        if (action == 'r' .OR. action == 'R') then
-            available_action = 'read'
-        else
-            available_action = 'write'
-        endif
+        file_cp   = char2f(filelen  , file  )
+        action_cp = char2f(actlen   , action)
+        endian_cp = char2f(endianlen, endian)
+        write(*,*) trim(file_cp)
+        write(*,*) trim(action_cp)
+        write(*,*) trim(endian_cp)
 
-        if (endian == 'l') then
-            available_endian = 'little_endian'
-        else
-            available_endian = 'big_endian'
+        if (trim(action_cp) == 'READ') then
+            write(*,'(A)') trim(action_cp)
+            call isexist(trim(file_cp))  !! IN
         endif
+        return
+
+        !if (action == 'r' .OR. action == 'R') then
+        !    available_action = 'read'
+        !else
+        !    available_action = 'write'
+        !endif
+
+        !if (endian == 'l') then
+        !    available_endian = 'little_endian'
+        !else
+        !    available_endian = 'big_endian'
+        !endif
 
         open(NEWUNIT=unit                  , &
            & FILE   =trim(file_cp)         , &
-           & ACTION =trim(available_action), &
+           & ACTION =trim(action_cp), &
            & FORM   ='UNFORMATTED'         , &
            & ACCESS ='DIRECT'              , &
            & RECL   =recl                  , &
-           & CONVERT=trim(available_endian)  )
+           & CONVERT=trim(endian_cp)  )
 
     end subroutine binio_fopen
 
@@ -231,6 +251,62 @@ module binio
         write(unit,rec=record) output_data(1:nx,1:ny,1:nz)
 
     end subroutine binio_fwrite_dp3
+
+
+    function charlen(input, lenmax) result(output)
+        use iso_c_binding, only : C_CHAR, C_NULL_CHAR
+        character(C_CHAR), intent(in) :: input(*)
+        integer          , intent(in) :: lenmax
+        integer :: output
+
+        integer :: i
+
+        do i = 1, lenmax
+            if (input(i) /= C_NULL_CHAR) then
+                cycle
+            endif
+            output = i-1
+            return
+        enddo
+
+        output = lenmax
+
+    end function charlen
+
+
+    function char2f(input_len, input) result(output)
+        use iso_c_binding, only : C_CHAR, C_NULL_CHAR
+        integer          , intent(in) :: input_len
+        character(C_CHAR), intent(in) :: input(input_len)
+        character(input_len) :: output
+
+        integer :: i
+
+        output = ''
+        do i = 1, input_len
+            output(i:i) = input(i)
+        enddo
+
+        write(*,'(A,I0,A)') 'LEN : ', input_len, ',  CHAR : ' // trim(output)
+        !output = input(1:null_idx-1)
+
+    end function char2f
+
+
+    subroutine isexist(file)
+        character(*), intent(in) :: file
+        logical :: check
+
+        INQUIRE(FILE =file , &
+              & EXIST=check  )
+
+        if (.NOT. check) then
+            write(0,'(A)') '<ERROR STOP>'
+            write(0,'(A)') 'Specified file does not exist : ' // trim(file)
+            ERROR STOP
+        endif
+
+    end subroutine isexist
 
 
 end module binio

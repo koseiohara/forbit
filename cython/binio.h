@@ -1,5 +1,4 @@
 extern void binio_fopen(      int*  unit   ,
-                        const int*  filelen,
                         const char* file   ,
                         const char* action ,
                         const int*  recl   ,

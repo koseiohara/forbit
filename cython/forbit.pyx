@@ -9,11 +9,11 @@ from libc.string cimport strlen, strncpy
 
 cdef extern from 'binio.h':
     void binio_fopen(      int*  unit   ,
-                     const int*  filelen,
                      const char* file   ,
                      const char* action ,
                      const int*  recl   ,
                      const char* endian );
+                     #const int*  filelen,
 
 
     void binio_fclose(const int* unit);
@@ -104,8 +104,8 @@ DEF FILELEN_MAX = 255
 cdef class forbit:
     
     cdef char __file[FILELEN_MAX+1]
-    cdef char* __action
-    cdef char* __endian
+    cdef char __action[16]
+    cdef char __endian[16]
     cdef int  __unit
     cdef int  __shape[3]
     cdef int  __kind
@@ -123,7 +123,7 @@ cdef class forbit:
         cdef int recl
 
         cdef int precision
-        cdef int work_filelen_max=FILELEN_MAX
+        #cdef int filelen
 
 
         if (isinstance(filename, str)):
@@ -151,9 +151,11 @@ cdef class forbit:
         if (shape_size > 3):
             raise ValueError("Invalid number of dimensions")
         
-        self.__file = <char*>filename
+        self.__file   = <char*>filename
         self.__action = <char*>action
         self.__endian = <char*>endian
+
+        #filelen = strlen(self.__file)
 
         recl = kind
         for i in range(shape_size):
@@ -164,12 +166,12 @@ cdef class forbit:
         self.__record  = record
         self.__recstep = recstep
 
-        binio_fopen(&self.__unit     ,
-                    &work_filelen_max,
-                    self.__file      ,
-                    self.__action    ,
-                    &recl            ,
-                    self.__endian    )
+        binio_fopen(&self.__unit ,
+                    self.__file  ,
+                    self.__action,
+                    &recl        ,
+                    self.__endian)
+                    #&filelen     ,
 
         fread_list = [self.fread_sp1,
                       self.fread_dp1,
