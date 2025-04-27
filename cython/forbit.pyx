@@ -151,8 +151,11 @@ cdef class forbit:
         shape_size = shape_cp.size
         shape_cp   = shape_cp[::-1]
 
-        if (shape_size > 3):
+        if (shape_size > 3 or shape_size < 1):
             raise ValueError("Invalid number of dimensions")
+
+        if (kind != 4 and kind != 8):
+            raise ValueError('Invalid kind parameter')
 
         
         self.__file   = <char*>filename
