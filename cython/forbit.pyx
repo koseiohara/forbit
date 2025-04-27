@@ -13,7 +13,6 @@ cdef extern from 'binio.h':
                      const char* action ,
                      const int*  recl   ,
                      const char* endian );
-                     #const int*  filelen,
 
 
     void binio_fclose(const int* unit);
@@ -123,8 +122,9 @@ cdef class forbit:
         cdef int recl
 
         cdef int precision
-        #cdef int filelen
 
+        if (len(filename) > FILELEN_MAX):
+            raise ValueError('File name is too long ' + filename)
 
         if (isinstance(filename, str)):
             filename = filename.encode('utf-8')
@@ -132,46 +132,48 @@ cdef class forbit:
             raise TypeError('Invalid data type in the argument of forbit : filename')
 
         if (isinstance(action, str)):
-            if (action.lower() != 'read' and action.lower() != 'write'):
+            action = action.lower()
+            if (action != 'read' and action != 'write'):
                 raise ValueError('Invalid string in the argument of forbit : action')
             action = action.encode('utf-8')
         else:
             raise TypeError('Invalid data type in the argument of forbit : action')
 
         if (isinstance(endian, str)):
-            if (endian.lower() !='little_endian' and endian.lower() != 'big_endian'):
+            endian = endian.lower()
+            if (endian !='little_endian' and endian != 'big_endian'):
                 raise ValueError('Invalid string in the argument of forbit : endian')
             endian = endian.encode('utf-8')
         else:
             raise TypeError('Invalid data type in the argument of forbit : endian')
 
-        shape_cp = np.array(shape, dtype=np.intc)
+        shape_cp   = np.array(shape, dtype=np.intc)
         shape_size = shape_cp.size
+        shape_cp   = shape_cp[::-1]
 
         if (shape_size > 3):
             raise ValueError("Invalid number of dimensions")
+
         
         self.__file   = <char*>filename
         self.__action = <char*>action
         self.__endian = <char*>endian
 
-        #filelen = strlen(self.__file)
-
         recl = kind
         for i in range(shape_size):
-            self.__shape[i] = int(shape[i])
+            self.__shape[i] = int(shape_cp[i])
             recl = recl*self.__shape[i]
         
         self.__kind    = kind
         self.__record  = record
         self.__recstep = recstep
 
+
         binio_fopen(&self.__unit ,
                     self.__file  ,
                     self.__action,
                     &recl        ,
                     self.__endian)
-                    #&filelen     ,
 
         fread_list = [self.fread_sp1,
                       self.fread_dp1,
