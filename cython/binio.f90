@@ -55,12 +55,12 @@ module binio
             call isexist(trim(file_cp))  !! IN
         endif
 
-        open(NEWUNIT=unit                  , &
-           & FILE   =trim(file_cp)         , &
+        open(NEWUNIT=unit           , &
+           & FILE   =trim(file_cp)  , &
            & ACTION =trim(action_cp), &
-           & FORM   ='UNFORMATTED'         , &
-           & ACCESS ='DIRECT'              , &
-           & RECL   =recl                  , &
+           & FORM   ='UNFORMATTED'  , &
+           & ACCESS ='DIRECT'       , &
+           & RECL   =recl           , &
            & CONVERT=trim(endian_cp)  )
 
     end subroutine binio_fopen
