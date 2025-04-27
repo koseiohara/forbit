@@ -39,7 +39,7 @@ By initializing this class, a binary file will be opened based on the arguments.
   `type=ndarray`  
   Other types of array such as `list` and `tuple` may be allowed.  
   Shape of input/output data.  
-  Shape should be in Column-Major order, similar to Fortran, like `[nx,ny,nz]`.  
+  Shape should be in Row-Major order, similar to Fortran, like `[nz,ny,nx]`.  
 - kind  
   `type=int`  
   Kind parameter.  
@@ -83,7 +83,7 @@ Get the present record. No argument is needed. The type of return will be `int`.
 ### forbit.reset\_record
 Update the record.  
 To update the record manually, this function have to be called because the record is encapsulated.  
-Two options are available, but both `newRecord` and `increment` are provided, `increment` value will be ignored.  
+Two options are available, but if both `newRecord` and `increment` are provided, `increment` value will be ignored.  
 - newRecord  
   `type=int`  
   To assign a specific value to record, this parameter can be used. The record will be changed to this value.  

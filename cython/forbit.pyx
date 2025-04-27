@@ -133,7 +133,7 @@ cdef class forbit:
 
         if (isinstance(action, str)):
             action = action.lower()
-            if (action != 'read' and action != 'write'):
+            if (action != 'read' and action != 'write' and action != 'readwrite'):
                 raise ValueError('Invalid string in the argument of forbit : action')
             action = action.encode('utf-8')
         else:
