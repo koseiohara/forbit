@@ -5,8 +5,7 @@ import numpy as np
 
 MOD    = sys.argv[1]
 SRC    = sys.argv[2]
-#CFLAG  = ['-O2', '-Wall', '-std=c99']
-CFLAG  = ['-O2', '-Wall']
+CFLAG  = ['-O2', '-Wall', '-std=c99']
 IPATH  = []
 LIB    = ['binio']
 LPATH  = ['.']
@@ -14,13 +13,14 @@ DEFINE = []     # SAMPLE : [("N", "10"), ("NX", 288")]
 
 extensions = [
     Extension(
-        name           =MOD                     ,
-        sources        =[SRC]                   ,
-        include_dirs   =[np.get_include()]+IPATH,
-        libraries      =LIB                     ,
-        library_dirs   =LPATH                   ,
-        define_macros  =DEFINE                  ,
-        extra_link_args=['-limf']
+        name              =MOD                     ,
+        sources           =[SRC]                   ,
+        include_dirs      =[np.get_include()]+IPATH,
+        libraries         =LIB                     ,
+        library_dirs      =LPATH                   ,
+        define_macros     =DEFINE                  ,
+        extra_compile_args=CFLAG                   ,
+        extra_link_args=[]
     )
 ]
 setup(ext_modules        = cythonize(extensions)    ,
