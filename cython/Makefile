@@ -8,7 +8,7 @@ FFLAG = -O3 -Wall
 export CC = gcc
 PC = compiler.py
 
-LIB_INSTALL = ${HOME}/PythonLib/lib/
+LIB_INSTALL = ${HOME}/PythonLib/lib
 
 #%.o : %.f90
 #	${FC} -c $< ${FFLAG} -fPIC
@@ -34,4 +34,9 @@ re : clean all
 
 install :
 	cp *.so ${LIB_INSTALL}
+	@ echo "Next Step : Execute the following two commands"
+	@ echo
+	@ echo '    export PYTHONPATH="${LIB_INSTALL}:$${PYTHONPATH}"'
+	@ echo '    export LD_LIBRARY_PATH="${LIB_INSTALL}:$${LD_LIBRARY_PATH}"'
+	@ echo
 

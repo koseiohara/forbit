@@ -22,6 +22,7 @@ $ make install
 `make install` will copy these files to the directory specified by `LIB_INSTALL` in the `Makefile`.  
 Note that `LIB_INSTALL` directory need to be added to `$LD_LIBRARY_PATH` by
 ```shell-session
+$ export PYTHONPATH="${YOUR_PATH}:${PYTHONPATH}" 
 $ export LD_LIBRARY_PATH="${YOUR_PATH}:${LD_LIBRARY_PATH}"
 ```
 
