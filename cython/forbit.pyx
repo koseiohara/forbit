@@ -149,7 +149,7 @@ cdef class forbit:
 
         shape_cp   = np.array(shape, dtype=np.intc)
         shape_size = shape_cp.size
-        shape_cp   = shape_cp[::-1]
+        #shape_cp   = shape_cp[::-1]
 
         if (shape_size > 3 or shape_size < 1):
             raise ValueError("Invalid number of dimensions")
@@ -239,8 +239,8 @@ cdef class forbit:
         result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float32)
 
         binio_fread_sp2(&self.__unit                 ,
-                        &self.__shape[0]             ,
                         &self.__shape[1]             ,
+                        &self.__shape[0]             ,
                         &self.__record               ,
                         <float*> PyArray_DATA(result))
 
@@ -254,8 +254,8 @@ cdef class forbit:
         result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float64)
 
         binio_fread_dp2(&self.__unit                  ,
-                        &self.__shape[0]              ,
                         &self.__shape[1]              ,
+                        &self.__shape[0]              ,
                         &self.__record                ,
                         <double*> PyArray_DATA(result))
 
@@ -269,9 +269,9 @@ cdef class forbit:
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float32)
 
         binio_fread_sp3(&self.__unit    ,
-                        &self.__shape[0],
-                        &self.__shape[1],
                         &self.__shape[2],
+                        &self.__shape[1],
+                        &self.__shape[0],
                         &self.__record  ,
                         <float*> PyArray_DATA(result))
 
@@ -285,9 +285,9 @@ cdef class forbit:
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float64)
 
         binio_fread_dp3(&self.__unit                  ,
-                        &self.__shape[0]              ,
-                        &self.__shape[1]              ,
                         &self.__shape[2]              ,
+                        &self.__shape[1]              ,
+                        &self.__shape[0]              ,
                         &self.__record                ,
                         <double*> PyArray_DATA(result))
 
@@ -322,8 +322,8 @@ cdef class forbit:
         cdef np.ndarray[np.float32_t,ndim=2] arr_cp = arr
 
         binio_fwrite_sp2(&self.__unit                 ,
-                         &self.__shape[0]             ,
                          &self.__shape[1]             ,
+                         &self.__shape[0]             ,
                          &self.__record               ,
                          <float*> PyArray_DATA(arr_cp))
 
@@ -334,8 +334,8 @@ cdef class forbit:
         cdef np.ndarray[np.float64_t,ndim=2] arr_cp = arr
 
         binio_fwrite_dp2(&self.__unit                  ,
-                         &self.__shape[0]              ,
                          &self.__shape[1]              ,
+                         &self.__shape[0]              ,
                          &self.__record                ,
                          <double*> PyArray_DATA(arr_cp))
 
@@ -346,9 +346,9 @@ cdef class forbit:
         cdef np.ndarray[np.float32_t,ndim=3] arr_cp = arr
 
         binio_fwrite_sp3(&self.__unit                 ,
-                         &self.__shape[0]             ,
-                         &self.__shape[1]             ,
                          &self.__shape[2]             ,
+                         &self.__shape[1]             ,
+                         &self.__shape[0]             ,
                          &self.__record               ,
                          <float*> PyArray_DATA(arr_cp))
 
@@ -359,9 +359,9 @@ cdef class forbit:
         cdef np.ndarray[np.float64_t,ndim=3] arr_cp = arr
 
         binio_fwrite_dp3(&self.__unit                  ,
-                         &self.__shape[0]              ,
-                         &self.__shape[1]              ,
                          &self.__shape[2]              ,
+                         &self.__shape[1]              ,
+                         &self.__shape[0]              ,
                          &self.__record                ,
                          <double*> PyArray_DATA(arr_cp))
 
