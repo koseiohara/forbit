@@ -40,7 +40,7 @@ By initializing this class, a binary file will be opened based on the arguments.
   `type=ndarray`  
   Other types of array such as `list` and `tuple` may be allowed.  
   Shape of input/output data.  
-  Shape should be in Row-Major order, similar to Fortran, like `[nz,ny,nx]`.  
+  Shape should be in Row-Major order, unlike Fortran, like `[nz,ny,nx]`.  
 - kind  
   `type=int`  
   Kind parameter.  
