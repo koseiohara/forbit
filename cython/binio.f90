@@ -19,7 +19,6 @@ module binio
     contains
 
 
-    !subroutine binio_fopen(unit, filelen, file, action, recl, endian) bind(C)
     subroutine binio_fopen(unit, file, action, recl, endian) bind(C)
         integer(c_int)   , intent(out) :: unit
         character(c_char), intent(in)  :: file(*)

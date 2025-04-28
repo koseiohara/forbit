@@ -121,20 +121,7 @@ cdef class forbit:
         cdef int i
         cdef int recl
         cdef int precision
-        #cdef int file_len
-        #cdef int action_len
-        #cdef int endian_len
 
-        #file_len   = len(filename)
-        #action_len = len(action)
-        #endian_len = len(endian)
-
-        #print(filename)
-        #print('FILE_LEN =', file_len)
-        #print(action)
-        #print('ACTION_LEN =', action_len)
-        #print(endian)
-        #print('ENDIAN_LEN =', endian_len)
 
         if (len(filename) > FILELEN_MAX):
             raise ValueError("File name is too long " + filename)
@@ -171,10 +158,6 @@ cdef class forbit:
             raise ValueError("Invalid kind parameter")
 
         
-        #self.__file   = <char*>filename
-        #self.__action = <char*>action
-        #self.__endian = <char*>endian
-
         strncpy(self.__file, filename, FILELEN_MAX)
         strncpy(self.__action, action, 15)
         strncpy(self.__endian, endian, 15)
