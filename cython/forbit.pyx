@@ -5,9 +5,9 @@ cimport numpy as np
 from numpy cimport PyArray_DATA
 
 cimport cython
-from libc.string cimport strlen, strncpy
+from libc.string cimport strncpy
 
-cdef extern from 'binio.h':
+cdef extern from "binio.h":
     void binio_fopen(      int*  unit   ,
                      const char* file   ,
                      const char* action ,
@@ -120,32 +120,45 @@ cdef class forbit:
         cdef int shape_size
         cdef int i
         cdef int recl
-
         cdef int precision
+        #cdef int file_len
+        #cdef int action_len
+        #cdef int endian_len
+
+        #file_len   = len(filename)
+        #action_len = len(action)
+        #endian_len = len(endian)
+
+        #print(filename)
+        #print('FILE_LEN =', file_len)
+        #print(action)
+        #print('ACTION_LEN =', action_len)
+        #print(endian)
+        #print('ENDIAN_LEN =', endian_len)
 
         if (len(filename) > FILELEN_MAX):
-            raise ValueError('File name is too long ' + filename)
+            raise ValueError("File name is too long " + filename)
 
         if (isinstance(filename, str)):
-            filename = filename.encode('utf-8')
+            filename = filename.encode("utf-8")
         else:
-            raise TypeError('Invalid data type in the argument of forbit : filename')
+            raise TypeError("Invalid data type in the argument of forbit : filename")
 
         if (isinstance(action, str)):
             action = action.lower()
-            if (action != 'read' and action != 'write' and action != 'readwrite'):
-                raise ValueError('Invalid string in the argument of forbit : action')
-            action = action.encode('utf-8')
+            if (action != "read" and action != "write" and action != "readwrite"):
+                raise ValueError("Invalid string in the argument of forbit : action")
+            action = action.encode("utf-8")
         else:
-            raise TypeError('Invalid data type in the argument of forbit : action')
+            raise TypeError("Invalid data type in the argument of forbit : action")
 
         if (isinstance(endian, str)):
             endian = endian.lower()
-            if (endian !='little_endian' and endian != 'big_endian'):
-                raise ValueError('Invalid string in the argument of forbit : endian')
-            endian = endian.encode('utf-8')
+            if (endian !="little_endian" and endian != "big_endian"):
+                raise ValueError("Invalid string in the argument of forbit : endian")
+            endian = endian.encode("utf-8")
         else:
-            raise TypeError('Invalid data type in the argument of forbit : endian')
+            raise TypeError("Invalid data type in the argument of forbit : endian")
 
         shape_cp   = np.array(shape, dtype=np.intc)
         shape_size = shape_cp.size
@@ -155,12 +168,16 @@ cdef class forbit:
             raise ValueError("Invalid number of dimensions")
 
         if (kind != 4 and kind != 8):
-            raise ValueError('Invalid kind parameter')
+            raise ValueError("Invalid kind parameter")
 
         
-        self.__file   = <char*>filename
-        self.__action = <char*>action
-        self.__endian = <char*>endian
+        #self.__file   = <char*>filename
+        #self.__action = <char*>action
+        #self.__endian = <char*>endian
+
+        strncpy(self.__file, filename, FILELEN_MAX)
+        strncpy(self.__action, action, 15)
+        strncpy(self.__endian, endian, 15)
 
         recl = kind
         for i in range(shape_size):
