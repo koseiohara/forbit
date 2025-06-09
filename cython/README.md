@@ -1,7 +1,7 @@
 # FORtran-based Binary-io Interface Toolkit (FORBIT)
 Programmer : Kosei Ohara  
 
-Python programmers can read no-header binary files with this class like Fortran programmers. This module, `binio.f90`, is based on Fortran and wrapped by the class `forbit.pyx` written in Cython.  
+Direct access binary reader for Python.
 This toolkit is available for up to 3 dimension data, but you can apply this for more than 4 dimension data by simple modification.
 
 ## Test Environment
