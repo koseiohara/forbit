@@ -21,7 +21,7 @@ LIB_INSTALL = ${HOME}/PythonLib/lib
 all : ${TARGET}
 
 ${TARGET} : ${FLIB}.so
-	python compiler.py ${TARGET} ${TARGET}.pyx
+	python3 compiler.py ${TARGET} ${TARGET}.pyx
 
 
 .PHONY : clean re
