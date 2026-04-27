@@ -219,6 +219,7 @@ cdef class forbit:
     cdef int  __unit
     cdef int  __shape[DIM_MAX]
     cdef int  __kind
+    cdef int  __is_open
     cdef long long __record
     cdef long long __recstep
     cdef np.ndarray __work
@@ -234,6 +235,7 @@ cdef class forbit:
         cdef int i
         cdef int precision
 
+        self.__is_open = 0
 
         if (isinstance(filename, str)):
             filename = filename.encode("utf-8")
@@ -298,6 +300,8 @@ cdef class forbit:
                     &recl        ,
                     self.__endian)
 
+        self.__is_open = 1
+
         fread_list = [self.fread_sp1,
                       self.fread_dp1,
                       self.fread_sp2,
@@ -334,8 +338,10 @@ cdef class forbit:
 
 
     def close(self):
-        binio_fclose(&self.__unit)
-        self.__unit = -999999
+        if (self.__is_open == 1):
+            binio_fclose(&self.__unit)
+            self.__unit    = -999999
+            self.__is_open = 0
 
 
     def fread_sp1(self):
