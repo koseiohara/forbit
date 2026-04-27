@@ -235,13 +235,13 @@ cdef class forbit:
         cdef int precision
 
 
-        if (len(filename) > FILELEN_MAX):
-            raise ValueError("File name is too long " + filename)
-
         if (isinstance(filename, str)):
             filename = filename.encode("utf-8")
         else:
             raise TypeError("Invalid data type in the argument of forbit : filename")
+
+        if (len(filename) > FILELEN_MAX):
+            raise ValueError("File name is too long " + filename)
 
         if (isinstance(action, str)):
             action = action.lower()
@@ -259,7 +259,7 @@ cdef class forbit:
         else:
             raise TypeError("Invalid data type in the argument of forbit : endian")
 
-        shape_cp   = np.array(shape, dtype=np.intc)
+        shape_cp = np.atleast_1d(np.array(shape, dtype=np.intc))
         shape_size = shape_cp.size
         #shape_cp   = shape_cp[::-1]
 
@@ -307,7 +307,9 @@ cdef class forbit:
                       self.fread_sp4,
                       self.fread_dp4,
                       self.fread_sp5,
-                      self.fread_dp5]
+                      self.fread_dp5,
+                      self.fread_sp6,
+                      self.fread_dp6]
 
         fwrite_list = [self.fwrite_sp1,
                        self.fwrite_dp1,
@@ -318,7 +320,9 @@ cdef class forbit:
                        self.fwrite_sp4,
                        self.fwrite_dp4,
                        self.fwrite_sp5,
-                       self.fwrite_dp5]
+                       self.fwrite_dp5,
+                       self.fwrite_sp6,
+                       self.fwrite_dp6]
 
         precision = kind >> 2
         self.fread  =  fread_list[((shape_size-1)<<1)+precision-1]
