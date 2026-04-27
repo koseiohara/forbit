@@ -241,7 +241,7 @@ cdef class forbit:
             raise TypeError("Invalid data type in the argument of forbit : filename")
 
         if (len(filename) > FILELEN_MAX):
-            raise ValueError("File name is too long " + filename)
+            raise ValueError("File name is too long " + filename.decode("utf-8", "replace")
 
         if (isinstance(action, str)):
             action = action.lower()
