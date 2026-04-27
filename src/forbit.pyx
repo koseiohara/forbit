@@ -262,7 +262,7 @@ cdef class forbit:
             raise TypeError("Invalid data type in the argument of forbit : endian")
 
         shape_raw = np.atleast_1d(np.array(shape))
-        if (not np.issubdtype(shape_raw.dtype, np.integer):
+        if (not np.issubdtype(shape_raw.dtype, np.integer)):
             raise TypeError("Invalid Shape: all elements of shape must be integer value")
         shape_cp = shape_raw.astype(np.intc)
 
