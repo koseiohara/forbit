@@ -261,9 +261,12 @@ cdef class forbit:
         else:
             raise TypeError("Invalid data type in the argument of forbit : endian")
 
-        shape_cp = np.atleast_1d(np.array(shape, dtype=np.intc))
+        shape_raw = np.atleast_1d(np.array(shape))
+        if (not np.issubdtype(shape_raw.dtype, np.integer):
+            raise TypeError("Invalid Shape: all elements of shape must be integer value")
+        shape_cp = shape_raw.astype(np.intc)
+
         shape_size = shape_cp.size
-        #shape_cp   = shape_cp[::-1]
 
         if (shape_size > DIM_MAX or shape_size < 1):
             raise ValueError("Invalid number of dimensions")
@@ -355,7 +358,7 @@ cdef class forbit:
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work
+        return self.__work.copy()
 
 
     def fread_dp1(self):
@@ -369,7 +372,7 @@ cdef class forbit:
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work
+        return self.__work.copy()
         
 
     def fread_sp2(self):
@@ -384,7 +387,7 @@ cdef class forbit:
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work
+        return self.__work.copy()
 
 
     def fread_dp2(self):
@@ -399,7 +402,7 @@ cdef class forbit:
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work
+        return self.__work.copy()
 
 
     def fread_sp3(self):
@@ -415,7 +418,7 @@ cdef class forbit:
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work
+        return self.__work.copy()
 
 
     def fread_dp3(self):
@@ -431,7 +434,7 @@ cdef class forbit:
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work
+        return self.__work.copy()
 
 
     def fread_sp4(self):
@@ -448,7 +451,7 @@ cdef class forbit:
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work
+        return self.__work.copy()
 
 
     def fread_dp4(self):
@@ -465,7 +468,7 @@ cdef class forbit:
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work
+        return self.__work.copy()
 
 
     def fread_sp5(self):
@@ -483,7 +486,7 @@ cdef class forbit:
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work
+        return self.__work.copy()
 
 
     def fread_dp5(self):
@@ -501,7 +504,7 @@ cdef class forbit:
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work
+        return self.__work.copy()
 
 
     def fread_sp6(self):
@@ -520,7 +523,7 @@ cdef class forbit:
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work
+        return self.__work.copy()
 
 
     def fread_dp6(self):
@@ -539,7 +542,7 @@ cdef class forbit:
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work
+        return self.__work.copy()
 
 
     def fwrite_sp1(self, np.ndarray[real_t, ndim=1] arr):
