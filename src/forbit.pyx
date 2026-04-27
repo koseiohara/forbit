@@ -262,10 +262,13 @@ cdef class forbit:
             raise TypeError("Invalid data type in the argument of forbit : endian")
 
         shape_raw = np.atleast_1d(np.array(shape))
+        if (shape_raw.ndim != 1):
+            raise ValueError("Invalid shape: shape must be a 1-dimensional sequence")
+
         if (not np.issubdtype(shape_raw.dtype, np.integer)):
             raise TypeError("Invalid Shape: all elements of shape must be integer value")
-        shape_cp = shape_raw.astype(np.intc)
 
+        shape_cp   = shape_raw.astype(np.intc)
         shape_size = shape_cp.size
 
         if (shape_size > DIM_MAX or shape_size < 1):
