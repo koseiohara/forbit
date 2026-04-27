@@ -283,9 +283,9 @@ cdef class forbit:
 
         if (action == b"read" or action == b"readwrite"):
             if (kind == 4):
-                self.__work = np.empty(self.__shape[:shape_size], dtype=np.float32)
+                self.__work = np.empty(shape_cp, dtype=np.float32)
             elif (kind == 8):
-                self.__work = np.empty(self.__shape[:shape_size], dtype=np.float64)
+                self.__work = np.empty(shape_cp, dtype=np.float64)
         
         self.__kind    = kind
         self.__record  = <long long>record
