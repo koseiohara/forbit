@@ -1,8 +1,9 @@
-extern void binio_fopen(      int*  unit   ,
-                        const char* file   ,
-                        const char* action ,
-                        const int*  recl   ,
-                        const char* endian );
+
+extern void binio_fopen(      int*  unit      ,
+                        const char* file      ,
+                        const char* action    ,
+                        const long long*  recl,
+                        const char* endian    );
 
 
 extern void binio_fclose(const int* unit);
