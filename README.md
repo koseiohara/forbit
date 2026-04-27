@@ -2,7 +2,7 @@
 Programmer : Kosei Ohara  
 
 Direct access binary reader for Python.
-This toolkit is available for up to 3 dimension data, but you can apply this for more than 4 dimension data by simple modification.
+This toolkit is available for up to 6 dimension data.
 
 ## Test Environment
 CentOS Linux 7  
