@@ -199,7 +199,6 @@ cdef extern from "binio.h":
                                 double* output_data);
 
 
-
 ctypedef fused real_t:
     np.float32_t
     np.float64_t
@@ -211,7 +210,7 @@ DEF ENDIANLEN_MAX = 15
 DEF DIM_MAX       = 6
 
 
-cdef class forbit:
+cdef class _ForbitCore:
     
     cdef char __file[FILELEN_MAX+1]
     cdef char __action[ACTIONLEN_MAX+1]
@@ -787,6 +786,13 @@ cdef class forbit:
             return
 
         raise ValueError("In forbit.reset_record()\nAt least one of 'newRecord' or 'increment' must be provided")
+
+
+def open(filename, action, shape, kind, record, recstep, endian):
+    return _ForbitCore(filename, action, shape, kind, record, recstep, endian)
+
+
+forbit = _ForbitCore
 
 
 

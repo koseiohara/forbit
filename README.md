@@ -1,7 +1,7 @@
 # FORtran-based Binary-io Interface Toolkit (FORBIT)
 Programmer : Kosei Ohara  
 
-Direct access binary reader for Python.
+forbit is a Python interface to read/write Fortran direct-access unformatted binary files as NumPy ndarray.
 This toolkit is available for up to 6 dimension data.
 
 ## Test Environment
