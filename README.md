@@ -1,33 +1,46 @@
 # FORtran-based Binary-io Interface Toolkit (FORBIT)
 Programmer : Kosei Ohara  
 
-forbit is a Python interface to read/write Fortran direct-access unformatted binary files as NumPy ndarray, based on Fortran and Cython.
-This toolkit is available for up to 6 dimension data.
+FORBIT is a Python package for reading and writing Fortran direct-access unformatted binary files as NumPy arrays.
+It is designed for no-header binary files whose records are written by Fortran with `ACCESS='DIRECT'` and `FORM='UNFORMATTED'.`
+The Python interface keeps track of the current Fortran record number, reads or writes one fixed-size record at a time, and returns ordinary `numpy.ndarray` objects.
 
-## Test Environment
-CentOS Linux 7  
-Python 3.7.7 :: Intel Corporation  
-Cython 0.29.21  
-NumPy 1.21.6  
+## Features
+- Read and write Fortran direct-access unformatted binary files.
+- Handle no-header fixed-record binary files.
+- Return data as `numpy.ndarray`
+- Support 1D to 6D arrays.
+- Support single precision and double precision floating-point data.
+- Support explicit endian selection through Fortran's `CONVERT` specifier.
+- Keep the current record number internally and update it after each read or write.
 
-Python environment is based on pip  
+## Requirements
+FORBIT is implemented with Python, NumPy, Cython, and Fortran.
+The package metadata declares support for CPython on POSIX/Linux with Python 3.7 to 3.13.  
+Runtime dependency:
+- NumPy
+Build dependencies:
+- setuptools
+- wheel
+- Cython
+- NumPy
+- A Fortran compiler, such as gfortran
+- A C compiler, such as gcc
 
 ## Compile and Path
-To install this library via `pip`:
+### Install from PyPI
 ```shell-session
 $ pip install forbit
 ```
-Enter "make" to compile the source code
-To install via `git clone`:
+### Build from Source
 ```shell-session
 $ git clone https://github.com/koseiohara/forbit.git
 $ cd forbit/src/
 $ make
 $ make install
 ```
-If `git clone` is used, `libbinio.so` and `forbit.cpython-37m-x86_64-linux-gnu.so` will be generated in my environment.
-`make install` will copy these files to the directory specified by `LIB_INSTALL` in the `Makefile`.  
-Note that `LIB_INSTALL` directory need to be added to `$LD_LIBRARY_PATH` by
+When building manually, `make install` copies the generated shared libraries to the directory specified by `LIB_INSTALL` in `src/Makefile`.
+Add that directory to both `PYTHONPATH` and `LD_LIBRARY_PATH` before importing the module.
 ```shell-session
 $ export PYTHONPATH="${YOUR_PATH}:${PYTHONPATH}" 
 $ export LD_LIBRARY_PATH="${YOUR_PATH}:${LD_LIBRARY_PATH}"
@@ -133,71 +146,102 @@ for t in range(nt):
 file.close()
 ```
 
-## Arguments
-### forbit.\_\_init\_\_
-By initializing this class, a binary file will be opened based on the arguments.  
+## API
+### forbit.open()
+```python
+file = forbit.open(filename, action, shape, kind, record, recstep, endian)
+```
+Open a Fortran direct-access unformatted binary file.
+
+#### Parameters
 - filename  
   `type=str`  
   File name of a no-header binary file.  
 - action  
   `type=str`  
-  `'read'` for input, `'write'` for output, or `'readwrite'` for both.  
-  Either lowercase or uppercase characters are acceptable.  
+  File access mode.
+  Accepted values are case-insensitive:
+  - `"read"`
+  - `"write"`
+  - `"readwrite"`
+  The value is passed to the Fortran `OPEN` statement as the `ACTION` specifier.
 - shape  
   `type=ndarray`  
   Other types of array such as `list` and `tuple` may be allowed.  
-  Shape of input/output data.  
-  Shape should be in Row-Major order, unlike Fortran, like `[nz,ny,nx]`.  
+  Shape of one Fortran direct-access record as it should appear on the Python side.  
+  Examples:
+  - For a 1D record: `[nx]`
+  - For a 2D record returned as (ny, nx): `[ny, nx]`
+  - For a 3D record returned as (nz, ny, nx): `[nz, ny, nx]`
+  The shape is given in normal NumPy order.
+  Internally, `FORBIT` reverses the dimensions when calling the Fortran routines so that a Python array shaped like `[nz, ny, nx]` corresponds to a Fortran array shaped like `(nx, ny, nz)` in the low-level read/write routine.  
+  All dimensions must be positive integers.
+  The number of dimensions must be between 1 and 6.
 - kind  
   `type=int`  
-  Kind parameter.  
-  4 for single precision and 8 for double precision.  
-  Quadruple precision is not supported.  
-  Note that this parameter is not for your array, but rather for binary files.
-  When you compute in double precision and output in single precision, `kind=4`.  
+  Floating-point precision of the binary file.  
+  Accepted values:
+  - 4: single precision, returned/written as `numpy.float32`
+  - 8: double precision, returned/written as `numpy.float64`
+  This parameter describes the precision stored in the binary file.
+  When writing, input arrays are converted to the selected precision before being passed to the Fortran write routine.
 - record  
   `type=int`  
-  Initial record to access.
+  Initial Fortran direct-access record number.
+  Record numbers are 1-based, as in Fortran.
 - recstep  
   `type=int`  
+  Increment added to the internal record number after each `fread()` or `fwrite()` call.
   The value to increment record after every access.  
-  If `recstep=0`, record will not be updated.  
+  Examples:
+  - `recstep=1`: read/write consecutive records
+  - `recstep=0`: keep using the same record number
+  - `recstep=12`: jump by 12 records after each access
 - endian  
   `type=str`  
-  Endian of file.  
-  `'little_endian'` or `'big_endian'`.  
-  Either lowercase or uppercase characters are acceptable.  
+  Endian conversion mode passed to Fortran's `CONVERT` specifier.  
+  Accepted values are case-insensitive:
+  - `"little_endian"`
+  - `"big_endian"`
 
-### forbit.close
-Close the file. No argument is needed.
+### close()
+```python
+file.close()
+```
+The file is also closed by the object's destructor, but explicit `close()` is recommended.
 
-### forbit.fread
-Read the file. No argument is needed. The shape of return is the same as specified in `forbit.__init__`.  
-Note that the returned object is Row-Major like `[nz,ny,nx]`.  
-Although various functions, such as `fread_sp1` and `fread_dp2`, are defined in this class, you just need to call `fread` as a suitable fread-related function is chosen in `forbit.__init__`.  
+### fread()
+```python
+arr = file.fread()
+```
+Read the current record and return a NumPy array.
+The returned array has the shape specified by `shape` and dtype determined by `kind`.
+After reading, the internal record number is updated by `recstep`.
 
-### forbit.fwrite
-Write to the file.  
-Note that the array for the argument have to be Row-Major like `[nz,ny,nx]`.  
-Although various functions, such as `fwrite_sp1` and `fwrite_dp2`, are defined in this class, you just need to call `fwrite` as a suitable fread-related function is chosen in `forbit.__init__`.  
-- arr  
-  `type=ndarray`  
-  Output data.  
-  The shape of array must be the same as specified in `forbit.__init__`.  
+### fwrite()
+```python
+file.fwrite(arr)
+```
+The input array must have the same shape as the shape specified when opening the file.
+Before writing, `FORBIT` converts the array to a C-contiguous NumPy array with dtype determined by `kind`.
+After writing, the internal record number is updated by `recstep`.
 
-### forbit.get\_record
-Get the present record. No argument is needed. The type of return will be `int`.  
+### get_record()
+```python
+record = file.get_record()
+```
+Return the current internal record number.
 
-### forbit.reset\_record
-Update the record.  
-To update the record manually, this function have to be called because the record is encapsulated.  
-Two options are available, but if both `newRecord` and `increment` are provided, `increment` value will be ignored.  
-- newRecord  
-  `type=int`  
-  To assign a specific value to record, this parameter can be used. The record will be changed to this value.  
-- increment  
-  `type=int`  
-  To add a specific value to record, this parameter can be used. This value will be added to the previous record.  
+### reset_record(newRecord=None, increment=None)
+```python
+file.reset_record(newRecord=10)
+file.reset_record(increment=3)
+```
+Change the internal record number.  
+If `newRecord` is provided, the internal record number is set to that value.
+If `newRecord` is not provided and `increment` is provided, the internal record number is increased by `increment`.
+If both arguments are provided, `newRecord` takes priority.
+
 
 
 
