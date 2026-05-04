@@ -56,13 +56,13 @@ elif (kind == 8):
 
 arr = np.empty(shape, dtype=arr_type)
 
-file = forbit.open(raw_binary_file ,
-                   action ="read"  ,
-                   shape  =shape   ,
-                   kind   =kind    ,
-                   record =record  ,
+file = forbit.open(raw_binary_file,
+                   action ="read" ,
+                   shape  =shape  ,
+                   kind   =kind   ,
+                   record =record ,
                    recstep=recstep,
-                   endian =endian  )
+                   endian =endian )
 
 nt = 10     ## Number of TImesteps
 # record 1 -> 10
@@ -111,13 +111,13 @@ elif (kind == 8):
 
 arr = np.empty(shape, dtype=arr_type)
 
-file = forbit.open(raw_binary_file ,
-                   action ="write" ,
-                   shape  =shape   ,
-                   kind   =kind    ,
-                   record =record  ,
+file = forbit.open(raw_binary_file,
+                   action ="write",
+                   shape  =shape  ,
+                   kind   =kind   ,
+                   record =record ,
                    recstep=recstep,
-                   endian =endian  )
+                   endian =endian )
 
 rng = np.random.default_rng()       ## Random Generator
 nt = 20     ## Number of TImesteps
