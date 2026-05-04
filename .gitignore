@@ -11,3 +11,5 @@ forbit.c
 build
 test.py
 test_v2
+dist/
+forbit.egg-info

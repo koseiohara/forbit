@@ -13,12 +13,19 @@ NumPy 1.21.6
 Python environment is based on pip  
 
 ## Compile and Path
-Enter "make" to compile the source code
+To install this library via `pip`:
 ```shell-session
+$ pip install forbit
+```
+Enter "make" to compile the source code
+To install via `git clone`:
+```shell-session
+$ git clone https://github.com/koseiohara/forbit.git
+$ cd forbit/src/
 $ make
 $ make install
 ```
-`libbinio.so` and `forbit.cpython-37m-x86_64-linux-gnu.so` will be generated in my environment.
+If `git clone` is used, `libbinio.so` and `forbit.cpython-37m-x86_64-linux-gnu.so` will be generated in my environment.
 `make install` will copy these files to the directory specified by `LIB_INSTALL` in the `Makefile`.  
 Note that `LIB_INSTALL` directory need to be added to `$LD_LIBRARY_PATH` by
 ```shell-session
