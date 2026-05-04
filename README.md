@@ -274,7 +274,7 @@ arr[0:nz,0:ny,0:nx]
 | `kind` | File Precision | Returned dtype |
 |--------|----------------|----------------|
 | `4` | single precision (real32) | `numpy.float32` |
-| `8` | single precision (real64) | `numpy.float64` |
+| `8` | double precision (real64) | `numpy.float64` |
 
 Only floating-point data are supported by the public API.
 Integer, complex, logical, character, and quadruple-precision records are not supported by the current implementation.
