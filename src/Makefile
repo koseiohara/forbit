@@ -1,42 +1,61 @@
 
-FLIB = binio
-TARGET = forbit
+PYTHON = python3
+FC     = gfortran
+CC     = gcc
+CYTHON = cython
 
-FC = gfortran
-FFLAG = -O3 -Wall
+TARGET_NAME = forbit
 
-export CC = gcc
-PC = compiler.py
+EXT_SUFFIX := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))")
+NUMPY_INC  := $(shell $(PYTHON) -c "import numpy; print(numpy.get_include())")
+PY_INC     := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_paths()['include'])")
 
-LIB_INSTALL = ${HOME}/PythonLib/lib
+TARGET = $(TARGET_NAME)$(EXT_SUFFIX)
 
-#%.o : %.f90
-#	${FC} -c $< ${FFLAG} -fPIC
-#
-#%.so : %.o
-#	${FC} -shared -fPIC -o lib$@ $^
-%.so : %.f90
-	${FC} -shared -fPIC -Wl,-rpath,. -o lib$@ $^
+F90_SRC = binio.f90
+PYX_SRC = forbit.pyx
+C_SRC   = $(PYX_SRC:%.pyx=%.c)
 
-all : ${TARGET}
+F90_OBJ = $(F90_SRC:%.f90=%.o)
+C_OBJ   = $(C_SRC:%.c=%.o)
 
-${TARGET} : ${FLIB}.so
-	python3 compiler.py ${TARGET} ${TARGET}.pyx
+OBJS = $(F90_OBJ) $(C_OBJ)
+
+FFLAGS  ?= -O3 -fPIC
+CFLAGS  ?= -O3 -fPIC
+LDFLAGS ?= -shared
+
+%.c : %.pyx
+	$(CYTHON) -3 --embed-positions -o $@ $<
+
+%.o : %.f90
+	$(FC) -c $< $(FFLAGS) -o $@
+
+%.o : %.c
+	$(CC) -c $< $(CFLAGS) -I$(PY_INC) -I$(NUMPY_INC) -o $@
+
+all: $(TARGET)
+
+$(TARGET) : $(OBJS)
+	$(FC) -o $@ $^ $(LDFLAGS)
+
+.PHONY: all clean distclean show
+
+show:
+	@echo "PYTHON     = $(PYTHON)"
+	@echo "FC         = $(FC)"
+	@echo "CC         = $(CC)"
+	@echo "CYTHON     = $(CYTHON)"
+	@echo "EXT_SUFFIX = $(EXT_SUFFIX)"
+	@echo "NUMPY_INC  = $(NUMPY_INC)"
+	@echo "PY_INC     = $(PY_INC)"
+	@echo "TARGET     = $(TARGET)"
+
+clean:
+	rm -f *.o *.mod *.so forbit.c
+
+distclean: clean
+	rm -rf build dist *.egg-info
 
 
-.PHONY : clean re
-
-clean :
-	rm -fv *.mod ${TARGET}.c *.so
-	rm -rfv build
-
-re : clean all
-
-install :
-	cp *.so ${LIB_INSTALL}
-	@ echo "Next Step : Execute the following two commands"
-	@ echo
-	@ echo '    export PYTHONPATH="${LIB_INSTALL}:$${PYTHONPATH}"'
-	@ echo '    export LD_LIBRARY_PATH="${LIB_INSTALL}:$${LD_LIBRARY_PATH}"'
-	@ echo
 
