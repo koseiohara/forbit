@@ -8,8 +8,10 @@ CYTHON = $(PYTHON) -m cython
 TARGET_NAME = forbit
 
 EXT_SUFFIX := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))")
-NUMPY_INC  := $(shell $(PYTHON) -c "import numpy; print(numpy.get_include())")
-PY_INC     := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_paths()['include'])")
+# NUMPY_INC  := $(shell $(PYTHON) -c "import numpy; print(numpy.get_include())")
+# PY_INC     := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_paths()['include'])")
+NP_INC := $(shell $(PYTHON) -c "import numpy; print(numpy.get_include())")
+PY_INCLUDES := $(shell $(PYTHON)-config --includes 2>/dev/null || $(PYTHON) -c "import sysconfig; print('-I' + sysconfig.get_config_var('INCLUDEPY'))")
 
 TARGET = $(TARGET_NAME)$(EXT_SUFFIX)
 
@@ -43,7 +45,7 @@ endif
 	$(FC) -c $< $(FFLAGS) -o $@
 
 %.o : %.c
-	$(CC) -c $< $(CFLAGS) -I$(PY_INC) -I$(NUMPY_INC) -o $@
+	$(CC) -c $< $(CFLAGS) $(PY_INCLUDES) -I$(NP_INC) -o $@
 
 all: $(TARGET)
 
