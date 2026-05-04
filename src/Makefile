@@ -24,15 +24,17 @@ OBJS = $(F90_OBJ) $(C_OBJ)
 
 FFLAGS  ?= -O3 -fPIC
 CFLAGS  ?= -O3 -fPIC
-# LDFLAGS ?= -shared
 
-# UNAME_S := $(shell uname -s)
+UNAME_S := $(shell uname -s)
 
-# ifeq ($(UNAME_S),Darwin)
-#     LDFLAGS := -bundle -undefined dynamic_lookup
-# endif
+ifeq ($(UNAME_S),Darwin)
+	LDFLAGS ?= -bundle -undefined dynamic_lookup
+else
+	LDFLAGS ?= -shared
+endif
 
-LDSHARED := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LDSHARED'))")
+
+# LDSHARED := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LDSHARED'))")
 
 %.c : %.pyx
 	$(CYTHON) -3 --embed-positions -o $@ $<
@@ -46,7 +48,7 @@ LDSHARED := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_v
 all: $(TARGET)
 
 $(TARGET) : $(OBJS)
-	$(LDSHARED) -o $@ $^ $(LDFLAGS)
+	$(FC) -o $@ $^ $(LDFLAGS)
 
 .PHONY: all clean re distclean show
 
