@@ -39,7 +39,7 @@ all: $(TARGET)
 $(TARGET) : $(OBJS)
 	$(FC) -o $@ $^ $(LDFLAGS)
 
-.PHONY: all clean distclean show
+.PHONY: all clean re distclean show
 
 show:
 	@echo "PYTHON     = $(PYTHON)"
@@ -57,5 +57,6 @@ clean:
 distclean: clean
 	rm -rf build dist *.egg-info
 
+re: clean all
 
 
