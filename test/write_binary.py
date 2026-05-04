@@ -29,7 +29,7 @@ file = forbit.open(raw_binary_file ,
 
 rng = np.random.default_rng()       ## Random Generator
 nt = 20     ## Number of TImesteps
-# record 1 -> 10
+# record 1 -> 20
 for t in range(nt):
     print(f"Record: {file.get_record()}")
 

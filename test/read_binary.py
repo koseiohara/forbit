@@ -29,7 +29,7 @@ file = forbit.open(raw_binary_file ,
                    endian =endian  )
 
 nt = 10     ## Number of TImesteps
-# record 1 -> 100
+# record 1 -> 10
 for t in range(nt):
     print(f"Record: {file.get_record()}")
 
@@ -41,7 +41,7 @@ for t in range(nt):
 record = 16
 nt = 5      ## Number of TImesteps
 file.reset_record(newRecord=record)
-# record 300 -> 399
+# record 16 -> 20
 for t in range(nt):
     print(f"Record: {file.get_record()}")
 
