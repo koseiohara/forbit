@@ -2,6 +2,7 @@
 
 # setup.py
 
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -39,8 +40,34 @@ class ForbitBuildExt(build_ext):
 
         shutil.copy2(built, ext_path)
 
+def read_project_metadata():
+    text = Path("pyproject.toml").read_text(encoding="utf-8")
+
+    project_match = re.search(
+        r"(?ms)^\[project\]\s*(.*?)(?=^\[|\Z)",
+        text,
+    )
+    if project_match is None:
+        raise RuntimeError("Could not find [project] section in pyproject.toml")
+
+    project_text = project_match.group(1)
+
+    name_match = re.search(r'(?m)^name\s*=\s*"([^"]+)"\s*$', project_text)
+    version_match = re.search(r'(?m)^version\s*=\s*"([^"]+)"\s*$', project_text)
+
+    if name_match is None:
+        raise RuntimeError("Could not find project.name in pyproject.toml")
+    if version_match is None:
+        raise RuntimeError("Could not find project.version in pyproject.toml")
+
+    return name_match.group(1), version_match.group(1)
+
+proj_name, proj_version = read_project_metadata()
+# print(f"{proj_name} version{proj_version}")
 
 setup(
+    name=proj_name,
+    version=proj_version,
     ext_modules=[
         Extension("forbit", sources=[]),
     ],
@@ -48,3 +75,6 @@ setup(
         "build_ext": ForbitBuildExt,
     },
 )
+
+
+

@@ -15,8 +15,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "forbit"
-version = "1.0.1"
-description = "Direct access binary reader/writer for Python"
+version = "1.0.2"
+description = "Fortran based direct access binary reader/writer for Python"
 readme = "README.md"
 requires-python = ">=3.7,<3.14"
 license = "BSD-3-Clause"
