@@ -7,6 +7,5 @@ include LICENSE
 include src/Makefile
 include src/*.pyx
 include src/*.f90
-include src/*.pxd
 include src/*.h
 
