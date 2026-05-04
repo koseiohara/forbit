@@ -19,7 +19,8 @@ version = "1.0.0"
 description = "Direct access binary reader/writer for Python"
 readme = "README.md"
 requires-python = ">=3.7,<3.14"
-license = { text = "MIT" }
+license = { text = "BSD-3-Clause" }
+license-files = ["LICENSE"]
 authors = [
     { name = "Kosei Ohara" }
 ]
@@ -34,6 +35,7 @@ dependencies = [
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",

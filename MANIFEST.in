@@ -2,6 +2,7 @@
 include README.md
 include pyproject.toml
 include setup.py
+include LICENSE
 
 include src/Makefile
 include src/*.pyx
