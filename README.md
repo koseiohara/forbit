@@ -6,19 +6,21 @@ It is designed for no-header binary files whose records are written by Fortran w
 The Python interface keeps track of the current Fortran record number, reads or writes one fixed-size record at a time, and returns ordinary `numpy.ndarray` objects.
 
 ## Features
-- Read and write Fortran direct-access unformatted binary files.
-- Handle no-header fixed-record binary files.
+- Read and write Fortran direct-access unformatted binary files
+- Handle no-header fixed-record binary files
 - Return data as `numpy.ndarray`
-- Support 1D to 6D arrays.
-- Support single precision and double precision floating-point data.
-- Support explicit endian selection through Fortran's `CONVERT` specifier.
-- Keep the current record number internally and update it after each read or write.
+- Support 1D to 6D arrays
+- Support single precision and double precision floating-point data
+- Support explicit endian selection through Fortran's `CONVERT` specifier
+- Keep the current record number internally and update it after each read or write
 
 ## Requirements
 FORBIT is implemented with Python, NumPy, Cython, and Fortran.
 The package metadata declares support for CPython on POSIX/Linux with Python 3.7 to 3.13.  
+
 Runtime dependency:
-- NumPy
+- NumPy  
+
 Build dependencies:
 - setuptools
 - wheel
@@ -147,7 +149,7 @@ file.close()
 ```
 
 ## API
-### forbit.open()
+### `forbit.open()`
 ```python
 file = forbit.open(filename, action, shape, kind, record, recstep, endian)
 ```
@@ -163,7 +165,7 @@ Open a Fortran direct-access unformatted binary file.
   Accepted values are case-insensitive:
   - `"read"`
   - `"write"`
-  - `"readwrite"`
+  - `"readwrite"`  
   The value is passed to the Fortran `OPEN` statement as the `ACTION` specifier.
 - shape  
   `type=ndarray`  
@@ -172,7 +174,7 @@ Open a Fortran direct-access unformatted binary file.
   Examples:
   - For a 1D record: `[nx]`
   - For a 2D record returned as (ny, nx): `[ny, nx]`
-  - For a 3D record returned as (nz, ny, nx): `[nz, ny, nx]`
+  - For a 3D record returned as (nz, ny, nx): `[nz, ny, nx]`  
   The shape is given in normal NumPy order.
   Internally, `FORBIT` reverses the dimensions when calling the Fortran routines so that a Python array shaped like `[nz, ny, nx]` corresponds to a Fortran array shaped like `(nx, ny, nz)` in the low-level read/write routine.  
   All dimensions must be positive integers.
@@ -182,7 +184,7 @@ Open a Fortran direct-access unformatted binary file.
   Floating-point precision of the binary file.  
   Accepted values:
   - 4: single precision, returned/written as `numpy.float32`
-  - 8: double precision, returned/written as `numpy.float64`
+  - 8: double precision, returned/written as `numpy.float64`  
   This parameter describes the precision stored in the binary file.
   When writing, input arrays are converted to the selected precision before being passed to the Fortran write routine.
 - record  
@@ -196,21 +198,21 @@ Open a Fortran direct-access unformatted binary file.
   Examples:
   - `recstep=1`: read/write consecutive records
   - `recstep=0`: keep using the same record number
-  - `recstep=12`: jump by 12 records after each access
+  - `recstep=12`: jump by 12 records after each access  
 - endian  
   `type=str`  
   Endian conversion mode passed to Fortran's `CONVERT` specifier.  
   Accepted values are case-insensitive:
   - `"little_endian"`
-  - `"big_endian"`
+  - `"big_endian"`  
 
-### close()
+### `close()`
 ```python
 file.close()
 ```
 The file is also closed by the object's destructor, but explicit `close()` is recommended.
 
-### fread()
+### `fread()`
 ```python
 arr = file.fread()
 ```
@@ -218,7 +220,7 @@ Read the current record and return a NumPy array.
 The returned array has the shape specified by `shape` and dtype determined by `kind`.
 After reading, the internal record number is updated by `recstep`.
 
-### fwrite()
+### `fwrite()`
 ```python
 file.fwrite(arr)
 ```
@@ -226,13 +228,13 @@ The input array must have the same shape as the shape specified when opening the
 Before writing, `FORBIT` converts the array to a C-contiguous NumPy array with dtype determined by `kind`.
 After writing, the internal record number is updated by `recstep`.
 
-### get_record()
+### `get_record()`
 ```python
 record = file.get_record()
 ```
 Return the current internal record number.
 
-### reset_record(newRecord=None, increment=None)
+### `reset_record(newRecord=None, increment=None)`
 ```python
 file.reset_record(newRecord=10)
 file.reset_record(increment=3)
@@ -242,8 +244,45 @@ If `newRecord` is provided, the internal record number is set to that value.
 If `newRecord` is not provided and `increment` is provided, the internal record number is increased by `increment`.
 If both arguments are provided, `newRecord` takes priority.
 
+## File Format
+`FORBIT` assumes that the file is a Fortran direct-access unformatted file with fixed-size records.  
+For one record, the record length used internally is computed from shape and `kind`:
+```python
+recl = kind * product(shape)
+```
+This value is passed to the Fortran `OPEN` statement as `RECL`.  
+The file is opened in Fortran with settings equivalent to:
+```fortran
+open(newunit=unit, file=..., action=..., form='unformatted', access='direct', recl=..., convert=...)
+```
 
+## Dimension Ordering
+`FORBIT`'s public Python API uses NumPy-style shapes.  
+For example, if a Fortran program writes a 3D array as `(nx, ny, nz)`, the corresponding Python shape should normally be written as:
+```python
+shape = [nz, ny, nx]
+```
+This convention makes the returned NumPy array natural to index as:
+```python
+arr[0:nz,0:ny,0:nx]
+```
 
+## Precision and Dtype
+| `kind` | File Precision | Returned dtype |
+|--------|----------------|----------------|
+| `4` | single precision (real32) | `numpy.float32` |
+| `8` | single precision (real64) | `numpy.float64` |
+Only floating-point data are supported by the public API.
+Integer, complex, logical, character, and quadruple-precision records are not supported by the current implementation.
+
+## Record Handling
+The current record number is stored inside the `forbit` object.
+Each call to `fread()` or `fwrite()` uses the current record number and then updates it as follows:
+```python
+record = record + recstep
+```
+Fortran direct-access record numbers are positive and 1-based.
+The low-level Fortran routines stop with an error if a non-positive record number is used.
 
 
 
