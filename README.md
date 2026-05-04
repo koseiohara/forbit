@@ -40,10 +40,10 @@ import numpy as np
 import forbit
 
 raw_binary_file = "sample.grd"
-nx = 300
-ny = 151
-nz = 50
-shape   = [nz,ny,nz]
+nx = 3
+ny = 4
+nz = 2
+shape   = [nz,ny,nx]
 kind    = 4                 ## Kind Parameter
 endian  = "little_endian"   ## Endian of the Target File
 record  = 1                 ## Initial Record
@@ -64,21 +64,28 @@ file = forbit.open(raw_binary_file ,
                    recstep=recstep,
                    endian =endian  )
 
-nt = 100    ## Number of TImesteps
+nt = 10     ## Number of TImesteps
 # record 1 -> 100
 for t in range(nt):
+    print(f"Record: {file.get_record()}")
+
     arr[:,:,:] = file.fread()
     ## Write any processes here
 
-record = 300
-nt = 100    ## Number of TImesteps
+    print(f"{arr[:,:,:]}\n")
+
+record = 16
+nt = 5      ## Number of TImesteps
 file.reset_record(newRecord=record)
 # record 300 -> 399
 for t in range(nt):
+    print(f"Record: {file.get_record()}")
+
     arr[:,:,:] = file.fread()
     ## Write any processes here
 
-print(f"Current Record: {file.get_record()}")
+    print(f"{arr[:,:,:]}\n")
+
 file.close()
 ```
 
@@ -88,10 +95,10 @@ import numpy as np
 import forbit
 
 raw_binary_file = "sample.grd"
-nx = 300
-ny = 151
-nz = 50
-shape   = [nz,ny,nz]
+nx = 3
+ny = 4
+nz = 2
+shape   = [nz,ny,nx]
 kind    = 4                 ## Kind Parameter
 endian  = "little_endian"   ## Endian of the Target File
 record  = 1                 ## Initial Record
@@ -113,11 +120,15 @@ file = forbit.open(raw_binary_file ,
                    endian =endian  )
 
 rng = np.random.default_rng()       ## Random Generator
-nt = 500    ## Number of TImesteps
-# record 1 -> 500
+nt = 20     ## Number of TImesteps
+# record 1 -> 10
 for t in range(nt):
+    print(f"Record: {file.get_record()}")
+
     arr[:,:,:] = rng.random(shape)
     file.fwrite(arr[:,:,:])
+
+    print(f"{arr[:,:,:]}\n")
 
 file.close()
 ```
