@@ -2,7 +2,8 @@
 PYTHON = python3
 FC     = gfortran
 CC     = gcc
-CYTHON = cython
+# CYTHON = cython
+CYTHON = $(PYTHON) -m cython
 
 TARGET_NAME = forbit
 
@@ -23,7 +24,15 @@ OBJS = $(F90_OBJ) $(C_OBJ)
 
 FFLAGS  ?= -O3 -fPIC
 CFLAGS  ?= -O3 -fPIC
-LDFLAGS ?= -shared
+# LDFLAGS ?= -shared
+
+# UNAME_S := $(shell uname -s)
+
+# ifeq ($(UNAME_S),Darwin)
+#     LDFLAGS := -bundle -undefined dynamic_lookup
+# endif
+
+LDSHARED := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LDSHARED'))")
 
 %.c : %.pyx
 	$(CYTHON) -3 --embed-positions -o $@ $<
@@ -37,7 +46,7 @@ LDFLAGS ?= -shared
 all: $(TARGET)
 
 $(TARGET) : $(OBJS)
-	$(FC) -o $@ $^ $(LDFLAGS)
+	$(LDSHARED) -o $@ $^ $(LDFLAGS)
 
 .PHONY: all clean re distclean show
 

@@ -21,7 +21,9 @@ class ForbitBuildExt(build_ext):
             cwd=src,
         )
 
-        super().run()
+        for ext in self.extensions:
+            self.build_extension(ext)
+
 
     def build_extension(self, ext):
         root = Path(__file__).parent.resolve()
@@ -33,10 +35,7 @@ class ForbitBuildExt(build_ext):
         built = src / ext_path.name
 
         if not built.exists():
-            candidates = sorted(src.glob("forbit*.so"))
-            if not candidates:
-                raise RuntimeError("Could not find built forbit extension module.")
-            built = candidates[0]
+            raise RuntimeError(f"Could not find built extension module: {built}")
 
         shutil.copy2(built, ext_path)
 
@@ -49,7 +48,3 @@ setup(
         "build_ext": ForbitBuildExt,
     },
 )
-
-
-
-
