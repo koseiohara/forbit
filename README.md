@@ -166,6 +166,7 @@ Open a Fortran direct-access unformatted binary file.
   - `"read"`
   - `"write"`
   - `"readwrite"`  
+
   The value is passed to the Fortran `OPEN` statement as the `ACTION` specifier.
 - shape  
   `type=ndarray`  
@@ -175,6 +176,7 @@ Open a Fortran direct-access unformatted binary file.
   - For a 1D record: `[nx]`
   - For a 2D record returned as (ny, nx): `[ny, nx]`
   - For a 3D record returned as (nz, ny, nx): `[nz, ny, nx]`  
+
   The shape is given in normal NumPy order.
   Internally, `FORBIT` reverses the dimensions when calling the Fortran routines so that a Python array shaped like `[nz, ny, nx]` corresponds to a Fortran array shaped like `(nx, ny, nz)` in the low-level read/write routine.  
   All dimensions must be positive integers.
@@ -185,6 +187,7 @@ Open a Fortran direct-access unformatted binary file.
   Accepted values:
   - 4: single precision, returned/written as `numpy.float32`
   - 8: double precision, returned/written as `numpy.float64`  
+
   This parameter describes the precision stored in the binary file.
   When writing, input arrays are converted to the selected precision before being passed to the Fortran write routine.
 - record  
@@ -272,6 +275,7 @@ arr[0:nz,0:ny,0:nx]
 |--------|----------------|----------------|
 | `4` | single precision (real32) | `numpy.float32` |
 | `8` | single precision (real64) | `numpy.float64` |
+
 Only floating-point data are supported by the public API.
 Integer, complex, logical, character, and quadruple-precision records are not supported by the current implementation.
 
