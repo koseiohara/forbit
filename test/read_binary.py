@@ -42,7 +42,7 @@ for kind in [4, 8]:         ## Kind Parameter
 
             arr[...] = file.fread()
             # print(f"{arr[...]}\n")
-            print(f"{"":4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
+            print(f"{'':4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
 
         increment = 3
         nt = 5      ## Number of Timesteps
@@ -53,7 +53,7 @@ for kind in [4, 8]:         ## Kind Parameter
 
             arr[...] = file.fread()
             # print(f"{arr[...]}\n")
-            print(f"{"":4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
+            print(f"{'':4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
 
         newrecord = 16
         nt = 5      ## Number of Timesteps
@@ -64,7 +64,7 @@ for kind in [4, 8]:         ## Kind Parameter
 
             arr[...] = file.fread()
             # print(f"{arr[...]}\n")
-            print(f"{"":4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
+            print(f"{'':4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
 
         file.close()
         print(f"dim={ndim}: COMPLETE\n")

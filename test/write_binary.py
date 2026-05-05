@@ -2,8 +2,11 @@
 ### Write to sample.grd ###
 import numpy as np
 import forbit
+import os
 
 from get_info import get_shape, get_filename
+
+os.makedirs("binary", exist_ok=True)
 
 ndim_max = 6
 endian   = "little_endian"      ## Endian of the Target File
@@ -45,7 +48,7 @@ for kind in [4, 8]:         ## Kind Parameter
             arr[...] = rng.random(shape)
             file.fwrite(arr[...])
             # print(f"{arr[...]}\n")
-            print(f"{"":4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
+            print(f"{'':4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
 
         file.close()
         print(f"dim={ndim}: COMPLETE\n")
