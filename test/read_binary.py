@@ -3,53 +3,73 @@
 import numpy as np
 import forbit
 
-raw_binary_file = "sample.grd"
-nx = 3
-ny = 4
-nz = 2
-shape   = [nz,ny,nx]
-kind    = 4                 ## Kind Parameter
-endian  = "little_endian"   ## Endian of the Target File
-record  = 1                 ## Initial Record
-recstep = 1                 ## Record Increment
+from get_info import get_shape, get_filename
 
-if (kind == 4):
-    arr_type = np.float32
-elif (kind == 8):
-    arr_type = np.float64
+ndim_max = 6
+endian   = "little_endian"      ## Endian of the Target File
+record   = 1                    ## Initial Record
+recstep  = 1                    ## Record Increment
 
-arr = np.empty(shape, dtype=arr_type)
+for kind in [4, 8]:         ## Kind Parameter
+    print(f"kind={kind}")
+    for ndim in range(1, ndim_max+1):       ## Dimension
+        print(f"dim={ndim}")
 
-file = forbit.open(raw_binary_file,
-                   action ="read" ,
-                   shape  =shape  ,
-                   kind   =kind   ,
-                   record =record ,
-                   recstep=recstep,
-                   endian =endian )
+        shape = get_shape(ndim)
+        raw_binary_file = get_filename(ndim, kind)
 
-nt = 10     ## Number of TImesteps
-# record 1 -> 10
-for t in range(nt):
-    print(f"Record: {file.get_record()}")
+        print(f"shape={shape}")
 
-    arr[:,:,:] = file.fread()
-    ## Write any processes here
+        if (kind == 4):
+            arr_type = np.float32
+        elif (kind == 8):
+            arr_type = np.float64
 
-    print(f"{arr[:,:,:]}\n")
+        arr = np.empty(shape, dtype=arr_type)
 
-record = 16
-nt = 5      ## Number of TImesteps
-file.reset_record(newRecord=record)
-# record 16 -> 20
-for t in range(nt):
-    print(f"Record: {file.get_record()}")
+        file = forbit.open(raw_binary_file,
+                           action ="read" ,
+                           shape  =shape  ,
+                           kind   =kind   ,
+                           record =record ,
+                           recstep=recstep,
+                           endian =endian )
 
-    arr[:,:,:] = file.fread()
-    ## Write any processes here
+        nt = 5      ## Number of Timesteps
+        # record 1 -> 10
+        for t in range(nt):
+            print(f"Record: {file.get_record()}")
 
-    print(f"{arr[:,:,:]}\n")
+            arr[...] = file.fread()
+            # print(f"{arr[...]}\n")
+            print(f"{"":4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
 
-file.close()
+        increment = 3
+        nt = 5      ## Number of Timesteps
+        file.reset_record(increment=increment)
+        # record 1 -> 10
+        for t in range(nt):
+            print(f"Record: {file.get_record()}")
 
+            arr[...] = file.fread()
+            # print(f"{arr[...]}\n")
+            print(f"{"":4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
+
+        newrecord = 16
+        nt = 5      ## Number of Timesteps
+        file.reset_record(newRecord=newrecord)
+        # record 16 -> 20
+        for t in range(nt):
+            print(f"Record: {file.get_record()}")
+
+            arr[...] = file.fread()
+            # print(f"{arr[...]}\n")
+            print(f"{"":4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
+
+        file.close()
+        print(f"dim={ndim}: COMPLETE\n")
+
+    print(f"kind={kind}: COMPLETE\n")
+
+print("TEST COMPLETED")
 

@@ -13,3 +13,5 @@ test.py
 test_v2
 dist/
 forbit.egg-info
+/test/result_read.txt
+/test/result_write.txt
