@@ -82,8 +82,20 @@ file = forbit.open(raw_binary_file,
                    recstep=recstep,
                    endian =endian )
 
-nt = 20     ## Number of Timesteps
-# record 1 -> 20
+nt = 10     ## Number of Timesteps
+# record 1 -> 10
+for t in range(nt):
+    print(f"Record: {file.get_record()}")
+
+    arr[:,:,:] = file.fread()
+    ## Write any processes here
+
+    print(f"{arr[:,:,:]}\n")
+
+record = 16
+nt = 5      ## Number of Timesteps
+file.reset_record(newRecord=record)
+# record 16 -> 20
 for t in range(nt):
     print(f"Record: {file.get_record()}")
 
