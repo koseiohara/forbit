@@ -1,15 +1,15 @@
 # FORtran-based Binary-io Interface Toolkit (FORBIT)
 Programmer: Kosei Ohara  
 
-`FORBIT` is a Python package for reading and writing Fortran direct-access unformatted binary files as NumPy arrays.
+FORBIT is a Python package for reading and writing Fortran direct-access unformatted binary files as NumPy arrays.
 It is designed for no-header binary files whose records are written by Fortran with `ACCESS='DIRECT'` and `FORM='UNFORMATTED'`.
 The Python interface keeps track of the current Fortran record number, reads or writes one fixed-size record at a time, and returns ordinary `numpy.ndarray` objects.  
 
-`FORBIT` brings lightweight direct-access binary I/O to NumPy ndarrays while keeping a workflow familiar to Fortran users.
+FORBIT brings lightweight direct-access binary I/O to NumPy ndarrays while keeping a workflow familiar to Fortran users.
 
 ## Features
 - Read and write Fortran direct-access unformatted binary files
-- Handle no-header fixed-record binary files
+- Handle no-header fixed-record binary files with explicit Fortran-style workflows
 - Return data as `numpy.ndarray`
 - Support 1D to 6D arrays
 - Support single precision and double precision floating-point data
@@ -17,7 +17,7 @@ The Python interface keeps track of the current Fortran record number, reads or 
 - Keep the current record number internally and update it after each read or write
 
 ## Requirements
-`FORBIT` is implemented with Python, NumPy, Cython, and Fortran.
+FORBIT is implemented with Python, NumPy, Cython, and Fortran.
 The package metadata declares support for CPython on POSIX/Linux with Python 3.7 to 3.13.  
 
 Runtime dependency:
@@ -180,7 +180,7 @@ Open a Fortran direct-access unformatted binary file.
   - For a 3D record returned as (nz, ny, nx): `[nz, ny, nx]`  
 
   The shape is given in normal NumPy order.
-  Internally, `FORBIT` reverses the dimensions when calling the Fortran routines so that a Python array shaped like `[nz, ny, nx]` corresponds to a Fortran array shaped like `(nx, ny, nz)` in the low-level read/write routine.  
+  Internally, FORBIT reverses the dimensions when calling the Fortran routines so that a Python array shaped like `[nz, ny, nx]` corresponds to a Fortran array shaped like `(nx, ny, nz)` in the low-level read/write routine.  
   All dimensions must be positive integers.
   The number of dimensions must be between 1 and 6.
 - kind  
@@ -230,7 +230,7 @@ After reading, the internal record number is updated by `recstep`.
 file.fwrite(arr)
 ```
 The input array must have the same shape as the shape specified when opening the file.
-Before writing, `FORBIT` converts the array to a C-contiguous NumPy array with dtype determined by `kind`.
+Before writing, FORBIT converts the array to a C-contiguous NumPy array with dtype determined by `kind`.
 After writing, the internal record number is updated by `recstep`.
 
 ### `get_record()`
@@ -250,7 +250,7 @@ If `newRecord` is not provided and `increment` is provided, the internal record 
 If both arguments are provided, `newRecord` takes priority.
 
 ## File Format
-`FORBIT` assumes that the file is a Fortran direct-access unformatted file with fixed-size records.  
+FORBIT assumes that the file is a Fortran direct-access unformatted file with fixed-size records.  
 For one record, the record length used internally is computed from shape and `kind`:
 ```python
 recl = kind * product(shape)
@@ -262,7 +262,7 @@ open(newunit=unit, file=..., action=..., form='unformatted', access='direct', re
 ```
 
 ## Dimension Ordering
-`FORBIT`'s public Python API uses NumPy-style shapes.  
+FORBIT's public Python API uses NumPy-style shapes.  
 For example, if a Fortran program writes a 3D array as `(nx, ny, nz)`, the corresponding Python shape should normally be written as:
 ```python
 shape = [nz, ny, nx]
@@ -293,13 +293,13 @@ The low-level Fortran routines stop with an error if a non-positive record numbe
 ## Alternatives
 ### scipy.io.FortranFile
 Sequential unformatted Fortran binary I/O with record markers.
-`FORBIT` instead targets lightweight direct-access binary workflows.
+FORBIT instead targets lightweight direct-access binary workflows.
 
 ### numpy.memmap
 Low-level memory-mapped access to raw binary arrays.
-`FORBIT` adds explicit record-oriented direct-access I/O.
+FORBIT adds explicit record-oriented direct-access I/O.
 
 ### xgrads
 xgrads provides higher-level GrADS/xarray workflows with metadata handling.
-`FORBIT` instead focuses on lightweight direct-access binary I/O with explicit Fortran-style workflows for NumPy arrays.
+FORBIT instead focuses on lightweight direct-access binary I/O with explicit Fortran-style workflows for NumPy arrays.
 
