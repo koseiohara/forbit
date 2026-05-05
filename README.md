@@ -79,7 +79,7 @@ file = forbit.open(raw_binary_file,
                    recstep=recstep,
                    endian =endian )
 
-nt = 10     ## Number of TImesteps
+nt = 10     ## Number of Timesteps
 # record 1 -> 10
 for t in range(nt):
     print(f"Record: {file.get_record()}")
@@ -90,7 +90,7 @@ for t in range(nt):
     print(f"{arr[:,:,:]}\n")
 
 record = 16
-nt = 5      ## Number of TImesteps
+nt = 5      ## Number of Timesteps
 file.reset_record(newRecord=record)
 # record 16 -> 20
 for t in range(nt):
@@ -135,7 +135,7 @@ file = forbit.open(raw_binary_file,
                    endian =endian )
 
 rng = np.random.default_rng()       ## Random Generator
-nt = 20     ## Number of TImesteps
+nt = 20     ## Number of Timesteps
 # record 1 -> 20
 for t in range(nt):
     print(f"Record: {file.get_record()}")
