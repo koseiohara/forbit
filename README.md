@@ -26,8 +26,11 @@ Build dependencies:
 - wheel
 - Cython
 - NumPy
-- A Fortran compiler, such as gfortran
-- A C compiler, such as gcc
+- A Fortran compiler (default: gfortran)
+- A C compiler (default: gcc)
+- Makefile
+
+The Fortran/C compilers can be configured in `src/Makefile`.
 
 ## Compile and Path
 ### Install from PyPI
