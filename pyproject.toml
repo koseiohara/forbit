@@ -15,7 +15,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "forbit"
-version = "1.0.6"
+version = "1.0.7"
 description = "Lightweight direct-access binary I/O for NumPy arrays, based on Fortran and Cython"
 readme = "README.md"
 requires-python = ">=3.7,<3.14"
@@ -48,7 +48,7 @@ dependencies = [
     "numpy>=2.1.0; python_version >= '3.13' and python_version < '3.14'"
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.7",
