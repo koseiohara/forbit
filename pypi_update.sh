@@ -43,7 +43,7 @@ git status --short
 echo
 echo "If the version, test, and git status are OK, upload with:"
 echo
-echo "    python -m twine upload dist/*"
+echo "    python -m twine upload --verbose dist/*"
 echo
 echo "[7/7] Done. PyPI upload is intentionally manual."
 
