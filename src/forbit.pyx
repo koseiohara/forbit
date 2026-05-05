@@ -223,8 +223,8 @@ cdef class _ForbitCore:
     cdef long long __recstep
     cdef np.ndarray __work
 
-    cdef public object fread
-    cdef public object fwrite
+    cdef public object read
+    cdef public object write
 
 
     def __init__(self, filename, action, object shape, const int kind, const int record, const int recstep, endian):
@@ -334,8 +334,8 @@ cdef class _ForbitCore:
                        self.fwrite_dp6]
 
         precision = kind >> 2
-        self.fread  =  fread_list[((shape_size-1)<<1)+precision-1]
-        self.fwrite = fwrite_list[((shape_size-1)<<1)+precision-1]
+        self.read  =  fread_list[((shape_size-1)<<1)+precision-1]
+        self.write = fwrite_list[((shape_size-1)<<1)+precision-1]
 
 
     def __del__(self):

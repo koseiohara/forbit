@@ -40,7 +40,7 @@ for kind in [4, 8]:         ## Kind Parameter
         for t in range(nt):
             print(f"Record: {file.get_record()}")
 
-            arr[...] = file.fread()
+            arr[...] = file.read()
             # print(f"{arr[...]}\n")
             print(f"{'':4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
 
@@ -51,7 +51,7 @@ for kind in [4, 8]:         ## Kind Parameter
         for t in range(nt):
             print(f"Record: {file.get_record()}")
 
-            arr[...] = file.fread()
+            arr[...] = file.read()
             # print(f"{arr[...]}\n")
             print(f"{'':4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
 
@@ -62,7 +62,7 @@ for kind in [4, 8]:         ## Kind Parameter
         for t in range(nt):
             print(f"Record: {file.get_record()}")
 
-            arr[...] = file.fread()
+            arr[...] = file.read()
             # print(f"{arr[...]}\n")
             print(f"{'':4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
 

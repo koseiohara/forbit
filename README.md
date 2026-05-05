@@ -87,7 +87,7 @@ nt = 10     ## Number of Timesteps
 for t in range(nt):
     print(f"Record: {file.get_record()}")
 
-    arr[:,:,:] = file.fread()
+    arr[:,:,:] = file.read()
     ## Write any processes here
 
     print(f"{arr[:,:,:]}\n")
@@ -99,7 +99,7 @@ file.reset_record(newRecord=record)
 for t in range(nt):
     print(f"Record: {file.get_record()}")
 
-    arr[:,:,:] = file.fread()
+    arr[:,:,:] = file.read()
     ## Write any processes here
 
     print(f"{arr[:,:,:]}\n")
@@ -144,7 +144,7 @@ for t in range(nt):
     print(f"Record: {file.get_record()}")
 
     arr[:,:,:] = rng.random(shape)
-    file.fwrite(arr[:,:,:])
+    file.write(arr[:,:,:])
 
     print(f"{arr[:,:,:]}\n")
 
@@ -199,7 +199,7 @@ Open a Fortran direct-access unformatted binary file.
   Record numbers are 1-based, as in Fortran.
 - recstep  
   `type=int`  
-  Increment added to the internal record number after each `fread()` or `fwrite()` call.
+  Increment added to the internal record number after each `read()` or `write()` call.
   The value to increment record after every access.  
   Examples:
   - `recstep=1`: read/write consecutive records
@@ -218,17 +218,17 @@ file.close()
 ```
 The file is also closed by the object's destructor, but explicit `close()` is recommended.
 
-### `fread()`
+### `read()`
 ```python
-arr = file.fread()
+arr = file.read()
 ```
 Read the current record and return a NumPy array.
 The returned array has the shape specified by `shape` and dtype determined by `kind`.
 After reading, the internal record number is updated by `recstep`.
 
-### `fwrite()`
+### `write()`
 ```python
-file.fwrite(arr)
+file.write(arr)
 ```
 The input array must have the same shape as the shape specified when opening the file.
 Before writing, FORBIT converts the array to a C-contiguous NumPy array with dtype determined by `kind`.
@@ -284,7 +284,7 @@ Integer, complex, logical, character, and quadruple-precision records are not su
 
 ## Record Handling
 The current record number is stored inside the `forbit` object.
-Each call to `fread()` or `fwrite()` uses the current record number and then updates it as follows:
+Each call to `read()` or `write()` uses the current record number and then updates it as follows:
 ```python
 record = record + recstep
 ```

@@ -46,7 +46,7 @@ for kind in [4, 8]:         ## Kind Parameter
             print(f"Record: {file.get_record()}")
 
             arr[...] = rng.random(shape)
-            file.fwrite(arr[...])
+            file.write(arr[...])
             # print(f"{arr[...]}\n")
             print(f"{'':4s}MIN={np.min(arr):0.15f}-{np.max(arr):0.15f}")
 
