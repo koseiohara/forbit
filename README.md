@@ -1,9 +1,11 @@
 # FORtran-based Binary-io Interface Toolkit (FORBIT)
-Programmer : Kosei Ohara  
+Programmer: Kosei Ohara  
 
 `FORBIT` is a Python package for reading and writing Fortran direct-access unformatted binary files as NumPy arrays.
 It is designed for no-header binary files whose records are written by Fortran with `ACCESS='DIRECT'` and `FORM='UNFORMATTED'`.
-The Python interface keeps track of the current Fortran record number, reads or writes one fixed-size record at a time, and returns ordinary `numpy.ndarray` objects.
+The Python interface keeps track of the current Fortran record number, reads or writes one fixed-size record at a time, and returns ordinary `numpy.ndarray` objects.  
+
+`FORBIT` brings lightweight direct-access binary I/O to NumPy ndarrays while keeping a workflow familiar to Fortran users.
 
 ## Features
 - Read and write Fortran direct-access unformatted binary files
@@ -288,5 +290,16 @@ record = record + recstep
 Fortran direct-access record numbers are positive and 1-based.
 The low-level Fortran routines stop with an error if a non-positive record number is used.
 
+## Alternatives
+### scipy.io.FortranFile
+Sequential unformatted Fortran binary I/O with record markers.
+`FORBIT` instead targets lightweight direct-access binary workflows.
 
+### numpy.memmap
+Low-level memory-mapped access to raw binary arrays.
+`FORBIT` adds explicit record-oriented direct-access I/O.
+
+### xgrads
+xgrads provides higher-level GrADS/xarray workflows with metadata handling.
+`FORBIT` instead focuses on lightweight direct-access binary I/O with explicit Fortran-style workflows for NumPy arrays.
 

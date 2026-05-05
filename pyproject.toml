@@ -16,13 +16,28 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "forbit"
 version = "1.0.5"
-description = "Fortran based direct access binary reader/writer for Python"
+description = "Lightweight direct-access binary I/O for NumPy arrays, based on Fortran and Cython"
 readme = "README.md"
 requires-python = ">=3.7,<3.14"
 license = "BSD-3-Clause"
 license-files = ["LICENSE"]
 authors = [
     { name = "Kosei Ohara" }
+]
+keywords = [
+    "fortran",
+    "numpy",
+    "scientific-computing",
+    "scientific-python",
+    "hpc",
+    "binary",
+    "binary-io",
+    "direct-access",
+    "fortran-binary",
+    "atmospheric-science",
+    "ocean-science",
+    "cfd",
+    "legacy-code",
 ]
 dependencies = [
     "numpy>=1.21.6,<1.22; python_version == '3.7'",
