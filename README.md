@@ -191,10 +191,10 @@ arr.tofile(fp)
 ```
 
 ### Results
-| Benchmark | Numpy `tofile()` | forbit `write()` |
-|-----------|------------------|------------------|
-| Contiguous record write | 1.10 - 1.12 s | 0.234 - 0.237 s |
-| Sparse direct-access write | 1.71 - 1.72 s | 0.234 - 0.238 s |
+| Benchmark | NumPy `tofile()` | forbit `write()` | NumPy `fromfile()` | forbit `read()` |
+|-----------|------------------|------------------|--------------------|-----------------|
+| Contiguous record write | 1.10 - 1.12 s | 0.234 - 0.237 s | | |
+| Sparse direct-access write | 1.71 - 1.72 s | 0.234 - 0.238 s | | |
 
 ## API
 ### `forbit.open()`
