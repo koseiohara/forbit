@@ -151,6 +151,51 @@ for t in range(nt):
 file.close()
 ```
 
+## Benchmark
+The benchmark scripts used for the measurements below and their results are available under `benchmark/` on GitHub.
+
+### Condition
+| Item | Value |
+|------|-------|
+| Array Shape | `[50,150,300]` |
+| Data Type | float32 |
+| Record Size | 9 MB |
+| Number of Records | 100 |
+| Total Contiguous Size | 900 MB |
+| Record Step (skip test) | 3 |
+
+### Compared Implementations
+FORBIT was compared against minimal NumPy implementations producing byte-identical binary output.
+
+#### Contiguous Record Write
+FORBIT:
+```python
+fp.write(arr)
+```
+
+NumPy:
+```python
+arr.tofile(fp)
+```
+
+#### Sparse Direct-Access Write (recstep=3)
+FORBIT:
+```python
+fp.write(arr)
+```
+
+NumPy:
+```python
+fp.seek((record - 1) * recl)
+arr.tofile(fp)
+```
+
+### Results
+| Benchmark | Numpy `tofile()` | forbit `write()` |
+|-----------|------------------|------------------|
+| Contiguous record write | 1.10 - 1.12 s | 0.234 - 0.237 s |
+| Sparse direct-access write | 1.71 - 1.72 s | 0.234 - 0.238 s |
+
 ## API
 ### `forbit.open()`
 ```python
