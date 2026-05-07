@@ -1,6 +1,6 @@
 # FORtran-based Binary-io Interface Toolkit (FORBIT)
 FORBIT is a Python package for reading and writing Fortran direct-access unformatted binary files as NumPy arrays.
-It is designed for no-header binary files whose records are written by Fortran with `FORM='UNFORMATTED'`, `ACCESS='DIRECT'` and `FORM='UNFORMATTED'`.
+It is designed for no-header binary files whose records are written by Fortran with `ACCESS='DIRECT'` and `FORM='UNFORMATTED'`.
 The Python interface keeps track of the current Fortran record number, reads or writes one fixed-size record at a time, and returns ordinary `numpy.ndarray` objects.  
 
 FORBIT brings lightweight direct-access binary I/O to NumPy ndarrays while keeping a workflow familiar to Fortran users.
@@ -198,11 +198,11 @@ arr = fp.read()
 
 NumPy:
 ```python
-work_arr = np.tofile(fp, dtype=np.float32, count=nz*ny*nx)
+work_arr = np.fromfile(fp, dtype=np.float32, count=nz*ny*nx)
 arr[...] = work_arr.reshape([nz,ny,nx])
 ```
 
-#### Sparse Direct-Access Write (recstep=3)
+#### Sparse Direct-Access Read (recstep=3)
 FORBIT:
 ```python
 arr = fp.read()
@@ -211,7 +211,7 @@ arr = fp.read()
 NumPy:
 ```python
 fp.seek((record-1)*recl)
-work_arr = np.tofile(fp, dtype=np.float32, count=nz*ny*nx)
+work_arr = np.fromfile(fp, dtype=np.float32, count=nz*ny*nx)
 arr[...] = work_arr.reshape([nz,ny,nx])
 record = record + recstep
 ```
