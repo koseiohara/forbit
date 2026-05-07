@@ -147,6 +147,7 @@ t1 = time.perf_counter()
 elapse = (t1 - t0) / ntest
 result.write(f"FROMFILE SPARSE           : {elapse:.6f}s\n")
 
+result.write("\n")
 result.close()
 
 

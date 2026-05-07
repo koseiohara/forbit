@@ -165,7 +165,7 @@ The benchmark scripts used for the measurements below and their results are avai
 | Record Step (skip test) | 3 |
 
 ### Compared Implementations
-FORBIT was compared against minimal NumPy implementations producing byte-identical binary output.
+FORBIT was compared against minimal NumPy implementations producing byte-identical binary input/output.
 
 #### Contiguous Record Write
 FORBIT:
@@ -190,11 +190,45 @@ fp.seek((record - 1) * recl)
 arr.tofile(fp)
 ```
 
+#### Contiguous Record Read
+FORBIT:
+```python
+arr = fp.read()
+```
+
+NumPy:
+```python
+work_arr = np.tofile(fp, dtype=np.float32, count=nz*ny*nx)
+arr[...] = work_arr.reshape([nz,ny,nx])
+```
+
+#### Sparse Direct-Access Write (recstep=3)
+FORBIT:
+```python
+arr = fp.read()
+```
+
+NumPy:
+```python
+fp.seek((record-1)*recl)
+work_arr = np.tofile(fp, dtype=np.float32, count=nz*ny*nx)
+arr[...] = work_arr.reshape([nz,ny,nx])
+record = record + recstep
+```
+
 ### Results
-| Benchmark | NumPy `tofile()` | forbit `write()` | NumPy `fromfile()` | forbit `read()` |
-|-----------|------------------|------------------|--------------------|-----------------|
-| Contiguous record write | 1.10 - 1.12 s | 0.234 - 0.237 s | | |
-| Sparse direct-access write | 1.71 - 1.72 s | 0.234 - 0.238 s | | |
+#### Write
+| Benchmark | NumPy `tofile()` | forbit `write()` |
+|-----------|------------------|------------------|
+| Contiguous record write | 1.10 - 1.12 s | 0.234 - 0.237 s |
+| Sparse direct-access write | 1.71 - 1.72 s | 0.234 - 0.238 s |
+
+#### Read
+| Benchmark | NumPy `fromfile()` | forbit `read()` |
+|-----------|------------------|------------------|
+| Contiguous record read | 0.293 - 0.294 s | 0.302 - 0.303 s |
+| Sparse direct-access read | 0.294 - 0.296 s | 0.305 - 0.308 s |
+
 
 ## API
 ### `forbit.open()`

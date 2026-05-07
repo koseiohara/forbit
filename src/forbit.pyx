@@ -221,7 +221,7 @@ cdef class _ForbitCore:
     cdef int  __is_open
     cdef long long __record
     cdef long long __recstep
-    cdef np.ndarray __work
+    # cdef np.ndarray __work
 
     cdef public object read
     cdef public object write
@@ -288,11 +288,11 @@ cdef class _ForbitCore:
                 raise ValueError("Invalid shape: negative value is included in the input")
             recl = recl*<long long>self.__shape[i]
 
-        if (action == b"read" or action == b"readwrite"):
-            if (kind == 4):
-                self.__work = np.empty(shape_cp, dtype=np.float32)
-            elif (kind == 8):
-                self.__work = np.empty(shape_cp, dtype=np.float64)
+        # if (action == b"read" or action == b"readwrite"):
+        #     if (kind == 4):
+        #         self.__work = np.empty(shape_cp, dtype=np.float32)
+        #     elif (kind == 8):
+        #         self.__work = np.empty(shape_cp, dtype=np.float64)
         
         self.__kind    = kind
         self.__record  = <long long>record
@@ -350,201 +350,201 @@ cdef class _ForbitCore:
 
 
     def fread_sp1(self):
-        # cdef np.ndarray[np.float32_t,ndim=1] result
-        # result = np.empty(self.__shape[0], dtype=np.float32)
+        cdef np.ndarray[np.float32_t,ndim=1] result
+        result = np.empty(self.__shape[0], dtype=np.float32)
 
-        binio_fread_sp1(&self.__unit                      ,
-                        &self.__shape[0]                  ,
-                        &self.__record                    ,
-                        <float*> PyArray_DATA(self.__work))
+        binio_fread_sp1(&self.__unit                 ,
+                        &self.__shape[0]             ,
+                        &self.__record               ,
+                        <float*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work.copy()
+        return result
 
 
     def fread_dp1(self):
-        # cdef np.ndarray[np.float64_t,ndim=1] result
-        # result = np.empty(self.__shape[0], dtype=np.float64)
+        cdef np.ndarray[np.float64_t,ndim=1] result
+        result = np.empty(self.__shape[0], dtype=np.float64)
 
-        binio_fread_dp1(&self.__unit                       ,
-                        &self.__shape[0]                   ,
-                        &self.__record                     ,
-                        <double*> PyArray_DATA(self.__work))
+        binio_fread_dp1(&self.__unit                  ,
+                        &self.__shape[0]              ,
+                        &self.__record                ,
+                        <double*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work.copy()
+        return result
         
 
     def fread_sp2(self):
-        # cdef np.ndarray[np.float32_t,ndim=2] result
-        # result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float32)
+        cdef np.ndarray[np.float32_t,ndim=2] result
+        result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float32)
 
-        binio_fread_sp2(&self.__unit                      ,
-                        &self.__shape[1]                  ,
-                        &self.__shape[0]                  ,
-                        &self.__record                    ,
-                        <float*> PyArray_DATA(self.__work))
+        binio_fread_sp2(&self.__unit                 ,
+                        &self.__shape[1]             ,
+                        &self.__shape[0]             ,
+                        &self.__record               ,
+                        <float*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work.copy()
+        return result
 
 
     def fread_dp2(self):
-        # cdef np.ndarray[np.float64_t,ndim=2] result
-        # result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float64)
+        cdef np.ndarray[np.float64_t,ndim=2] result
+        result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float64)
 
-        binio_fread_dp2(&self.__unit                       ,
-                        &self.__shape[1]                   ,
-                        &self.__shape[0]                   ,
-                        &self.__record                     ,
-                        <double*> PyArray_DATA(self.__work))
+        binio_fread_dp2(&self.__unit                  ,
+                        &self.__shape[1]              ,
+                        &self.__shape[0]              ,
+                        &self.__record                ,
+                        <double*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work.copy()
+        return result
 
 
     def fread_sp3(self):
-        # cdef np.ndarray[np.float32_t,ndim=3] result
-        # result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float32)
+        cdef np.ndarray[np.float32_t,ndim=3] result
+        result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float32)
 
-        binio_fread_sp3(&self.__unit                      ,
-                        &self.__shape[2]                  ,
-                        &self.__shape[1]                  ,
-                        &self.__shape[0]                  ,
-                        &self.__record                    ,
-                        <float*> PyArray_DATA(self.__work))
+        binio_fread_sp3(&self.__unit                 ,
+                        &self.__shape[2]             ,
+                        &self.__shape[1]             ,
+                        &self.__shape[0]             ,
+                        &self.__record               ,
+                        <float*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work.copy()
+        return result
 
 
     def fread_dp3(self):
-        # cdef np.ndarray[np.float64_t,ndim=3] result
-        # result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float64)
+        cdef np.ndarray[np.float64_t,ndim=3] result
+        result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float64)
 
-        binio_fread_dp3(&self.__unit                       ,
-                        &self.__shape[2]                   ,
-                        &self.__shape[1]                   ,
-                        &self.__shape[0]                   ,
-                        &self.__record                     ,
-                        <double*> PyArray_DATA(self.__work))
+        binio_fread_dp3(&self.__unit                  ,
+                        &self.__shape[2]              ,
+                        &self.__shape[1]              ,
+                        &self.__shape[0]              ,
+                        &self.__record                ,
+                        <double*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work.copy()
+        return result
 
 
     def fread_sp4(self):
-        # cdef np.ndarray[np.float32_t,ndim=3] result
-        # result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float32)
+        cdef np.ndarray[np.float32_t,ndim=4] result
+        result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3]), dtype=np.float32)
 
-        binio_fread_sp4(&self.__unit                      ,
-                        &self.__shape[3]                  ,
-                        &self.__shape[2]                  ,
-                        &self.__shape[1]                  ,
-                        &self.__shape[0]                  ,
-                        &self.__record                    ,
-                        <float*> PyArray_DATA(self.__work))
+        binio_fread_sp4(&self.__unit                 ,
+                        &self.__shape[3]             ,
+                        &self.__shape[2]             ,
+                        &self.__shape[1]             ,
+                        &self.__shape[0]             ,
+                        &self.__record               ,
+                        <float*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work.copy()
+        return result
 
 
     def fread_dp4(self):
-        # cdef np.ndarray[np.float64_t,ndim=3] result
-        # result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float64)
+        cdef np.ndarray[np.float64_t,ndim=4] result
+        result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3]), dtype=np.float64)
 
-        binio_fread_dp4(&self.__unit                       ,
-                        &self.__shape[3]                   ,
-                        &self.__shape[2]                   ,
-                        &self.__shape[1]                   ,
-                        &self.__shape[0]                   ,
-                        &self.__record                     ,
-                        <double*> PyArray_DATA(self.__work))
+        binio_fread_dp4(&self.__unit                 ,
+                        &self.__shape[3]             ,
+                        &self.__shape[2]             ,
+                        &self.__shape[1]             ,
+                        &self.__shape[0]             ,
+                        &self.__record               ,
+                        <double*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work.copy()
+        return result
 
 
     def fread_sp5(self):
-        # cdef np.ndarray[np.float32_t,ndim=3] result
-        # result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float32)
+        cdef np.ndarray[np.float32_t,ndim=5] result
+        result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4]), dtype=np.float32)
 
-        binio_fread_sp5(&self.__unit                      ,
-                        &self.__shape[4]                  ,
-                        &self.__shape[3]                  ,
-                        &self.__shape[2]                  ,
-                        &self.__shape[1]                  ,
-                        &self.__shape[0]                  ,
-                        &self.__record                    ,
-                        <float*> PyArray_DATA(self.__work))
+        binio_fread_sp5(&self.__unit                 ,
+                        &self.__shape[4]             ,
+                        &self.__shape[3]             ,
+                        &self.__shape[2]             ,
+                        &self.__shape[1]             ,
+                        &self.__shape[0]             ,
+                        &self.__record               ,
+                        <float*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work.copy()
+        return result
 
 
     def fread_dp5(self):
-        # cdef np.ndarray[np.float64_t,ndim=3] result
-        # result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float64)
+        cdef np.ndarray[np.float64_t,ndim=5] result
+        result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4]), dtype=np.float64)
 
-        binio_fread_dp5(&self.__unit                       ,
-                        &self.__shape[4]                   ,
-                        &self.__shape[3]                   ,
-                        &self.__shape[2]                   ,
-                        &self.__shape[1]                   ,
-                        &self.__shape[0]                   ,
-                        &self.__record                     ,
-                        <double*> PyArray_DATA(self.__work))
+        binio_fread_dp5(&self.__unit                  ,
+                        &self.__shape[4]              ,
+                        &self.__shape[3]              ,
+                        &self.__shape[2]              ,
+                        &self.__shape[1]              ,
+                        &self.__shape[0]              ,
+                        &self.__record                ,
+                        <double*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work.copy()
+        return result
 
 
     def fread_sp6(self):
-        # cdef np.ndarray[np.float32_t,ndim=3] result
-        # result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float32)
+        cdef np.ndarray[np.float32_t,ndim=6] result
+        result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4],self.__shape[5]), dtype=np.float32)
 
-        binio_fread_sp6(&self.__unit                      ,
-                        &self.__shape[5]                  ,
-                        &self.__shape[4]                  ,
-                        &self.__shape[3]                  ,
-                        &self.__shape[2]                  ,
-                        &self.__shape[1]                  ,
-                        &self.__shape[0]                  ,
-                        &self.__record                    ,
-                        <float*> PyArray_DATA(self.__work))
+        binio_fread_sp6(&self.__unit                 ,
+                        &self.__shape[5]             ,
+                        &self.__shape[4]             ,
+                        &self.__shape[3]             ,
+                        &self.__shape[2]             ,
+                        &self.__shape[1]             ,
+                        &self.__shape[0]             ,
+                        &self.__record               ,
+                        <float*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work.copy()
+        return result
 
 
     def fread_dp6(self):
-        # cdef np.ndarray[np.float64_t,ndim=3] result
-        # result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float64)
+        cdef np.ndarray[np.float64_t,ndim=6] result
+        result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4],self.__shape[5]), dtype=np.float64)
 
-        binio_fread_dp6(&self.__unit                       ,
-                        &self.__shape[5]                   ,
-                        &self.__shape[4]                   ,
-                        &self.__shape[3]                   ,
-                        &self.__shape[2]                   ,
-                        &self.__shape[1]                   ,
-                        &self.__shape[0]                   ,
-                        &self.__record                     ,
-                        <double*> PyArray_DATA(self.__work))
+        binio_fread_dp6(&self.__unit                  ,
+                        &self.__shape[5]              ,
+                        &self.__shape[4]              ,
+                        &self.__shape[3]              ,
+                        &self.__shape[2]              ,
+                        &self.__shape[1]              ,
+                        &self.__shape[0]              ,
+                        &self.__record                ,
+                        <double*> PyArray_DATA(result))
 
         self.__record = self.__record + self.__recstep
 
-        return self.__work.copy()
+        return result
 
 
     def fwrite_sp1(self, np.ndarray[real_t, ndim=1] arr):
