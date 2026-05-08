@@ -7,7 +7,7 @@ import pytest
 
 KINDS = [4, 8]
 NDIMS = [1, 2, 3, 4, 5, 6]
-ENDIANS = ["little_endian", "big_endian"]
+ENDIANS = ["little_endian", "big_endian", "native"]
 
 
 def shape_for_ndim(ndim: int) -> list[int]:
