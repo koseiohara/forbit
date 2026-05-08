@@ -16,7 +16,8 @@ FORBIT brings lightweight direct-access binary I/O to NumPy ndarrays while keepi
 
 ## Requirements
 FORBIT is implemented with Python, NumPy, Cython, and Fortran.
-The package metadata declares support for CPython on POSIX/Linux with Python 3.9 to 3.13.  
+The package metadata declares support for CPython on POSIX/Linux with Python 3.9 to 3.13.
+However, it may also be possible to build from the source code manualy on the other environments.
 
 Runtime dependency:
 - NumPy  
@@ -31,6 +32,7 @@ Build dependencies:
 - Makefile
 
 The Fortran/C compilers can be configured in `src/Makefile`.
+the Fortran compiler need to support the `CONVERT` specifier in the `OPEN` statement.
 
 ## Compile and Path
 ### Install from PyPI
