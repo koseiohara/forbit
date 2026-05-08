@@ -32,7 +32,7 @@ Build dependencies:
 - Makefile
 
 The Fortran/C compilers can be configured in `src/Makefile`.
-The Fortran compiler need to support the `CONVERT` specifier in the `OPEN` statement.
+The Fortran compiler needs to support the `CONVERT` specifier in the `OPEN` statement.
 
 ## Compile and Path
 ### Install from PyPI
