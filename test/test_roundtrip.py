@@ -7,6 +7,7 @@ import forbit
 
 from conftest import ENDIANS, KINDS, NDIMS, dtype_for_kind, sample_array, shape_for_ndim
 
+nloop = 10
 
 @pytest.mark.parametrize("kind", KINDS)
 @pytest.mark.parametrize("ndim", NDIMS)
@@ -16,7 +17,7 @@ def test_roundtrip_single_record(binary_dir, kind, ndim, endian):
     dtype = dtype_for_kind(kind)
     filename = binary_dir / f"roundtrip_kind{kind}_ndim{ndim}_{endian}.grd"
 
-    expected = sample_array(shape, kind)
+    expected = sample_array(shape+[nloop], kind)
 
     writer = forbit.open(
         str(filename),
@@ -27,7 +28,8 @@ def test_roundtrip_single_record(binary_dir, kind, ndim, endian):
         recstep=1,
         endian=endian,
     )
-    writer.write(expected)
+    for t in range(nloop):
+        writer.write(expected[...,t])
     writer.close()
 
     reader = forbit.open(
@@ -39,12 +41,13 @@ def test_roundtrip_single_record(binary_dir, kind, ndim, endian):
         recstep=1,
         endian=endian,
     )
-    actual = reader.read()
+    for t in range(nloop):
+        actual = reader.read()
+        assert actual.dtype == dtype
+        assert list(actual.shape) == shape
+        np.testing.assert_array_equal(actual, expected[...,t])
     reader.close()
 
-    assert actual.dtype == dtype
-    assert list(actual.shape) == shape
-    np.testing.assert_array_equal(actual, expected)
 
 
 
