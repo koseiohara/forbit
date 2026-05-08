@@ -38,7 +38,7 @@ def test_too_many_dimensions(binary_dir):
     filename = binary_dir / "too_many_dimensions.grd"
 
     with pytest.raises(ValueError):
-        forbit.open(str(filename), "write", [2]*ndim_max, 4, 1, 1, "little_endian")
+        forbit.open(str(filename), "write", [2]*(ndim_max+1), 4, 1, 1, "little_endian")
 
 
 def test_invalid_kind(binary_dir):
