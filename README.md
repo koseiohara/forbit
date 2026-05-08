@@ -16,7 +16,7 @@ FORBIT brings lightweight direct-access binary I/O to NumPy ndarrays while keepi
 
 ## Requirements
 FORBIT is implemented with Python, NumPy, Cython, and Fortran.
-The package metadata declares support for CPython on POSIX/Linux with Python 3.7 to 3.13.  
+The package metadata declares support for CPython on POSIX/Linux with Python 3.9 to 3.13.  
 
 Runtime dependency:
 - NumPy  
@@ -290,6 +290,7 @@ Open a Fortran direct-access unformatted binary file.
   Accepted values are case-insensitive:
   - `"little_endian"`
   - `"big_endian"`  
+  - `"native"`
 
 ### `close()`
 ```python

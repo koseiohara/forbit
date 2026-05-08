@@ -254,7 +254,7 @@ cdef class _ForbitCore:
 
         if (isinstance(endian, str)):
             endian = endian.lower()
-            if (endian !="little_endian" and endian != "big_endian"):
+            if (endian !="little_endian" and endian != "big_endian" and endian != "native"):
                 raise ValueError("Invalid string in the argument of forbit : endian")
             endian = endian.encode("utf-8")
         else:
