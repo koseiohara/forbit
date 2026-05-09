@@ -4,6 +4,7 @@ It is designed for no-header binary files whose records are written by Fortran w
 The Python interface keeps track of the current Fortran record number, reads or writes one fixed-size record at a time, and returns ordinary `numpy.ndarray` objects.  
 
 FORBIT brings lightweight direct-access binary I/O to NumPy ndarrays while keeping a workflow familiar to Fortran users.
+Unlike scipy.io.FortranFile, FORBIT supports fixed-length record-oriented direct-access workflows commonly used in atmospheric/ocean science CFD, and HPC codes.
 
 ## Features
 - Read and write Fortran direct-access unformatted binary files
@@ -264,7 +265,7 @@ Open a Fortran direct-access unformatted binary file.
   - For a 2D record returned as (ny, nx): `[ny, nx]`
   - For a 3D record returned as (nz, ny, nx): `[nz, ny, nx]`  
 
-  The shape is given in normal NumPy order.
+  The shape is given in normal C-order, not F-order.
   Internally, FORBIT reverses the dimensions when calling the Fortran routines so that a Python array shaped like `[nz, ny, nx]` corresponds to a Fortran array shaped like `(nx, ny, nz)` in the low-level read/write routine.  
   All dimensions must be positive integers.
   The number of dimensions must be between 1 and 6.
@@ -309,15 +310,17 @@ arr = file.read()
 ```
 Read the current record and return a NumPy array.
 The returned array has the shape specified by `shape` and dtype determined by `kind`.
+Note that the output array is C-order.
 After reading, the internal record number is updated by `recstep`.
 
 ### `write()`
 ```python
 file.write(arr)
 ```
-The input array must have the same shape as the shape specified when opening the file.
+The input array must have the same shape as the `shape` specified when opening the file.
 Before writing, FORBIT converts the array to a C-contiguous NumPy array with dtype determined by `kind`.
 After writing, the internal record number is updated by `recstep`.
+Note that the input array must be C-order.
 
 ### `get_record()`
 ```python
