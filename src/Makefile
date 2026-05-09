@@ -52,7 +52,13 @@ all: $(TARGET)
 $(TARGET) : $(OBJS)
 	$(FC) -o $@ $^ $(LDFLAGS)
 
-.PHONY: all clean re distclean show
+.PHONY: all install prefix_check clean re distclean show
+
+prefix_check:
+	@test -n "$(PREFIX)" || ( echo "PREFIX is required"; exit 1 )
+
+install : prefix_check
+	cp forbit.*.so $(PREFIX)
 
 show:
 	@echo "PYTHON     = $(PYTHON)"
