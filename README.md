@@ -219,7 +219,6 @@ NumPy:
 fp.seek((record-1)*recl)
 work_arr = np.fromfile(fp, dtype=np.float32, count=nz*ny*nx)
 arr[...] = work_arr.reshape([nz,ny,nx])
-record = record + recstep
 ```
 
 ### Results
