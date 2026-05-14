@@ -161,15 +161,15 @@ file.close()
 ## Benchmark
 The benchmark scripts used for the measurements below and their results are available under `benchmark/` on GitHub.
 
-### Condition
+### Test Condition
 | Item | Value |
 |------|-------|
 | Array Shape | `[50,150,300]` |
 | Data Type | float32 |
 | Record Size | 9 MB |
-| Number of Records | 100 |
-| Total Contiguous Size | 900 MB |
+| Number of Records | 5000 |
 | Record Step (skip test) | 3 |
+| Storage Type | HDD |
 
 ### Compared Implementations
 FORBIT was compared against minimal NumPy implementations producing byte-identical binary input/output.
@@ -226,14 +226,14 @@ arr[...] = work_arr.reshape([nz,ny,nx])
 #### Write
 | Benchmark | NumPy `tofile()` | forbit `write()` |
 |-----------|------------------|------------------|
-| Contiguous record write | 1.10 - 1.12 s | 0.234 - 0.237 s |
-| Sparse direct-access write | 1.71 - 1.72 s | 0.234 - 0.238 s |
+| Contiguous record write | 0.0833 - 0.0837 s/record | 0.0777 - 0.0780 s/record |
+| Sparse direct-access write | 0.0838 - 0.0939 s/record | 0.0780 - 0.0788 s/record |
 
 #### Read
 | Benchmark | NumPy `fromfile()` | forbit `read()` |
 |-----------|------------------|------------------|
-| Contiguous record read | 0.293 - 0.294 s | 0.302 - 0.303 s |
-| Sparse direct-access read | 0.294 - 0.296 s | 0.305 - 0.308 s |
+| Contiguous record read | 0.0772 - 0.0774 s | 0.0765 - 0.0772 s |
+| Sparse direct-access read | 0.216 - 0.217 s | 0.205 - 0.206 s |
 
 
 ## API

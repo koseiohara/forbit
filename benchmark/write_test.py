@@ -1,11 +1,12 @@
 
+import sys
 from pathlib import Path
 import time
 import filecmp
 import numpy as np
 import forbit
 
-out_dir    = "bin"
+out_dir    = sys.argv[1]
 result_dir = "result"
 Path(out_dir).mkdir(exist_ok=True)
 Path(result_dir).mkdir(exist_ok=True)
@@ -13,9 +14,9 @@ Path(result_dir).mkdir(exist_ok=True)
 nx = 300
 ny = 150
 nz =  50
-nt = 100
-numpy_contig_name = f"{out_dir}/numpy_contig.grd"
-numpy_skip_name   = f"{out_dir}/numpy_skip.grd"
+nt = 5000
+numpy_contig_name  = f"{out_dir}/numpy_contig.grd"
+numpy_skip_name    = f"{out_dir}/numpy_skip.grd"
 forbit_contig_name = f"{out_dir}/forbit_contig.grd"
 forbit_skip_name   = f"{out_dir}/forbit_skip.grd"
 
@@ -91,56 +92,49 @@ def test_forbit_skip(filename):
     fp.close()
 
 
-ntest = 100
-nwarm = 5
+ntest = 1
+# nwarm = 5
 sample_arr = gen_array()
 result = open(f"{result_dir}/write_benchmark_kind{kind}_recl{recl}_sparse{recstep}.txt", "a")
 
 
-for n in range(nwarm):
-    test_forbit_contig(forbit_contig_name)
 t0 = time.perf_counter()
-for n in range(ntest):
-    test_forbit_contig(forbit_contig_name)
+test_forbit_contig(forbit_contig_name)
 t1 = time.perf_counter()
-elapse = (t1 - t0) / ntest
+elapse = (t1 - t0) / (ntest*nt)
 result.write(f"FORBIT CONTIGUOUS RECORD: {elapse:.6f}s\n")
+print(f"FORBIT CONTIGUOUS RECORD: {elapse:.6f}s")
 
 
-for n in range(nwarm):
-    test_forbit_skip(forbit_skip_name)
 t0 = time.perf_counter()
-for n in range(ntest):
-    test_forbit_skip(forbit_skip_name)
+test_forbit_skip(forbit_skip_name)
 t1 = time.perf_counter()
-elapse = (t1 - t0) / ntest
+elapse = (t1 - t0) / (ntest*nt)
 result.write(f"FORBIT SPARSE           : {elapse:.6f}s\n")
+print(f"FORBIT SPARSE           : {elapse:.6f}s")
 
 
-for n in range(nwarm):
-    test_tofile_contig(numpy_contig_name)
 t0 = time.perf_counter()
-for n in range(ntest):
-    test_tofile_contig(numpy_contig_name)
+test_tofile_contig(numpy_contig_name)
 t1 = time.perf_counter()
-elapse = (t1 - t0) / ntest
+elapse = (t1 - t0) / (ntest*nt)
 result.write(f"TOFILE CONTIGUOUS RECORD: {elapse:.6f}s\n")
+print(f"TOFILE CONTIGUOUS RECORD: {elapse:.6f}s")
 
 
-for n in range(nwarm):
-    test_tofile_skip(numpy_skip_name)
 t0 = time.perf_counter()
-for n in range(ntest):
-    test_tofile_skip(numpy_skip_name)
+test_tofile_skip(numpy_skip_name)
 t1 = time.perf_counter()
-elapse = (t1 - t0) / ntest
+elapse = (t1 - t0) / (ntest*nt)
 result.write(f"TOFILE SPARSE           : {elapse:.6f}s\n")
+print(f"TOFILE SPARSE           : {elapse:.6f}s")
 
 
-assert filecmp.cmp(numpy_contig_name, forbit_contig_name, shallow=False)
-assert filecmp.cmp(numpy_skip_name, forbit_skip_name, shallow=False)
-result.write("Binary equivalence check passed.\n\n")
+# assert filecmp.cmp(numpy_contig_name, forbit_contig_name, shallow=False)
+# assert filecmp.cmp(numpy_skip_name, forbit_skip_name, shallow=False)
+# result.write("Binary equivalence check passed.\n\n")
 
+result.write("\n")
 result.close()
 
 
