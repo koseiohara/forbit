@@ -232,8 +232,8 @@ arr[...] = work_arr.reshape([nz,ny,nx])
 #### Read
 | Benchmark | NumPy `fromfile()` | forbit `read()` |
 |-----------|------------------|------------------|
-| Contiguous record read | 0.0772 - 0.0774 s | 0.0765 - 0.0772 s |
-| Sparse direct-access read | 0.216 - 0.217 s | 0.205 - 0.206 s |
+| Contiguous record read | 0.0772 - 0.0774 s/record | 0.0765 - 0.0772 s/record |
+| Sparse direct-access read | 0.216 - 0.217 s/record | 0.205 - 0.206 s/record |
 
 
 ## API
