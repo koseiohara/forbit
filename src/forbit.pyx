@@ -233,6 +233,7 @@ cdef class _ForbitCore:
         cdef int shape_size
         cdef int i
         cdef int precision
+        cdef int dispatch
 
         self.__is_open = 0
 
@@ -334,8 +335,9 @@ cdef class _ForbitCore:
                        self.fwrite_dp6]
 
         precision = kind >> 2
-        self.read  =  fread_list[((shape_size-1)<<1)+precision-1]
-        self.write = fwrite_list[((shape_size-1)<<1)+precision-1]
+        dispatch  = ((shape_size - 1) << 1) + precision - 1
+        self.read  =  fread_list[dispatch]
+        self.write = fwrite_list[dispatch]
 
 
     def __del__(self):
