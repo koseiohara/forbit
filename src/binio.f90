@@ -96,7 +96,7 @@ module binio
         integer(c_long_long), intent(in)  :: record
         real(c_float) , intent(out) :: input_data(n1)
 
-        call negative_record(record)
+        ! call negative_record(record)
         read(unit,rec=record) input_data(1:n1)
 
     end subroutine binio_fread_sp1
@@ -108,7 +108,7 @@ module binio
         integer(c_long_long), intent(in)  :: record
         real(c_double), intent(out) :: input_data(n1)
 
-        call negative_record(record)
+        ! call negative_record(record)
         read(unit,rec=record) input_data(1:n1)
 
     end subroutine binio_fread_dp1
@@ -121,7 +121,7 @@ module binio
         integer(c_long_long), intent(in)  :: record
         real(c_float) , intent(out) :: input_data(n1,n2)
 
-        call negative_record(record)
+        ! call negative_record(record)
         read(unit,rec=record) input_data(1:n1,1:n2)
 
     end subroutine binio_fread_sp2
@@ -134,7 +134,7 @@ module binio
         integer(c_long_long), intent(in)  :: record
         real(c_double), intent(out) :: input_data(n1,n2)
 
-        call negative_record(record)
+        ! call negative_record(record)
         read(unit,rec=record) input_data(1:n1,1:n2)
 
     end subroutine binio_fread_dp2
@@ -148,7 +148,7 @@ module binio
         integer(c_long_long), intent(in)  :: record
         real(c_float) , intent(out) :: input_data(n1,n2,n3)
 
-        call negative_record(record)
+        ! call negative_record(record)
         read(unit,rec=record) input_data(1:n1,1:n2,1:n3)
 
     end subroutine binio_fread_sp3
@@ -162,7 +162,7 @@ module binio
         integer(c_long_long), intent(in)  :: record
         real(c_double), intent(out) :: input_data(n1,n2,n3)
 
-        call negative_record(record)
+        ! call negative_record(record)
         read(unit,rec=record) input_data(1:n1,1:n2,1:n3)
 
     end subroutine binio_fread_dp3
@@ -177,7 +177,7 @@ module binio
         integer(c_long_long), intent(in)  :: record
         real(c_float) , intent(out) :: input_data(n1,n2,n3,n4)
 
-        call negative_record(record)
+        ! call negative_record(record)
         read(unit,rec=record) input_data(1:n1,1:n2,1:n3,1:n4)
 
     end subroutine binio_fread_sp4
@@ -192,7 +192,7 @@ module binio
         integer(c_long_long), intent(in)  :: record
         real(c_double), intent(out) :: input_data(n1,n2,n3,n4)
 
-        call negative_record(record)
+        ! call negative_record(record)
         read(unit,rec=record) input_data(1:n1,1:n2,1:n3,1:n4)
 
     end subroutine binio_fread_dp4
@@ -208,7 +208,7 @@ module binio
         integer(c_long_long), intent(in)  :: record
         real(c_float) , intent(out) :: input_data(n1,n2,n3,n4,n5)
 
-        call negative_record(record)
+        ! call negative_record(record)
         read(unit,rec=record) input_data(1:n1,1:n2,1:n3,1:n4,1:n5)
 
     end subroutine binio_fread_sp5
@@ -224,7 +224,7 @@ module binio
         integer(c_long_long), intent(in)  :: record
         real(c_double), intent(out) :: input_data(n1,n2,n3,n4,n5)
 
-        call negative_record(record)
+        ! call negative_record(record)
         read(unit,rec=record) input_data(1:n1,1:n2,1:n3,1:n4,1:n5)
 
     end subroutine binio_fread_dp5
@@ -241,7 +241,7 @@ module binio
         integer(c_long_long), intent(in)  :: record
         real(c_float) , intent(out) :: input_data(n1,n2,n3,n4,n5,n6)
 
-        call negative_record(record)
+        ! call negative_record(record)
         read(unit,rec=record) input_data(1:n1,1:n2,1:n3,1:n4,1:n5,1:n6)
 
     end subroutine binio_fread_sp6
@@ -258,7 +258,7 @@ module binio
         integer(c_long_long), intent(in)  :: record
         real(c_double), intent(out) :: input_data(n1,n2,n3,n4,n5,n6)
 
-        call negative_record(record)
+        ! call negative_record(record)
         read(unit,rec=record) input_data(1:n1,1:n2,1:n3,1:n4,1:n5,1:n6)
 
     end subroutine binio_fread_dp6
@@ -270,7 +270,7 @@ module binio
         integer(c_long_long), intent(in) :: record
         real(c_float) , intent(in) :: output_data(n1)
 
-        call negative_record(record)
+        ! call negative_record(record)
         write(unit,rec=record) output_data(1:n1)
 
     end subroutine binio_fwrite_sp1
@@ -282,7 +282,7 @@ module binio
         integer(c_long_long), intent(in) :: record
         real(c_double), intent(in) :: output_data(1:n1)
 
-        call negative_record(record)
+        ! call negative_record(record)
         write(unit,rec=record) output_data(1:n1)
 
     end subroutine binio_fwrite_dp1
@@ -295,7 +295,7 @@ module binio
         integer(c_long_long), intent(in) :: record
         real(c_float) , intent(in) :: output_data(1:n1,1:n2)
 
-        call negative_record(record)
+        ! call negative_record(record)
         write(unit,rec=record) output_data(1:n1,1:n2)
 
     end subroutine binio_fwrite_sp2
@@ -308,7 +308,7 @@ module binio
         integer(c_long_long), intent(in) :: record
         real(c_double), intent(in) :: output_data(1:n1,1:n2)
 
-        call negative_record(record)
+        ! call negative_record(record)
         write(unit,rec=record) output_data(1:n1,1:n2)
 
     end subroutine binio_fwrite_dp2
@@ -322,7 +322,7 @@ module binio
         integer(c_long_long), intent(in) :: record
         real(c_float) , intent(in) :: output_data(1:n1,1:n2,1:n3)
 
-        call negative_record(record)
+        ! call negative_record(record)
         write(unit,rec=record) output_data(1:n1,1:n2,1:n3)
 
     end subroutine binio_fwrite_sp3
@@ -336,7 +336,7 @@ module binio
         integer(c_long_long), intent(in) :: record
         real(c_double), intent(in) :: output_data(1:n1,1:n2,1:n3)
 
-        call negative_record(record)
+        ! call negative_record(record)
         write(unit,rec=record) output_data(1:n1,1:n2,1:n3)
 
     end subroutine binio_fwrite_dp3
@@ -351,7 +351,7 @@ module binio
         integer(c_long_long), intent(in) :: record
         real(c_float) , intent(in) :: output_data(1:n1,1:n2,1:n3,1:n4)
 
-        call negative_record(record)
+        ! call negative_record(record)
         write(unit,rec=record) output_data(1:n1,1:n2,1:n3,1:n4)
 
     end subroutine binio_fwrite_sp4
@@ -366,7 +366,7 @@ module binio
         integer(c_long_long), intent(in) :: record
         real(c_double), intent(in) :: output_data(1:n1,1:n2,1:n3,1:n4)
 
-        call negative_record(record)
+        ! call negative_record(record)
         write(unit,rec=record) output_data(1:n1,1:n2,1:n3,1:n4)
 
     end subroutine binio_fwrite_dp4
@@ -382,7 +382,7 @@ module binio
         integer(c_long_long), intent(in) :: record
         real(c_float) , intent(in) :: output_data(1:n1,1:n2,1:n3,1:n4,1:n5)
 
-        call negative_record(record)
+        ! call negative_record(record)
         write(unit,rec=record) output_data(1:n1,1:n2,1:n3,1:n4,1:n5)
 
     end subroutine binio_fwrite_sp5
@@ -398,7 +398,7 @@ module binio
         integer(c_long_long), intent(in) :: record
         real(c_double), intent(in) :: output_data(1:n1,1:n2,1:n3,1:n4,1:n5)
 
-        call negative_record(record)
+        ! call negative_record(record)
         write(unit,rec=record) output_data(1:n1,1:n2,1:n3,1:n4,1:n5)
 
     end subroutine binio_fwrite_dp5
@@ -415,7 +415,7 @@ module binio
         integer(c_long_long), intent(in) :: record
         real(c_float) , intent(in) :: output_data(1:n1,1:n2,1:n3,1:n4,1:n5,1:n6)
 
-        call negative_record(record)
+        ! call negative_record(record)
         write(unit,rec=record) output_data(1:n1,1:n2,1:n3,1:n4,1:n5,1:n6)
 
     end subroutine binio_fwrite_sp6
@@ -432,7 +432,7 @@ module binio
         integer(c_long_long), intent(in) :: record
         real(c_double), intent(in) :: output_data(1:n1,1:n2,1:n3,1:n4,1:n5,1:n6)
 
-        call negative_record(record)
+        ! call negative_record(record)
         write(unit,rec=record) output_data(1:n1,1:n2,1:n3,1:n4,1:n5,1:n6)
 
     end subroutine binio_fwrite_dp6

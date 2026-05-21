@@ -355,6 +355,8 @@ cdef class _ForbitCore:
         cdef np.ndarray[np.float32_t,ndim=1] result
         result = np.empty(self.__shape[0], dtype=np.float32)
 
+        self.__negative_record()
+
         binio_fread_sp1(&self.__unit                 ,
                         &self.__shape[0]             ,
                         &self.__record               ,
@@ -369,6 +371,8 @@ cdef class _ForbitCore:
         cdef np.ndarray[np.float64_t,ndim=1] result
         result = np.empty(self.__shape[0], dtype=np.float64)
 
+        self.__negative_record()
+
         binio_fread_dp1(&self.__unit                  ,
                         &self.__shape[0]              ,
                         &self.__record                ,
@@ -382,6 +386,8 @@ cdef class _ForbitCore:
     def fread_sp2(self):
         cdef np.ndarray[np.float32_t,ndim=2] result
         result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float32)
+
+        self.__negative_record()
 
         binio_fread_sp2(&self.__unit                 ,
                         &self.__shape[1]             ,
@@ -398,6 +404,8 @@ cdef class _ForbitCore:
         cdef np.ndarray[np.float64_t,ndim=2] result
         result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float64)
 
+        self.__negative_record()
+
         binio_fread_dp2(&self.__unit                  ,
                         &self.__shape[1]              ,
                         &self.__shape[0]              ,
@@ -412,6 +420,8 @@ cdef class _ForbitCore:
     def fread_sp3(self):
         cdef np.ndarray[np.float32_t,ndim=3] result
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float32)
+
+        self.__negative_record()
 
         binio_fread_sp3(&self.__unit                 ,
                         &self.__shape[2]             ,
@@ -429,6 +439,8 @@ cdef class _ForbitCore:
         cdef np.ndarray[np.float64_t,ndim=3] result
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float64)
 
+        self.__negative_record()
+
         binio_fread_dp3(&self.__unit                  ,
                         &self.__shape[2]              ,
                         &self.__shape[1]              ,
@@ -444,6 +456,8 @@ cdef class _ForbitCore:
     def fread_sp4(self):
         cdef np.ndarray[np.float32_t,ndim=4] result
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3]), dtype=np.float32)
+
+        self.__negative_record()
 
         binio_fread_sp4(&self.__unit                 ,
                         &self.__shape[3]             ,
@@ -462,6 +476,8 @@ cdef class _ForbitCore:
         cdef np.ndarray[np.float64_t,ndim=4] result
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3]), dtype=np.float64)
 
+        self.__negative_record()
+
         binio_fread_dp4(&self.__unit                 ,
                         &self.__shape[3]             ,
                         &self.__shape[2]             ,
@@ -478,6 +494,8 @@ cdef class _ForbitCore:
     def fread_sp5(self):
         cdef np.ndarray[np.float32_t,ndim=5] result
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4]), dtype=np.float32)
+
+        self.__negative_record()
 
         binio_fread_sp5(&self.__unit                 ,
                         &self.__shape[4]             ,
@@ -497,6 +515,8 @@ cdef class _ForbitCore:
         cdef np.ndarray[np.float64_t,ndim=5] result
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4]), dtype=np.float64)
 
+        self.__negative_record()
+
         binio_fread_dp5(&self.__unit                  ,
                         &self.__shape[4]              ,
                         &self.__shape[3]              ,
@@ -514,6 +534,8 @@ cdef class _ForbitCore:
     def fread_sp6(self):
         cdef np.ndarray[np.float32_t,ndim=6] result
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4],self.__shape[5]), dtype=np.float32)
+
+        self.__negative_record()
 
         binio_fread_sp6(&self.__unit                 ,
                         &self.__shape[5]             ,
@@ -534,6 +556,8 @@ cdef class _ForbitCore:
         cdef np.ndarray[np.float64_t,ndim=6] result
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4],self.__shape[5]), dtype=np.float64)
 
+        self.__negative_record()
+
         binio_fread_dp6(&self.__unit                  ,
                         &self.__shape[5]              ,
                         &self.__shape[4]              ,
@@ -551,6 +575,9 @@ cdef class _ForbitCore:
 
     def fwrite_sp1(self, np.ndarray[real_t, ndim=1] arr):
         cdef np.ndarray[np.float32_t,ndim=1] arr_cp = np.ascontiguousarray(arr, dtype=np.float32)
+
+        self.__negative_record()
+
         if (arr_cp.shape[0] != self.__shape[0]):
             raise ValueError("Array shape mismatch")
 
@@ -565,6 +592,8 @@ cdef class _ForbitCore:
     def fwrite_dp1(self, np.ndarray[real_t, ndim=1] arr):
         cdef np.ndarray[np.float64_t,ndim=1] arr_cp = np.ascontiguousarray(arr, dtype=np.float64)
 
+        self.__negative_record()
+
         if (arr_cp.shape[0] != self.__shape[0]):
             raise ValueError("Array shape mismatch")
 
@@ -578,6 +607,8 @@ cdef class _ForbitCore:
 
     def fwrite_sp2(self, np.ndarray[real_t, ndim=2] arr):
         cdef np.ndarray[np.float32_t,ndim=2] arr_cp = np.ascontiguousarray(arr, dtype=np.float32)
+
+        self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1]):
@@ -595,6 +626,8 @@ cdef class _ForbitCore:
     def fwrite_dp2(self, np.ndarray[real_t, ndim=2] arr):
         cdef np.ndarray[np.float64_t,ndim=2] arr_cp = np.ascontiguousarray(arr, dtype=np.float64)
 
+        self.__negative_record()
+
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1]):
             raise ValueError("Array shape mismatch")
@@ -610,6 +643,8 @@ cdef class _ForbitCore:
 
     def fwrite_sp3(self, np.ndarray[real_t, ndim=3] arr):
         cdef np.ndarray[np.float32_t,ndim=3] arr_cp = np.ascontiguousarray(arr, dtype=np.float32)
+
+        self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -629,6 +664,8 @@ cdef class _ForbitCore:
     def fwrite_dp3(self, np.ndarray[real_t, ndim=3] arr):
         cdef np.ndarray[np.float64_t,ndim=3] arr_cp = np.ascontiguousarray(arr, dtype=np.float64)
 
+        self.__negative_record()
+
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
             arr_cp.shape[2] != self.__shape[2]):
@@ -646,6 +683,8 @@ cdef class _ForbitCore:
 
     def fwrite_sp4(self, np.ndarray[real_t, ndim=4] arr):
         cdef np.ndarray[np.float32_t,ndim=4] arr_cp = np.ascontiguousarray(arr, dtype=np.float32)
+
+        self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -667,6 +706,8 @@ cdef class _ForbitCore:
     def fwrite_dp4(self, np.ndarray[real_t, ndim=4] arr):
         cdef np.ndarray[np.float64_t,ndim=4] arr_cp = np.ascontiguousarray(arr, dtype=np.float64)
 
+        self.__negative_record()
+
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
             arr_cp.shape[2] != self.__shape[2] or \
@@ -686,6 +727,8 @@ cdef class _ForbitCore:
 
     def fwrite_sp5(self, np.ndarray[real_t, ndim=5] arr):
         cdef np.ndarray[np.float32_t,ndim=5] arr_cp = np.ascontiguousarray(arr, dtype=np.float32)
+
+        self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -709,6 +752,8 @@ cdef class _ForbitCore:
     def fwrite_dp5(self, np.ndarray[real_t, ndim=5] arr):
         cdef np.ndarray[np.float64_t,ndim=5] arr_cp = np.ascontiguousarray(arr, dtype=np.float64)
 
+        self.__negative_record()
+
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
             arr_cp.shape[2] != self.__shape[2] or \
@@ -730,6 +775,8 @@ cdef class _ForbitCore:
 
     def fwrite_sp6(self, np.ndarray[real_t, ndim=6] arr):
         cdef np.ndarray[np.float32_t,ndim=6] arr_cp = np.ascontiguousarray(arr, dtype=np.float32)
+
+        self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -754,6 +801,8 @@ cdef class _ForbitCore:
 
     def fwrite_dp6(self, np.ndarray[real_t, ndim=6] arr):
         cdef np.ndarray[np.float64_t,ndim=6] arr_cp = np.ascontiguousarray(arr, dtype=np.float64)
+
+        self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -788,6 +837,14 @@ cdef class _ForbitCore:
             return
 
         raise ValueError("In forbit.reset_record()\nAt least one of 'newRecord' or 'increment' must be provided")
+
+
+    def __negative_record(self):
+        if (self.__record > 0):
+            return
+
+        raise ValueError(f'Invalid record: {self.__record}. Current record is zero or a negative value')
+
 
 
 def open(filename, action, shape, kind, record, recstep, endian):

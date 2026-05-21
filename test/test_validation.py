@@ -5,6 +5,7 @@ import pytest
 
 import forbit
 
+from conftest import ENDIANS, KINDS, NDIMS, dtype_for_kind, sample_array, shape_for_ndim
 
 ndim_max = 6
 def test_invalid_filename_type():
@@ -32,6 +33,18 @@ def test_invalid_shape(binary_dir, shape):
 
     with pytest.raises((TypeError, ValueError)):
         forbit.open(str(filename), "write", shape, 4, 1, 1, "little_endian")
+
+@pytest.mark.parametrize("record", [0, -1])
+@pytest.mark.parametrize("kind"  , KINDS)
+@pytest.mark.parametrize("ndim"  , NDIMS)
+def test_invalid_record(binary_dir, record, kind, ndim):
+    filename = binary_dir / "invalid_shape.grd"
+    shape    = shape_for_ndim(ndim)
+    arr      = sample_array(shape, kind, 1)
+    fp = forbit.open(str(filename), 'write', shape, kind, record, 1, "little_endian")
+    with pytest.raises(ValueError):
+        fp.write(arr)
+    fp.close()
 
 
 def test_too_many_dimensions(binary_dir):
