@@ -55,7 +55,7 @@ module binio
         !     ERROR STOP
         ! endif
 
-        stat = 1
+        stat = 0
 
         filelen   = charlen(file, filelen_max)
         actlen    = charlen(action, 16)
@@ -85,7 +85,8 @@ module binio
            & FORM   ='UNFORMATTED'  , &
            & ACCESS ='DIRECT'       , &
            & RECL   =recl           , &
-           & CONVERT=trim(endian_cp)  )
+           & CONVERT=trim(endian_cp), &
+           & IOSTAT =stat             )
 
     end subroutine binio_fopen
 

@@ -254,9 +254,10 @@ cdef class _ForbitCore:
     cdef public object write
 
 
-    def __init__(self, filename, action, object shape, const int kind, const long long record, const long long recstep, endian):
+    def __init__(self, filename, action, object shape, const int kind, const long long record, const long long recstep, endian, object recl=None):
         cdef np.ndarray shape_cp
-        cdef long long recl
+        cdef long long recl_cp
+        cdef long long arr_byte
         cdef int shape_size
         cdef int stat
         cdef int i
@@ -310,12 +311,21 @@ cdef class _ForbitCore:
         strncpy(self.__action, action  , ACTIONLEN_MAX+1)
         strncpy(self.__endian, endian  , ENDIANLEN_MAX+1)
 
-        recl = <long long>kind
+        arr_byte = <long long>kind
         for i in range(shape_size):
             self.__shape[i] = int(shape_cp[i])
+
             if (self.__shape[i] <= 0):
                 raise ValueError("Invalid shape: negative value is included in the input")
-            recl = recl*<long long>self.__shape[i]
+
+            arr_byte = arr_byte*<long long>self.__shape[i]
+
+        if (recl is None):
+            recl_cp = arr_byte
+        else:
+            recl_cp = <long long>recl
+            if (arr_byte > recl_cp):
+                raise ValueError(f'"recl" is too small: {recl_cp}. "recl" must be equal or greater than the total size of array ({arr_byte}byte)')
 
         # if (action == b"read" or action == b"readwrite"):
         #     if (kind == 4):
@@ -332,11 +342,11 @@ cdef class _ForbitCore:
                     &stat        ,
                     self.__file  ,
                     self.__action,
-                    &recl        ,
+                    &recl_cp     ,
                     self.__endian)
 
-        if (stat < 0):
-            raise ValueError(f"Binary file does not exist: {self.__file.decode()}")
+        if (stat != 0):
+            raise ValueError(f"Failed to open {self.__file.decode()}")
 
         self.__is_open = 1
 
