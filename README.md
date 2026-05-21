@@ -23,7 +23,7 @@ For example, users may construct their own abstractions using custom-defined cla
 ## Requirements
 FORBIT is implemented with NumPy, Cython, and Fortran.
 The package metadata declares support for CPython on POSIX/Linux with Python 3.9 to 3.13.
-However, it may also be possible to build from the source code manualy on the other environments.
+However, it may also be possible to build from the source code manually in other environments.
 
 Runtime dependency:
 - NumPy  
@@ -175,6 +175,8 @@ The benchmark scripts used for the measurements below and their results are avai
 | Number of Records | 5000 |
 | Record Step (skip test) | 3 |
 | Storage Type | HDD |
+| Fortran Compiler | GNU Fortran (GCC) 15.1.0 |
+| C Compiler | gcc (GCC) 15.1.0 |
 
 ### Compared Implementations
 FORBIT was compared against minimal NumPy implementations producing byte-identical binary input/output.
@@ -244,7 +246,7 @@ arr[...] = work_arr.reshape([nz,ny,nx])
 ## API
 ### `forbit.open()`
 ```python
-file = forbit.open(filename, action, shape, kind, record, recstep, endian, recl)
+file = forbit.open(filename, action, shape, kind, record, recstep, endian, recl=None)
 ```
 Open a Fortran direct-access unformatted binary file.
 
