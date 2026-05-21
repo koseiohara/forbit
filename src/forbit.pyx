@@ -22,38 +22,44 @@ cdef extern from "binio.h":
     void binio_fread_sp1(const int*   unit      ,
                          const int*   n1        ,
                          const long long* record,
-                               float* input_data);
+                               float* input_data,
+                               int*   stat      );
 
     void binio_fread_dp1(const int*    unit      ,
                          const int*    n1        ,
                          const long long* record ,
-                               double* input_data);
+                               double* input_data,
+                               int*   stat       );
 
     void binio_fread_sp2(const int*   unit      ,
                          const int*   n1        ,
                          const int*   n2        ,
                          const long long* record,
-                               float* input_data);
+                               float* input_data,
+                               int*   stat      );
 
     void binio_fread_dp2(const int*    unit      ,
                          const int*    n1        ,
                          const int*    n2        ,
                          const long long* record ,
-                               double* input_data);
+                               double* input_data,
+                               int*   stat       );
 
     void binio_fread_sp3(const int*   unit      ,
                          const int*   n1        ,
                          const int*   n2        ,
                          const int*   n3        ,
                          const long long* record,
-                               float* input_data);
+                               float* input_data,
+                               int*   stat      );
 
     void binio_fread_dp3(const int*    unit      ,
                          const int*    n1        ,
                          const int*    n2        ,
                          const int*    n3        ,
                          const long long* record ,
-                               double* input_data);
+                               double* input_data,
+                               int*   stat       );
 
     void binio_fread_sp4(const int*   unit      ,
                          const int*   n1        ,
@@ -61,7 +67,8 @@ cdef extern from "binio.h":
                          const int*   n3        ,
                          const int*   n4        ,
                          const long long* record,
-                               float* input_data);
+                               float* input_data,
+                               int*   stat      );
 
     void binio_fread_dp4(const int*    unit      ,
                          const int*    n1        ,
@@ -69,7 +76,8 @@ cdef extern from "binio.h":
                          const int*    n3        ,
                          const int*    n4        ,
                          const long long* record ,
-                               double* input_data);
+                               double* input_data,
+                               int*   stat       );
 
     void binio_fread_sp5(const int*   unit      ,
                          const int*   n1        ,
@@ -78,7 +86,8 @@ cdef extern from "binio.h":
                          const int*   n4        ,
                          const int*   n5        ,
                          const long long* record,
-                               float* input_data);
+                               float* input_data,
+                               int*   stat      );
 
     void binio_fread_dp5(const int*    unit      ,
                          const int*    n1        ,
@@ -87,7 +96,8 @@ cdef extern from "binio.h":
                          const int*    n4        ,
                          const int*    n5        ,
                          const long long* record ,
-                               double* input_data);
+                               double* input_data,
+                               int*   stat       );
 
     void binio_fread_sp6(const int*   unit      ,
                          const int*   n1        ,
@@ -97,7 +107,8 @@ cdef extern from "binio.h":
                          const int*   n5        ,
                          const int*   n6        ,
                          const long long* record,
-                               float* input_data);
+                               float* input_data,
+                               int*   stat      );
 
     void binio_fread_dp6(const int*    unit      ,
                          const int*    n1        ,
@@ -107,7 +118,8 @@ cdef extern from "binio.h":
                          const int*    n5        ,
                          const int*    n6        ,
                          const long long* record ,
-                               double* input_data);
+                               double* input_data,
+                               int*   stat       );
 
     void binio_fwrite_sp1(const int*   unit       ,
                           const int*   n1         ,
@@ -359,6 +371,7 @@ cdef class _ForbitCore:
 
     def fread_sp1(self):
         cdef np.ndarray[np.float32_t,ndim=1] result
+        cdef int stat
         result = np.empty(self.__shape[0], dtype=np.float32)
 
         self.__negative_record()
@@ -366,8 +379,11 @@ cdef class _ForbitCore:
         binio_fread_sp1(&self.__unit                 ,
                         &self.__shape[0]             ,
                         &self.__record               ,
-                        <float*> PyArray_DATA(result))
+                        <float*> PyArray_DATA(result),
+                        &stat                        ,
+                        &stat                        )
 
+        self.__read_check(stat)
         self.__record = self.__record + self.__recstep
 
         return result
@@ -375,6 +391,7 @@ cdef class _ForbitCore:
 
     def fread_dp1(self):
         cdef np.ndarray[np.float64_t,ndim=1] result
+        cdef int stat
         result = np.empty(self.__shape[0], dtype=np.float64)
 
         self.__negative_record()
@@ -382,8 +399,10 @@ cdef class _ForbitCore:
         binio_fread_dp1(&self.__unit                  ,
                         &self.__shape[0]              ,
                         &self.__record                ,
-                        <double*> PyArray_DATA(result))
+                        <double*> PyArray_DATA(result),
+                        &stat                         )
 
+        self.__read_check(stat)
         self.__record = self.__record + self.__recstep
 
         return result
@@ -391,6 +410,7 @@ cdef class _ForbitCore:
 
     def fread_sp2(self):
         cdef np.ndarray[np.float32_t,ndim=2] result
+        cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float32)
 
         self.__negative_record()
@@ -399,8 +419,10 @@ cdef class _ForbitCore:
                         &self.__shape[1]             ,
                         &self.__shape[0]             ,
                         &self.__record               ,
-                        <float*> PyArray_DATA(result))
+                        <float*> PyArray_DATA(result),
+                        &stat                        )
 
+        self.__read_check(stat)
         self.__record = self.__record + self.__recstep
 
         return result
@@ -408,6 +430,7 @@ cdef class _ForbitCore:
 
     def fread_dp2(self):
         cdef np.ndarray[np.float64_t,ndim=2] result
+        cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float64)
 
         self.__negative_record()
@@ -416,8 +439,10 @@ cdef class _ForbitCore:
                         &self.__shape[1]              ,
                         &self.__shape[0]              ,
                         &self.__record                ,
-                        <double*> PyArray_DATA(result))
+                        <double*> PyArray_DATA(result),
+                        &stat                         )
 
+        self.__read_check(stat)
         self.__record = self.__record + self.__recstep
 
         return result
@@ -425,6 +450,7 @@ cdef class _ForbitCore:
 
     def fread_sp3(self):
         cdef np.ndarray[np.float32_t,ndim=3] result
+        cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float32)
 
         self.__negative_record()
@@ -434,8 +460,10 @@ cdef class _ForbitCore:
                         &self.__shape[1]             ,
                         &self.__shape[0]             ,
                         &self.__record               ,
-                        <float*> PyArray_DATA(result))
+                        <float*> PyArray_DATA(result),
+                        &stat                        )
 
+        self.__read_check(stat)
         self.__record = self.__record + self.__recstep
 
         return result
@@ -443,6 +471,7 @@ cdef class _ForbitCore:
 
     def fread_dp3(self):
         cdef np.ndarray[np.float64_t,ndim=3] result
+        cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float64)
 
         self.__negative_record()
@@ -452,8 +481,10 @@ cdef class _ForbitCore:
                         &self.__shape[1]              ,
                         &self.__shape[0]              ,
                         &self.__record                ,
-                        <double*> PyArray_DATA(result))
+                        <double*> PyArray_DATA(result),
+                        &stat                         )
 
+        self.__read_check(stat)
         self.__record = self.__record + self.__recstep
 
         return result
@@ -461,6 +492,7 @@ cdef class _ForbitCore:
 
     def fread_sp4(self):
         cdef np.ndarray[np.float32_t,ndim=4] result
+        cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3]), dtype=np.float32)
 
         self.__negative_record()
@@ -471,8 +503,10 @@ cdef class _ForbitCore:
                         &self.__shape[1]             ,
                         &self.__shape[0]             ,
                         &self.__record               ,
-                        <float*> PyArray_DATA(result))
+                        <float*> PyArray_DATA(result),
+                        &stat                        )
 
+        self.__read_check(stat)
         self.__record = self.__record + self.__recstep
 
         return result
@@ -480,18 +514,21 @@ cdef class _ForbitCore:
 
     def fread_dp4(self):
         cdef np.ndarray[np.float64_t,ndim=4] result
+        cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3]), dtype=np.float64)
 
         self.__negative_record()
 
-        binio_fread_dp4(&self.__unit                 ,
-                        &self.__shape[3]             ,
-                        &self.__shape[2]             ,
-                        &self.__shape[1]             ,
-                        &self.__shape[0]             ,
-                        &self.__record               ,
-                        <double*> PyArray_DATA(result))
+        binio_fread_dp4(&self.__unit                  ,
+                        &self.__shape[3]              ,
+                        &self.__shape[2]              ,
+                        &self.__shape[1]              ,
+                        &self.__shape[0]              ,
+                        &self.__record                ,
+                        <double*> PyArray_DATA(result),
+                        &stat                         )
 
+        self.__read_check(stat)
         self.__record = self.__record + self.__recstep
 
         return result
@@ -499,6 +536,7 @@ cdef class _ForbitCore:
 
     def fread_sp5(self):
         cdef np.ndarray[np.float32_t,ndim=5] result
+        cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4]), dtype=np.float32)
 
         self.__negative_record()
@@ -510,8 +548,10 @@ cdef class _ForbitCore:
                         &self.__shape[1]             ,
                         &self.__shape[0]             ,
                         &self.__record               ,
-                        <float*> PyArray_DATA(result))
+                        <float*> PyArray_DATA(result),
+                        &stat                        )
 
+        self.__read_check(stat)
         self.__record = self.__record + self.__recstep
 
         return result
@@ -519,6 +559,7 @@ cdef class _ForbitCore:
 
     def fread_dp5(self):
         cdef np.ndarray[np.float64_t,ndim=5] result
+        cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4]), dtype=np.float64)
 
         self.__negative_record()
@@ -530,8 +571,10 @@ cdef class _ForbitCore:
                         &self.__shape[1]              ,
                         &self.__shape[0]              ,
                         &self.__record                ,
-                        <double*> PyArray_DATA(result))
+                        <double*> PyArray_DATA(result),
+                        &stat                         )
 
+        self.__read_check(stat)
         self.__record = self.__record + self.__recstep
 
         return result
@@ -539,6 +582,7 @@ cdef class _ForbitCore:
 
     def fread_sp6(self):
         cdef np.ndarray[np.float32_t,ndim=6] result
+        cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4],self.__shape[5]), dtype=np.float32)
 
         self.__negative_record()
@@ -551,8 +595,10 @@ cdef class _ForbitCore:
                         &self.__shape[1]             ,
                         &self.__shape[0]             ,
                         &self.__record               ,
-                        <float*> PyArray_DATA(result))
+                        <float*> PyArray_DATA(result),
+                        &stat                        )
 
+        self.__read_check(stat)
         self.__record = self.__record + self.__recstep
 
         return result
@@ -560,6 +606,7 @@ cdef class _ForbitCore:
 
     def fread_dp6(self):
         cdef np.ndarray[np.float64_t,ndim=6] result
+        cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4],self.__shape[5]), dtype=np.float64)
 
         self.__negative_record()
@@ -572,8 +619,10 @@ cdef class _ForbitCore:
                         &self.__shape[1]              ,
                         &self.__shape[0]              ,
                         &self.__record                ,
-                        <double*> PyArray_DATA(result))
+                        <double*> PyArray_DATA(result),
+                        &stat                         )
 
+        self.__read_check(stat)
         self.__record = self.__record + self.__recstep
 
         return result
@@ -851,6 +900,12 @@ cdef class _ForbitCore:
 
         raise ValueError(f'Invalid record: {self.__record}. Current record is zero or a negative value')
 
+
+    def __read_check(self, stat):
+        if (stat == 0):
+            return
+
+        raise IOError(f'Failed to read binary file. Fortran IOSTAT:{stat}')
 
 
 def open(filename, action, shape, kind, record, recstep, endian):
