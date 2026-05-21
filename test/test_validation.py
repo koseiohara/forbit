@@ -34,19 +34,6 @@ def test_invalid_shape(binary_dir, shape):
     with pytest.raises((TypeError, ValueError)):
         forbit.open(str(filename), "write", shape, 4, 1, 1, "little_endian")
 
-@pytest.mark.parametrize("record", [0, -1])
-@pytest.mark.parametrize("kind"  , KINDS)
-@pytest.mark.parametrize("ndim"  , NDIMS)
-def test_invalid_record(binary_dir, record, kind, ndim):
-    filename = binary_dir / "invalid_shape.grd"
-    shape    = shape_for_ndim(ndim)
-    arr      = sample_array(shape, kind, 1)
-    fp = forbit.open(str(filename), 'write', shape, kind, record, 1, "little_endian")
-    with pytest.raises(ValueError):
-        fp.write(arr)
-    fp.close()
-
-
 def test_too_many_dimensions(binary_dir):
     filename = binary_dir / "too_many_dimensions.grd"
 
@@ -83,6 +70,56 @@ def test_open_error(binary_dir):
 
     with pytest.raises(ValueError):
         forbit.open(str(failfile), "read", shape, 4, 1, 1, "little_endian")
+
+
+def test_exceed_record(binary_dir):
+    filename = binary_dir / "exceed_record_error.grd"
+    shape = [2,3]
+
+    file = forbit.open(str(filename), "write", shape, 4, 1, 1, "little_endian")
+    file.write(np.zeros(shape, dtype=np.float32))
+    file.write(np.zeros(shape, dtype=np.float32))
+    file.write(np.zeros(shape, dtype=np.float32))
+    file.close()
+
+    with pytest.raises(IOError):
+        file = forbit.open(str(filename), "read", shape, 4, 1, 1, "little_endian")
+        arr = file.read()
+        arr = file.read()
+        arr = file.read()
+        arr = file.read()
+        file.close()
+
+
+@pytest.mark.parametrize("record", [0, -1])
+@pytest.mark.parametrize("kind"  , KINDS)
+@pytest.mark.parametrize("ndim"  , NDIMS)
+def test_read_negative_record(binary_dir, record, kind, ndim):
+    filename = binary_dir / "exceed_record_error.grd"
+    shape    = shape_for_ndim(ndim)
+    arr      = sample_array(shape, kind, 1)
+
+    file = forbit.open(str(filename), "write", shape, kind, 1, 1, "little_endian")
+    file.write(arr)
+    file.close()
+
+    with pytest.raises(IOError):
+        file = forbit.open(str(filename), "read", shape, kind, record, 1, "little_endian")
+        arr  = file.read()
+        file.close()
+
+
+@pytest.mark.parametrize("record", [0, -1])
+@pytest.mark.parametrize("kind"  , KINDS)
+@pytest.mark.parametrize("ndim"  , NDIMS)
+def test_invalid_record(binary_dir, record, kind, ndim):
+    filename = binary_dir / "invalid_shape.grd"
+    shape    = shape_for_ndim(ndim)
+    arr      = sample_array(shape, kind, 1)
+    fp = forbit.open(str(filename), 'write', shape, kind, record, 1, "little_endian")
+    with pytest.raises(IOError):
+        fp.write(arr)
+    fp.close()
 
 
 def test_reset_record_without_argument(binary_dir):

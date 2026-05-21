@@ -124,38 +124,44 @@ cdef extern from "binio.h":
     void binio_fwrite_sp1(const int*   unit       ,
                           const int*   n1         ,
                           const long long* record ,
-                                float* output_data);
+                                float* output_data,
+                                int*   stat       );
 
     void binio_fwrite_dp1(const int*    unit       ,
                           const int*    n1         ,
                           const long long* record  ,
-                                double* output_data);
+                                double* output_data,
+                                int*   stat       );
 
     void binio_fwrite_sp2(const int*   unit       ,
                           const int*   n1         ,
                           const int*   n2         ,
                           const long long* record ,
-                                float* output_data);
+                                float* output_data,
+                                int*   stat       );
 
     void binio_fwrite_dp2(const int*    unit       ,
                           const int*    n1         ,
                           const int*    n2         ,
                           const long long* record  ,
-                                double* output_data);
+                                double* output_data,
+                                int*   stat       );
 
     void binio_fwrite_sp3(const int*   unit       ,
                           const int*   n1         ,
                           const int*   n2         ,
                           const int*   n3         ,
                           const long long* record ,
-                                float* output_data);
+                                float* output_data,
+                                int*   stat       );
 
     void binio_fwrite_dp3(const int*    unit       ,
                           const int*    n1         ,
                           const int*    n2         ,
                           const int*    n3         ,
                           const long long* record  ,
-                                double* output_data);
+                                double* output_data,
+                                int*   stat       );
 
     void binio_fwrite_sp4(const int*   unit       ,
                           const int*   n1         ,
@@ -163,7 +169,8 @@ cdef extern from "binio.h":
                           const int*   n3         ,
                           const int*   n4         ,
                           const long long* record ,
-                                float* output_data);
+                                float* output_data,
+                                int*   stat       );
 
     void binio_fwrite_dp4(const int*    unit       ,
                           const int*    n1         ,
@@ -171,7 +178,8 @@ cdef extern from "binio.h":
                           const int*    n3         ,
                           const int*    n4         ,
                           const long long* record  ,
-                                double* output_data);
+                                double* output_data,
+                                int*   stat       );
 
     void binio_fwrite_sp5(const int*   unit       ,
                           const int*   n1         ,
@@ -180,7 +188,8 @@ cdef extern from "binio.h":
                           const int*   n4         ,
                           const int*   n5         ,
                           const long long* record ,
-                                float* output_data);
+                                float* output_data,
+                                int*   stat       );
 
     void binio_fwrite_dp5(const int*    unit       ,
                           const int*    n1         ,
@@ -189,7 +198,8 @@ cdef extern from "binio.h":
                           const int*    n4         ,
                           const int*    n5         ,
                           const long long* record  ,
-                                double* output_data);
+                                double* output_data,
+                                int*   stat       );
 
     void binio_fwrite_sp6(const int*   unit        ,
                           const int*   n1          ,
@@ -199,7 +209,8 @@ cdef extern from "binio.h":
                           const int*   n5          ,
                           const int*   n6          ,
                           const long long* record  ,
-                                float* output_data);
+                                float* output_data,
+                                int*   stat       );
 
     void binio_fwrite_dp6(const int*    unit       ,
                           const int*    n1         ,
@@ -209,7 +220,8 @@ cdef extern from "binio.h":
                           const int*    n5         ,
                           const int*    n6         ,
                           const long long* record  ,
-                                double* output_data);
+                                double* output_data,
+                                int*   stat       );
 
 
 ctypedef fused real_t:
@@ -322,7 +334,7 @@ cdef class _ForbitCore:
                     self.__endian)
 
         if (stat < 0):
-            raise ValueError("Binary file does not exist: {self.__file}")
+            raise ValueError(f"Binary file does not exist: {self.__file.decode()}")
 
         self.__is_open = 1
 
@@ -374,13 +386,12 @@ cdef class _ForbitCore:
         cdef int stat
         result = np.empty(self.__shape[0], dtype=np.float32)
 
-        self.__negative_record()
+        # self.__negative_record()
 
         binio_fread_sp1(&self.__unit                 ,
                         &self.__shape[0]             ,
                         &self.__record               ,
                         <float*> PyArray_DATA(result),
-                        &stat                        ,
                         &stat                        )
 
         self.__read_check(stat)
@@ -394,7 +405,7 @@ cdef class _ForbitCore:
         cdef int stat
         result = np.empty(self.__shape[0], dtype=np.float64)
 
-        self.__negative_record()
+        # self.__negative_record()
 
         binio_fread_dp1(&self.__unit                  ,
                         &self.__shape[0]              ,
@@ -413,7 +424,7 @@ cdef class _ForbitCore:
         cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float32)
 
-        self.__negative_record()
+        # self.__negative_record()
 
         binio_fread_sp2(&self.__unit                 ,
                         &self.__shape[1]             ,
@@ -433,7 +444,7 @@ cdef class _ForbitCore:
         cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1]), dtype=np.float64)
 
-        self.__negative_record()
+        # self.__negative_record()
 
         binio_fread_dp2(&self.__unit                  ,
                         &self.__shape[1]              ,
@@ -453,7 +464,7 @@ cdef class _ForbitCore:
         cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float32)
 
-        self.__negative_record()
+        # self.__negative_record()
 
         binio_fread_sp3(&self.__unit                 ,
                         &self.__shape[2]             ,
@@ -474,7 +485,7 @@ cdef class _ForbitCore:
         cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2]), dtype=np.float64)
 
-        self.__negative_record()
+        # self.__negative_record()
 
         binio_fread_dp3(&self.__unit                  ,
                         &self.__shape[2]              ,
@@ -495,7 +506,7 @@ cdef class _ForbitCore:
         cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3]), dtype=np.float32)
 
-        self.__negative_record()
+        # self.__negative_record()
 
         binio_fread_sp4(&self.__unit                 ,
                         &self.__shape[3]             ,
@@ -517,7 +528,7 @@ cdef class _ForbitCore:
         cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3]), dtype=np.float64)
 
-        self.__negative_record()
+        # self.__negative_record()
 
         binio_fread_dp4(&self.__unit                  ,
                         &self.__shape[3]              ,
@@ -539,7 +550,7 @@ cdef class _ForbitCore:
         cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4]), dtype=np.float32)
 
-        self.__negative_record()
+        # self.__negative_record()
 
         binio_fread_sp5(&self.__unit                 ,
                         &self.__shape[4]             ,
@@ -562,7 +573,7 @@ cdef class _ForbitCore:
         cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4]), dtype=np.float64)
 
-        self.__negative_record()
+        # self.__negative_record()
 
         binio_fread_dp5(&self.__unit                  ,
                         &self.__shape[4]              ,
@@ -585,7 +596,7 @@ cdef class _ForbitCore:
         cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4],self.__shape[5]), dtype=np.float32)
 
-        self.__negative_record()
+        # self.__negative_record()
 
         binio_fread_sp6(&self.__unit                 ,
                         &self.__shape[5]             ,
@@ -609,7 +620,7 @@ cdef class _ForbitCore:
         cdef int stat
         result = np.empty((self.__shape[0],self.__shape[1],self.__shape[2],self.__shape[3],self.__shape[4],self.__shape[5]), dtype=np.float64)
 
-        self.__negative_record()
+        # self.__negative_record()
 
         binio_fread_dp6(&self.__unit                  ,
                         &self.__shape[5]              ,
@@ -630,8 +641,9 @@ cdef class _ForbitCore:
 
     def fwrite_sp1(self, np.ndarray[real_t, ndim=1] arr):
         cdef np.ndarray[np.float32_t,ndim=1] arr_cp = np.ascontiguousarray(arr, dtype=np.float32)
+        cdef int stat
 
-        self.__negative_record()
+        # self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0]):
             raise ValueError("Array shape mismatch")
@@ -639,15 +651,18 @@ cdef class _ForbitCore:
         binio_fwrite_sp1(&self.__unit                 ,
                          &self.__shape[0]             ,
                          &self.__record               ,
-                         <float*> PyArray_DATA(arr_cp))
+                         <float*> PyArray_DATA(arr_cp),
+                         &stat                         )
 
+        self.__write_check(stat)
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_dp1(self, np.ndarray[real_t, ndim=1] arr):
         cdef np.ndarray[np.float64_t,ndim=1] arr_cp = np.ascontiguousarray(arr, dtype=np.float64)
+        cdef int stat
 
-        self.__negative_record()
+        # self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0]):
             raise ValueError("Array shape mismatch")
@@ -655,15 +670,18 @@ cdef class _ForbitCore:
         binio_fwrite_dp1(&self.__unit                  ,
                          &self.__shape[0]              ,
                          &self.__record                ,
-                         <double*> PyArray_DATA(arr_cp))
+                         <double*> PyArray_DATA(arr_cp),
+                         &stat                         )
 
+        self.__write_check(stat)
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_sp2(self, np.ndarray[real_t, ndim=2] arr):
         cdef np.ndarray[np.float32_t,ndim=2] arr_cp = np.ascontiguousarray(arr, dtype=np.float32)
+        cdef int stat
 
-        self.__negative_record()
+        # self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1]):
@@ -673,15 +691,18 @@ cdef class _ForbitCore:
                          &self.__shape[1]             ,
                          &self.__shape[0]             ,
                          &self.__record               ,
-                         <float*> PyArray_DATA(arr_cp))
+                         <float*> PyArray_DATA(arr_cp),
+                         &stat                         )
 
+        self.__write_check(stat)
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_dp2(self, np.ndarray[real_t, ndim=2] arr):
         cdef np.ndarray[np.float64_t,ndim=2] arr_cp = np.ascontiguousarray(arr, dtype=np.float64)
+        cdef int stat
 
-        self.__negative_record()
+        # self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1]):
@@ -691,15 +712,18 @@ cdef class _ForbitCore:
                          &self.__shape[1]              ,
                          &self.__shape[0]              ,
                          &self.__record                ,
-                         <double*> PyArray_DATA(arr_cp))
+                         <double*> PyArray_DATA(arr_cp),
+                         &stat                         )
 
+        self.__write_check(stat)
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_sp3(self, np.ndarray[real_t, ndim=3] arr):
         cdef np.ndarray[np.float32_t,ndim=3] arr_cp = np.ascontiguousarray(arr, dtype=np.float32)
+        cdef int stat
 
-        self.__negative_record()
+        # self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -711,15 +735,18 @@ cdef class _ForbitCore:
                          &self.__shape[1]             ,
                          &self.__shape[0]             ,
                          &self.__record               ,
-                         <float*> PyArray_DATA(arr_cp))
+                         <float*> PyArray_DATA(arr_cp),
+                         &stat                         )
 
+        self.__write_check(stat)
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_dp3(self, np.ndarray[real_t, ndim=3] arr):
         cdef np.ndarray[np.float64_t,ndim=3] arr_cp = np.ascontiguousarray(arr, dtype=np.float64)
+        cdef int stat
 
-        self.__negative_record()
+        # self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -731,15 +758,18 @@ cdef class _ForbitCore:
                          &self.__shape[1]              ,
                          &self.__shape[0]              ,
                          &self.__record                ,
-                         <double*> PyArray_DATA(arr_cp))
+                         <double*> PyArray_DATA(arr_cp),
+                         &stat                         )
 
+        self.__write_check(stat)
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_sp4(self, np.ndarray[real_t, ndim=4] arr):
         cdef np.ndarray[np.float32_t,ndim=4] arr_cp = np.ascontiguousarray(arr, dtype=np.float32)
+        cdef int stat
 
-        self.__negative_record()
+        # self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -753,15 +783,18 @@ cdef class _ForbitCore:
                          &self.__shape[1]             ,
                          &self.__shape[0]             ,
                          &self.__record               ,
-                         <float*> PyArray_DATA(arr_cp))
+                         <float*> PyArray_DATA(arr_cp),
+                         &stat                         )
 
+        self.__write_check(stat)
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_dp4(self, np.ndarray[real_t, ndim=4] arr):
         cdef np.ndarray[np.float64_t,ndim=4] arr_cp = np.ascontiguousarray(arr, dtype=np.float64)
+        cdef int stat
 
-        self.__negative_record()
+        # self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -775,15 +808,18 @@ cdef class _ForbitCore:
                          &self.__shape[1]              ,
                          &self.__shape[0]              ,
                          &self.__record                ,
-                         <double*> PyArray_DATA(arr_cp))
+                         <double*> PyArray_DATA(arr_cp),
+                         &stat                         )
 
+        self.__write_check(stat)
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_sp5(self, np.ndarray[real_t, ndim=5] arr):
         cdef np.ndarray[np.float32_t,ndim=5] arr_cp = np.ascontiguousarray(arr, dtype=np.float32)
+        cdef int stat
 
-        self.__negative_record()
+        # self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -799,15 +835,18 @@ cdef class _ForbitCore:
                          &self.__shape[1]             ,
                          &self.__shape[0]             ,
                          &self.__record               ,
-                         <float*> PyArray_DATA(arr_cp))
+                         <float*> PyArray_DATA(arr_cp),
+                         &stat                         )
 
+        self.__write_check(stat)
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_dp5(self, np.ndarray[real_t, ndim=5] arr):
         cdef np.ndarray[np.float64_t,ndim=5] arr_cp = np.ascontiguousarray(arr, dtype=np.float64)
+        cdef int stat
 
-        self.__negative_record()
+        # self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -823,15 +862,18 @@ cdef class _ForbitCore:
                          &self.__shape[1]              ,
                          &self.__shape[0]              ,
                          &self.__record                ,
-                         <double*> PyArray_DATA(arr_cp))
+                         <double*> PyArray_DATA(arr_cp),
+                         &stat                         )
 
+        self.__write_check(stat)
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_sp6(self, np.ndarray[real_t, ndim=6] arr):
         cdef np.ndarray[np.float32_t,ndim=6] arr_cp = np.ascontiguousarray(arr, dtype=np.float32)
+        cdef int stat
 
-        self.__negative_record()
+        # self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -849,15 +891,18 @@ cdef class _ForbitCore:
                          &self.__shape[1]             ,
                          &self.__shape[0]             ,
                          &self.__record               ,
-                         <float*> PyArray_DATA(arr_cp))
+                         <float*> PyArray_DATA(arr_cp),
+                         &stat                         )
 
+        self.__write_check(stat)
         self.__record = self.__record + self.__recstep
 
 
     def fwrite_dp6(self, np.ndarray[real_t, ndim=6] arr):
         cdef np.ndarray[np.float64_t,ndim=6] arr_cp = np.ascontiguousarray(arr, dtype=np.float64)
+        cdef int stat
 
-        self.__negative_record()
+        # self.__negative_record()
 
         if (arr_cp.shape[0] != self.__shape[0] or \
             arr_cp.shape[1] != self.__shape[1] or \
@@ -875,9 +920,12 @@ cdef class _ForbitCore:
                          &self.__shape[1]              ,
                          &self.__shape[0]              ,
                          &self.__record                ,
-                         <double*> PyArray_DATA(arr_cp))
+                         <double*> PyArray_DATA(arr_cp),
+                         &stat                         )
 
+        self.__write_check(stat)
         self.__record = self.__record + self.__recstep
+
 
     def get_record(self):
         return self.__record
@@ -905,7 +953,14 @@ cdef class _ForbitCore:
         if (stat == 0):
             return
 
-        raise IOError(f'Failed to read binary file. Fortran IOSTAT:{stat}')
+        raise IOError(f'Failed to read binary file. Record: {self.__record}, Fortran IOSTAT: {stat}')
+
+
+    def __write_check(self, stat):
+        if (stat == 0):
+            return
+
+        raise IOError(f'Failed to write to a binary file. Record: {self.__record}, Fortran IOSTAT: {stat}')
 
 
 def open(filename, action, shape, kind, record, recstep, endian):
