@@ -7,6 +7,8 @@ from numpy cimport PyArray_DATA
 cimport cython
 from libc.string cimport strncpy
 
+np.import_array()
+
 cdef extern from "binio.h":
     void binio_fopen(      int*       unit  ,
                            int*       stat  ,
@@ -252,7 +254,7 @@ cdef class _ForbitCore:
     cdef public object write
 
 
-    def __init__(self, filename, action, object shape, const int kind, const int record, const int recstep, endian):
+    def __init__(self, filename, action, object shape, const int kind, const long long record, const long long recstep, endian):
         cdef np.ndarray shape_cp
         cdef long long recl
         cdef int shape_size
