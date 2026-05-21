@@ -1,10 +1,15 @@
 # FORtran-based Binary-io Interface Toolkit (FORBIT)
-FORBIT is a Python package for reading and writing Fortran direct-access unformatted binary files as NumPy arrays.
+FORBIT is a lightweight Python package for reading and writing Fortran direct-access unformatted binary files as NumPy arrays.
 It is designed for no-header binary files whose records are written by Fortran with `ACCESS='DIRECT'` and `FORM='UNFORMATTED'`.
-The Python interface keeps track of the current Fortran record number, reads or writes one fixed-size record at a time, and returns ordinary `numpy.ndarray` objects.  
+The Python interface keeps track of the current Fortran record number, reads or writes one fixed-size record at a time, and returns `numpy.ndarray`.
 
-FORBIT brings lightweight direct-access binary I/O to NumPy ndarrays while keeping a workflow familiar to Fortran users.
-Unlike scipy.io.FortranFile, FORBIT supports fixed-length record-oriented direct-access workflows commonly used in atmospheric/ocean science CFD, and HPC codes.
+FORBIT brings direct-access binary I/O to NumPy ndarrays while keeping a workflow familiar to Fortran users.
+Unlike scipy.io.FortranFile, FORBIT supports fixed-length record-oriented direct-access workflows commonly used in atmospheric/ocean science, CFD, and HPC codes.
+
+This library intentionally avoids providing high-level abstractions.
+Instead, users can freely create and manage wrapper routines suited to their own applications.
+The library is intended to provide a foundation for a wide variety of analyses.
+For example, users may construct their own abstractions using custom-defined classes, or convert the outputs into xarray objects for downstream analysis.
 
 ## Features
 - Read and write Fortran direct-access unformatted binary files
@@ -239,7 +244,7 @@ arr[...] = work_arr.reshape([nz,ny,nx])
 ## API
 ### `forbit.open()`
 ```python
-file = forbit.open(filename, action, shape, kind, record, recstep, endian)
+file = forbit.open(filename, action, shape, kind, record, recstep, endian, recl)
 ```
 Open a Fortran direct-access unformatted binary file.
 
@@ -297,6 +302,11 @@ Open a Fortran direct-access unformatted binary file.
   - `"little_endian"`
   - `"big_endian"`  
   - `"native"`
+- recl
+  `type=int`
+  Record length passed to Fortran's `RECL` specifier.
+  If omitted, the total size of array (`recl=kind*product(shape)`) is used as the default value.
+  The value must be equal or greater than the total size of array.
 
 ### `close()`
 ```python
@@ -340,11 +350,6 @@ If both arguments are provided, `newRecord` takes priority.
 
 ## File Format
 FORBIT assumes that the file is a Fortran direct-access unformatted file with fixed-size records.  
-For one record, the record length used internally is computed from shape and `kind`:
-```python
-recl = kind * product(shape)
-```
-This value is passed to the Fortran `OPEN` statement as `RECL`.  
 The file is opened in Fortran with settings equivalent to:
 ```fortran
 open(newunit=unit, file=..., action=..., form='unformatted', access='direct', recl=..., convert=...)
