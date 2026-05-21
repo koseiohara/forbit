@@ -975,8 +975,8 @@ cdef class _ForbitCore:
         raise IOError(f'Failed to write to a binary file. Record: {self.__record}, Fortran IOSTAT: {stat}')
 
 
-def open(filename, action, shape, kind, record, recstep, endian):
-    return _ForbitCore(filename, action, shape, kind, record, recstep, endian)
+def open(filename, action, shape, kind, record, recstep, endian, recl=None):
+    return _ForbitCore(filename, action, shape, kind, record, recstep, endian, recl)
 
 
 forbit = _ForbitCore
