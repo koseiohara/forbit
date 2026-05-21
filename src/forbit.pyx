@@ -9,10 +9,11 @@ from libc.string cimport strncpy
 
 cdef extern from "binio.h":
     void binio_fopen(      int*       unit  ,
+                           int*       stat  ,
                      const char*      file  ,
                      const char*      action,
                      const long long* recl  ,
-                     const char*      endian );
+                     const char*      endian);
 
 
     void binio_fclose(const int* unit);
@@ -231,6 +232,7 @@ cdef class _ForbitCore:
         cdef np.ndarray shape_cp
         cdef long long recl
         cdef int shape_size
+        cdef int stat
         cdef int i
         cdef int precision
         cdef int dispatch
@@ -301,10 +303,14 @@ cdef class _ForbitCore:
 
 
         binio_fopen(&self.__unit ,
+                    &stat        ,
                     self.__file  ,
                     self.__action,
                     &recl        ,
                     self.__endian)
+
+        if (stat < 0):
+            raise ValueError("Binary file does not exist: {self.__file}")
 
         self.__is_open = 1
 

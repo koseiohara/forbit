@@ -29,9 +29,10 @@ module binio
     contains
 
 
-    subroutine binio_fopen(unit, file, action, recl, endian) bind(C)
+    subroutine binio_fopen(unit, stat, file, action, recl, endian) bind(C)
         use, intrinsic :: iso_fortran_env, only : err=>error_unit
         integer(c_int)      , intent(out) :: unit
+        integer(c_int)      , intent(out) :: stat
         character(c_char)   , intent(in)  :: file(*)
         character(c_char)   , intent(in)  :: action(*)
         integer(c_long_long), intent(in)  :: recl
@@ -45,13 +46,16 @@ module binio
         integer :: actlen
         integer :: endianlen
         integer :: i
+        logical :: exist
 
-        if (recl <= 0) then
-            write(err,'(A)')    '<ERROR STOP>'
-            write(err,'(A,I0)') 'Invalid record length: ', recl
-            write(err,'(A)')    'Argument "recl" should be more than 0'
-            ERROR STOP
-        endif
+        ! if (recl <= 0) then
+        !     write(err,'(A)')    '<ERROR STOP>'
+        !     write(err,'(A,I0)') 'Invalid record length: ', recl
+        !     write(err,'(A)')    'Argument "recl" should be more than 0'
+        !     ERROR STOP
+        ! endif
+
+        stat = 1
 
         filelen   = charlen(file, filelen_max)
         actlen    = charlen(action, 16)
@@ -62,8 +66,18 @@ module binio
         endian_cp = char2f(endianlen, endian)
 
         if (trim(action_cp) == 'read') then
-            call isexist(trim(file_cp))  !! IN
+            inquire(file =trim(file_cp), &  !! IN
+                  & exist=exist          )  !! OUT
+
+            if (.NOT. exist) then
+                stat = -1
+                return
+            endif
         endif
+
+        ! if (trim(action_cp) == 'read') then
+        !     call isexist(trim(file_cp))  !! IN
+        ! endif
 
         open(NEWUNIT=unit           , &
            & FILE   =trim(file_cp)  , &

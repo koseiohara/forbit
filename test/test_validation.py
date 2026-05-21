@@ -72,6 +72,19 @@ def test_write_shape_mismatch(binary_dir):
     file.close()
 
 
+def test_open_error(binary_dir):
+    filename = binary_dir / "open_error.grd"
+    failfile = binary_dir / "open_error2.grd"
+    shape = [2,3]
+
+    file = forbit.open(str(filename), "write", shape, 4, 1, 1, "little_endian")
+    file.write(np.zeros(shape, dtype=np.float32))
+    file.close()
+
+    with pytest.raises(ValueError):
+        forbit.open(str(failfile), "read", shape, 4, 1, 1, "little_endian")
+
+
 def test_reset_record_without_argument(binary_dir):
     filename = binary_dir / "reset_without_argument.grd"
 
