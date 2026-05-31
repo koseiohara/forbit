@@ -333,7 +333,7 @@ After reading, the internal record number is updated by `recstep`.
 ```python
 file.write(arr)
 ```
-The input array must have the same shape as the `shape` specified when opening the file.
+The input array must have the same size as the `shape` specified when opening the file.
 Before writing, FORBIT converts the array to a C-contiguous NumPy array with dtype determined by `kind` and `dtype`.
 After writing, the internal record number is updated by `recstep`.
 Note that the input array must be C-order.
