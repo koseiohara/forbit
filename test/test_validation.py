@@ -54,7 +54,7 @@ def test_write_shape_mismatch(binary_dir):
     file = forbit.open(str(filename), "write", [2, 3], 4, 1, 1, "little_endian")
 
     with pytest.raises(ValueError):
-        file.write(np.zeros((3, 2), dtype=np.float32))
+        file.write(np.zeros((3, 2, 2), dtype=np.float32))
 
     file.close()
 

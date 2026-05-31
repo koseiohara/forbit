@@ -13,7 +13,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "forbit"
-version = "1.0.16"
+version = "1.1.0"
 description = "Lightweight direct-access binary I/O for NumPy arrays, based on Fortran and Cython"
 readme = "README.md"
 requires-python = ">=3.9,<3.14"

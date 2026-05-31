@@ -12,18 +12,8 @@ module binio
     private
     public :: binio_fopen
     public :: binio_fclose
-    public :: binio_fread_sp1, binio_fread_dp1, &
-            & binio_fread_sp2, binio_fread_dp2, &
-            & binio_fread_sp3, binio_fread_dp3, &
-            & binio_fread_sp4, binio_fread_dp4, &
-            & binio_fread_sp5, binio_fread_dp5, &
-            & binio_fread_sp6, binio_fread_dp6
-    public :: binio_fwrite_sp1, binio_fwrite_dp1, &
-            & binio_fwrite_sp2, binio_fwrite_dp2, &
-            & binio_fwrite_sp3, binio_fwrite_dp3, &
-            & binio_fwrite_sp4, binio_fwrite_dp4, &
-            & binio_fwrite_sp5, binio_fwrite_dp5, &
-            & binio_fwrite_sp6, binio_fwrite_dp6
+    public :: binio_fread_sp , binio_fread_dp
+    public :: binio_fwrite_sp, binio_fwrite_dp
 
 
     contains
@@ -105,376 +95,56 @@ module binio
     end subroutine binio_fclose
 
 
-    subroutine binio_fread_sp1(unit, n1, record, input_data, stat) bind(C)
+    subroutine binio_fread_sp(unit, n, record, input_data, stat) bind(C)
         integer(c_int), intent(in)  :: unit
-        integer(c_int), intent(in)  :: n1
+        integer(c_long_long), intent(in)  :: n
         integer(c_long_long), intent(in)  :: record
-        real(c_float) , intent(out) :: input_data(n1)
+        real(c_float) , intent(out) :: input_data(n)
         integer(c_int), intent(out) :: stat
 
         ! call negative_record(record)
-        read(unit,rec=record,iostat=stat) input_data(1:n1)
+        read(unit,rec=record,iostat=stat) input_data(1:n)
 
-    end subroutine binio_fread_sp1
+    end subroutine binio_fread_sp
 
 
-    subroutine binio_fread_dp1(unit, n1, record, input_data, stat) bind(C)
+    subroutine binio_fread_dp(unit, n, record, input_data, stat) bind(C)
         integer(c_int), intent(in)  :: unit
-        integer(c_int), intent(in)  :: n1
+        integer(c_long_long), intent(in)  :: n
         integer(c_long_long), intent(in)  :: record
-        real(c_double), intent(out) :: input_data(n1)
+        real(c_double), intent(out) :: input_data(n)
         integer(c_int), intent(out) :: stat
 
         ! call negative_record(record)
-        read(unit,rec=record,iostat=stat) input_data(1:n1)
+        read(unit,rec=record,iostat=stat) input_data(1:n)
 
-    end subroutine binio_fread_dp1
-
-
-    subroutine binio_fread_sp2(unit, n1, n2, record, input_data, stat) bind(C)
-        integer(c_int), intent(in)  :: unit
-        integer(c_int), intent(in)  :: n1
-        integer(c_int), intent(in)  :: n2
-        integer(c_long_long), intent(in)  :: record
-        real(c_float) , intent(out) :: input_data(n1,n2)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        read(unit,rec=record,iostat=stat) input_data(1:n1,1:n2)
-
-    end subroutine binio_fread_sp2
+    end subroutine binio_fread_dp
 
 
-    subroutine binio_fread_dp2(unit, n1, n2, record, input_data, stat) bind(C)
-        integer(c_int), intent(in)  :: unit
-        integer(c_int), intent(in)  :: n1
-        integer(c_int), intent(in)  :: n2
-        integer(c_long_long), intent(in)  :: record
-        real(c_double), intent(out) :: input_data(n1,n2)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        read(unit,rec=record,iostat=stat) input_data(1:n1,1:n2)
-
-    end subroutine binio_fread_dp2
-
-
-    subroutine binio_fread_sp3(unit, n1, n2, n3, record, input_data, stat) bind(C)
-        integer(c_int), intent(in)  :: unit
-        integer(c_int), intent(in)  :: n1
-        integer(c_int), intent(in)  :: n2
-        integer(c_int), intent(in)  :: n3
-        integer(c_long_long), intent(in)  :: record
-        real(c_float) , intent(out) :: input_data(n1,n2,n3)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        read(unit,rec=record,iostat=stat) input_data(1:n1,1:n2,1:n3)
-
-    end subroutine binio_fread_sp3
-
-
-    subroutine binio_fread_dp3(unit, n1, n2, n3, record, input_data, stat) bind(C)
-        integer(c_int), intent(in)  :: unit
-        integer(c_int), intent(in)  :: n1
-        integer(c_int), intent(in)  :: n2
-        integer(c_int), intent(in)  :: n3
-        integer(c_long_long), intent(in)  :: record
-        real(c_double), intent(out) :: input_data(n1,n2,n3)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        read(unit,rec=record,iostat=stat) input_data(1:n1,1:n2,1:n3)
-
-    end subroutine binio_fread_dp3
-
-
-    subroutine binio_fread_sp4(unit, n1, n2, n3, n4, record, input_data, stat) bind(C)
-        integer(c_int), intent(in)  :: unit
-        integer(c_int), intent(in)  :: n1
-        integer(c_int), intent(in)  :: n2
-        integer(c_int), intent(in)  :: n3
-        integer(c_int), intent(in)  :: n4
-        integer(c_long_long), intent(in)  :: record
-        real(c_float) , intent(out) :: input_data(n1,n2,n3,n4)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        read(unit,rec=record,iostat=stat) input_data(1:n1,1:n2,1:n3,1:n4)
-
-    end subroutine binio_fread_sp4
-
-
-    subroutine binio_fread_dp4(unit, n1, n2, n3, n4, record, input_data, stat) bind(C)
-        integer(c_int), intent(in)  :: unit
-        integer(c_int), intent(in)  :: n1
-        integer(c_int), intent(in)  :: n2
-        integer(c_int), intent(in)  :: n3
-        integer(c_int), intent(in)  :: n4
-        integer(c_long_long), intent(in)  :: record
-        real(c_double), intent(out) :: input_data(n1,n2,n3,n4)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        read(unit,rec=record,iostat=stat) input_data(1:n1,1:n2,1:n3,1:n4)
-
-    end subroutine binio_fread_dp4
-
-
-    subroutine binio_fread_sp5(unit, n1, n2, n3, n4, n5, record, input_data, stat) bind(C)
-        integer(c_int), intent(in)  :: unit
-        integer(c_int), intent(in)  :: n1
-        integer(c_int), intent(in)  :: n2
-        integer(c_int), intent(in)  :: n3
-        integer(c_int), intent(in)  :: n4
-        integer(c_int), intent(in)  :: n5
-        integer(c_long_long), intent(in)  :: record
-        real(c_float) , intent(out) :: input_data(n1,n2,n3,n4,n5)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        read(unit,rec=record,iostat=stat) input_data(1:n1,1:n2,1:n3,1:n4,1:n5)
-
-    end subroutine binio_fread_sp5
-
-
-    subroutine binio_fread_dp5(unit, n1, n2, n3, n4, n5, record, input_data, stat) bind(C)
-        integer(c_int), intent(in)  :: unit
-        integer(c_int), intent(in)  :: n1
-        integer(c_int), intent(in)  :: n2
-        integer(c_int), intent(in)  :: n3
-        integer(c_int), intent(in)  :: n4
-        integer(c_int), intent(in)  :: n5
-        integer(c_long_long), intent(in)  :: record
-        real(c_double), intent(out) :: input_data(n1,n2,n3,n4,n5)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        read(unit,rec=record,iostat=stat) input_data(1:n1,1:n2,1:n3,1:n4,1:n5)
-
-    end subroutine binio_fread_dp5
-
-
-    subroutine binio_fread_sp6(unit, n1, n2, n3, n4, n5, n6, record, input_data, stat) bind(C)
-        integer(c_int), intent(in)  :: unit
-        integer(c_int), intent(in)  :: n1
-        integer(c_int), intent(in)  :: n2
-        integer(c_int), intent(in)  :: n3
-        integer(c_int), intent(in)  :: n4
-        integer(c_int), intent(in)  :: n5
-        integer(c_int), intent(in)  :: n6
-        integer(c_long_long), intent(in)  :: record
-        real(c_float) , intent(out) :: input_data(n1,n2,n3,n4,n5,n6)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        read(unit,rec=record,iostat=stat) input_data(1:n1,1:n2,1:n3,1:n4,1:n5,1:n6)
-
-    end subroutine binio_fread_sp6
-
-
-    subroutine binio_fread_dp6(unit, n1, n2, n3, n4, n5, n6, record, input_data, stat) bind(C)
-        integer(c_int), intent(in)  :: unit
-        integer(c_int), intent(in)  :: n1
-        integer(c_int), intent(in)  :: n2
-        integer(c_int), intent(in)  :: n3
-        integer(c_int), intent(in)  :: n4
-        integer(c_int), intent(in)  :: n5
-        integer(c_int), intent(in)  :: n6
-        integer(c_long_long), intent(in)  :: record
-        real(c_double), intent(out) :: input_data(n1,n2,n3,n4,n5,n6)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        read(unit,rec=record,iostat=stat) input_data(1:n1,1:n2,1:n3,1:n4,1:n5,1:n6)
-
-    end subroutine binio_fread_dp6
-
-
-    subroutine binio_fwrite_sp1(unit, n1, record, output_data, stat) bind(C)
+    subroutine binio_fwrite_sp(unit, n, record, output_data, stat) bind(C)
         integer(c_int), intent(in) :: unit
-        integer(c_int), intent(in) :: n1
+        integer(c_long_long), intent(in) :: n
         integer(c_long_long), intent(in) :: record
-        real(c_float) , intent(in) :: output_data(n1)
+        real(c_float) , intent(in) :: output_data(n)
         integer(c_int), intent(out) :: stat
 
         ! call negative_record(record)
-        write(unit,rec=record,iostat=stat) output_data(1:n1)
+        write(unit,rec=record,iostat=stat) output_data(1:n)
 
-    end subroutine binio_fwrite_sp1
+    end subroutine binio_fwrite_sp
 
 
-    subroutine binio_fwrite_dp1(unit, n1, record, output_data, stat) bind(C)
+    subroutine binio_fwrite_dp(unit, n, record, output_data, stat) bind(C)
         integer(c_int), intent(in) :: unit
-        integer(c_int), intent(in) :: n1
+        integer(c_long_long), intent(in) :: n
         integer(c_long_long), intent(in) :: record
-        real(c_double), intent(in) :: output_data(1:n1)
+        real(c_double), intent(in) :: output_data(1:n)
         integer(c_int), intent(out) :: stat
 
         ! call negative_record(record)
-        write(unit,rec=record,iostat=stat) output_data(1:n1)
+        write(unit,rec=record,iostat=stat) output_data(1:n)
 
-    end subroutine binio_fwrite_dp1
-
-
-    subroutine binio_fwrite_sp2(unit, n1, n2, record, output_data, stat) bind(C)
-        integer(c_int), intent(in) :: unit
-        integer(c_int), intent(in) :: n1
-        integer(c_int), intent(in) :: n2
-        integer(c_long_long), intent(in) :: record
-        real(c_float) , intent(in) :: output_data(1:n1,1:n2)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        write(unit,rec=record,iostat=stat) output_data(1:n1,1:n2)
-
-    end subroutine binio_fwrite_sp2
-
-
-    subroutine binio_fwrite_dp2(unit, n1, n2, record, output_data, stat) bind(C)
-        integer(c_int), intent(in) :: unit
-        integer(c_int), intent(in) :: n1
-        integer(c_int), intent(in) :: n2
-        integer(c_long_long), intent(in) :: record
-        real(c_double), intent(in) :: output_data(1:n1,1:n2)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        write(unit,rec=record,iostat=stat) output_data(1:n1,1:n2)
-
-    end subroutine binio_fwrite_dp2
-
-
-    subroutine binio_fwrite_sp3(unit, n1, n2, n3, record, output_data, stat) bind(C)
-        integer(c_int), intent(in) :: unit
-        integer(c_int), intent(in) :: n1
-        integer(c_int), intent(in) :: n2
-        integer(c_int), intent(in) :: n3
-        integer(c_long_long), intent(in) :: record
-        real(c_float) , intent(in) :: output_data(1:n1,1:n2,1:n3)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        write(unit,rec=record,iostat=stat) output_data(1:n1,1:n2,1:n3)
-
-    end subroutine binio_fwrite_sp3
-
-
-    subroutine binio_fwrite_dp3(unit, n1, n2, n3, record, output_data, stat) bind(C)
-        integer(c_int), intent(in) :: unit
-        integer(c_int), intent(in) :: n1
-        integer(c_int), intent(in) :: n2
-        integer(c_int), intent(in) :: n3
-        integer(c_long_long), intent(in) :: record
-        real(c_double), intent(in) :: output_data(1:n1,1:n2,1:n3)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        write(unit,rec=record,iostat=stat) output_data(1:n1,1:n2,1:n3)
-
-    end subroutine binio_fwrite_dp3
-
-
-    subroutine binio_fwrite_sp4(unit, n1, n2, n3, n4, record, output_data, stat) bind(C)
-        integer(c_int), intent(in) :: unit
-        integer(c_int), intent(in) :: n1
-        integer(c_int), intent(in) :: n2
-        integer(c_int), intent(in) :: n3
-        integer(c_int), intent(in) :: n4
-        integer(c_long_long), intent(in) :: record
-        real(c_float) , intent(in) :: output_data(1:n1,1:n2,1:n3,1:n4)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        write(unit,rec=record,iostat=stat) output_data(1:n1,1:n2,1:n3,1:n4)
-
-    end subroutine binio_fwrite_sp4
-
-
-    subroutine binio_fwrite_dp4(unit, n1, n2, n3, n4, record, output_data, stat) bind(C)
-        integer(c_int), intent(in) :: unit
-        integer(c_int), intent(in) :: n1
-        integer(c_int), intent(in) :: n2
-        integer(c_int), intent(in) :: n3
-        integer(c_int), intent(in) :: n4
-        integer(c_long_long), intent(in) :: record
-        real(c_double), intent(in) :: output_data(1:n1,1:n2,1:n3,1:n4)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        write(unit,rec=record,iostat=stat) output_data(1:n1,1:n2,1:n3,1:n4)
-
-    end subroutine binio_fwrite_dp4
-
-
-    subroutine binio_fwrite_sp5(unit, n1, n2, n3, n4, n5, record, output_data, stat) bind(C)
-        integer(c_int), intent(in) :: unit
-        integer(c_int), intent(in) :: n1
-        integer(c_int), intent(in) :: n2
-        integer(c_int), intent(in) :: n3
-        integer(c_int), intent(in) :: n4
-        integer(c_int), intent(in) :: n5
-        integer(c_long_long), intent(in) :: record
-        real(c_float) , intent(in) :: output_data(1:n1,1:n2,1:n3,1:n4,1:n5)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        write(unit,rec=record,iostat=stat) output_data(1:n1,1:n2,1:n3,1:n4,1:n5)
-
-    end subroutine binio_fwrite_sp5
-
-
-    subroutine binio_fwrite_dp5(unit, n1, n2, n3, n4, n5, record, output_data, stat) bind(C)
-        integer(c_int), intent(in) :: unit
-        integer(c_int), intent(in) :: n1
-        integer(c_int), intent(in) :: n2
-        integer(c_int), intent(in) :: n3
-        integer(c_int), intent(in) :: n4
-        integer(c_int), intent(in) :: n5
-        integer(c_long_long), intent(in) :: record
-        real(c_double), intent(in) :: output_data(1:n1,1:n2,1:n3,1:n4,1:n5)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        write(unit,rec=record,iostat=stat) output_data(1:n1,1:n2,1:n3,1:n4,1:n5)
-
-    end subroutine binio_fwrite_dp5
-
-
-    subroutine binio_fwrite_sp6(unit, n1, n2, n3, n4, n5, n6, record, output_data, stat) bind(C)
-        integer(c_int), intent(in) :: unit
-        integer(c_int), intent(in) :: n1
-        integer(c_int), intent(in) :: n2
-        integer(c_int), intent(in) :: n3
-        integer(c_int), intent(in) :: n4
-        integer(c_int), intent(in) :: n5
-        integer(c_int), intent(in) :: n6
-        integer(c_long_long), intent(in) :: record
-        real(c_float) , intent(in) :: output_data(1:n1,1:n2,1:n3,1:n4,1:n5,1:n6)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        write(unit,rec=record,iostat=stat) output_data(1:n1,1:n2,1:n3,1:n4,1:n5,1:n6)
-
-    end subroutine binio_fwrite_sp6
-
-
-    subroutine binio_fwrite_dp6(unit, n1, n2, n3, n4, n5, n6, record, output_data, stat) bind(C)
-        integer(c_int), intent(in) :: unit
-        integer(c_int), intent(in) :: n1
-        integer(c_int), intent(in) :: n2
-        integer(c_int), intent(in) :: n3
-        integer(c_int), intent(in) :: n4
-        integer(c_int), intent(in) :: n5
-        integer(c_int), intent(in) :: n6
-        integer(c_long_long), intent(in) :: record
-        real(c_double), intent(in) :: output_data(1:n1,1:n2,1:n3,1:n4,1:n5,1:n6)
-        integer(c_int), intent(out) :: stat
-
-        ! call negative_record(record)
-        write(unit,rec=record,iostat=stat) output_data(1:n1,1:n2,1:n3,1:n4,1:n5,1:n6)
-
-    end subroutine binio_fwrite_dp6
+    end subroutine binio_fwrite_dp
 
 
     function charlen(input, lenmax) result(output)
