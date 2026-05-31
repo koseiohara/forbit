@@ -5,14 +5,14 @@ import pytest
 
 import forbit
 
-from conftest import ENDIANS, KINDS, NDIMS, dtype_for_kind, sample_array, shape_for_ndim
+from conftest import ENDIANS, IKINDS, RKINDS, NDIMS, dtype_for_kind, sample_array, shape_for_ndim
 
 
 NRECORDS = 4
 
 
-@pytest.mark.parametrize("kind", KINDS)
-@pytest.mark.parametrize("ndim", NDIMS)
+@pytest.mark.parametrize("kind"  , RKINDS)
+@pytest.mark.parametrize("ndim"  , NDIMS)
 @pytest.mark.parametrize("endian", ENDIANS)
 def test_roundtrip_multiple_records_all_supported_ndims(binary_dir, kind, ndim, endian):
     shape = shape_for_ndim(ndim)
@@ -51,7 +51,7 @@ def test_roundtrip_multiple_records_all_supported_ndims(binary_dir, kind, ndim, 
     reader.close()
 
 
-@pytest.mark.parametrize("kind", KINDS)
+@pytest.mark.parametrize("kind"  , RKINDS)
 @pytest.mark.parametrize("endian", ENDIANS)
 def test_roundtrip_non_contiguous_input(binary_dir, kind, endian):
     filename = binary_dir / f"non_contiguous_kind{kind}_{endian}.grd"
@@ -73,7 +73,7 @@ def test_roundtrip_non_contiguous_input(binary_dir, kind, endian):
     np.testing.assert_array_equal(actual, expected)
 
 
-@pytest.mark.parametrize("kind", KINDS)
+@pytest.mark.parametrize("kind"  , RKINDS)
 @pytest.mark.parametrize("endian", ENDIANS)
 def test_roundtrip_fortran_order_input(binary_dir, kind, endian):
     filename = binary_dir / f"fortran_order_kind{kind}_{endian}.grd"

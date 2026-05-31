@@ -99,12 +99,51 @@ module binio
     end subroutine binio_fclose
 
 
-    subroutine binio_fread_sp(unit, n, record, input_data, stat) bind(C)
-        integer(c_int), intent(in)  :: unit
+    subroutine binio_fread_i2(unit, n, record, input_data, stat) bind(C)
+        integer(c_int)      , intent(in)  :: unit
         integer(c_long_long), intent(in)  :: n
         integer(c_long_long), intent(in)  :: record
-        real(c_float) , intent(out) :: input_data(n)
-        integer(c_int), intent(out) :: stat
+        integer(c_int16_t)  , intent(out) :: input_data(n)
+        integer(c_int)      , intent(out) :: stat
+
+        ! call negative_record(record)
+        read(unit,rec=record,iostat=stat) input_data(1:n)
+
+    end subroutine binio_fread_i2
+
+
+    subroutine binio_fread_i4(unit, n, record, input_data, stat) bind(C)
+        integer(c_int)      , intent(in)  :: unit
+        integer(c_long_long), intent(in)  :: n
+        integer(c_long_long), intent(in)  :: record
+        integer(c_int32_t)  , intent(out) :: input_data(n)
+        integer(c_int)      , intent(out) :: stat
+
+        ! call negative_record(record)
+        read(unit,rec=record,iostat=stat) input_data(1:n)
+
+    end subroutine binio_fread_i4
+
+
+    subroutine binio_fread_i8(unit, n, record, input_data, stat) bind(C)
+        integer(c_int)      , intent(in)  :: unit
+        integer(c_long_long), intent(in)  :: n
+        integer(c_long_long), intent(in)  :: record
+        integer(c_int64_t)  , intent(out) :: input_data(n)
+        integer(c_int)      , intent(out) :: stat
+
+        ! call negative_record(record)
+        read(unit,rec=record,iostat=stat) input_data(1:n)
+
+    end subroutine binio_fread_i8
+
+
+    subroutine binio_fread_sp(unit, n, record, input_data, stat) bind(C)
+        integer(c_int)      , intent(in)  :: unit
+        integer(c_long_long), intent(in)  :: n
+        integer(c_long_long), intent(in)  :: record
+        real(c_float)       , intent(out) :: input_data(n)
+        integer(c_int)      , intent(out) :: stat
 
         ! call negative_record(record)
         read(unit,rec=record,iostat=stat) input_data(1:n)
@@ -113,11 +152,11 @@ module binio
 
 
     subroutine binio_fread_dp(unit, n, record, input_data, stat) bind(C)
-        integer(c_int), intent(in)  :: unit
+        integer(c_int)      , intent(in)  :: unit
         integer(c_long_long), intent(in)  :: n
         integer(c_long_long), intent(in)  :: record
-        real(c_double), intent(out) :: input_data(n)
-        integer(c_int), intent(out) :: stat
+        real(c_double)      , intent(out) :: input_data(n)
+        integer(c_int)      , intent(out) :: stat
 
         ! call negative_record(record)
         read(unit,rec=record,iostat=stat) input_data(1:n)
@@ -125,12 +164,51 @@ module binio
     end subroutine binio_fread_dp
 
 
+    subroutine binio_fwrite_i2(unit, n, record, output_data, stat) bind(C)
+        integer(c_int)      , intent(in)  :: unit
+        integer(c_long_long), intent(in)  :: n
+        integer(c_long_long), intent(in)  :: record
+        integer(c_int16_t)  , intent(in)  :: output_data(n)
+        integer(c_int)      , intent(out) :: stat
+
+        ! call negative_record(record)
+        write(unit,rec=record,iostat=stat) output_data(1:n)
+
+    end subroutine binio_fwrite_i2
+
+
+    subroutine binio_fwrite_i4(unit, n, record, output_data, stat) bind(C)
+        integer(c_int)      , intent(in)  :: unit
+        integer(c_long_long), intent(in)  :: n
+        integer(c_long_long), intent(in)  :: record
+        integer(c_int32_t)  , intent(in)  :: output_data(n)
+        integer(c_int)      , intent(out) :: stat
+
+        ! call negative_record(record)
+        write(unit,rec=record,iostat=stat) output_data(1:n)
+
+    end subroutine binio_fwrite_i4
+
+
+    subroutine binio_fwrite_i8(unit, n, record, output_data, stat) bind(C)
+        integer(c_int)      , intent(in)  :: unit
+        integer(c_long_long), intent(in)  :: n
+        integer(c_long_long), intent(in)  :: record
+        integer(c_int64_t)  , intent(in)  :: output_data(n)
+        integer(c_int)      , intent(out) :: stat
+
+        ! call negative_record(record)
+        write(unit,rec=record,iostat=stat) output_data(1:n)
+
+    end subroutine binio_fwrite_i8
+
+
     subroutine binio_fwrite_sp(unit, n, record, output_data, stat) bind(C)
-        integer(c_int), intent(in) :: unit
-        integer(c_long_long), intent(in) :: n
-        integer(c_long_long), intent(in) :: record
-        real(c_float) , intent(in) :: output_data(n)
-        integer(c_int), intent(out) :: stat
+        integer(c_int)      , intent(in)  :: unit
+        integer(c_long_long), intent(in)  :: n
+        integer(c_long_long), intent(in)  :: record
+        real(c_float)       , intent(in)  :: output_data(n)
+        integer(c_int)      , intent(out) :: stat
 
         ! call negative_record(record)
         write(unit,rec=record,iostat=stat) output_data(1:n)
@@ -139,11 +217,11 @@ module binio
 
 
     subroutine binio_fwrite_dp(unit, n, record, output_data, stat) bind(C)
-        integer(c_int), intent(in) :: unit
-        integer(c_long_long), intent(in) :: n
-        integer(c_long_long), intent(in) :: record
-        real(c_double), intent(in) :: output_data(1:n)
-        integer(c_int), intent(out) :: stat
+        integer(c_int)      , intent(in)  :: unit
+        integer(c_long_long), intent(in)  :: n
+        integer(c_long_long), intent(in)  :: record
+        real(c_double)      , intent(in)  :: output_data(1:n)
+        integer(c_int)      , intent(out) :: stat
 
         ! call negative_record(record)
         write(unit,rec=record,iostat=stat) output_data(1:n)

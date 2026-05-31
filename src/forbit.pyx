@@ -5,6 +5,7 @@ cimport numpy as np
 from numpy cimport PyArray_DATA
 
 cimport cython
+from libc.stdint cimport int16_t, int32_t, int64_t
 from libc.string cimport strncpy
 
 np.import_array()
@@ -22,6 +23,24 @@ cdef extern from "binio.h":
     void binio_fclose(const int* unit);
 
 
+    void binio_fread_i2(const int*   unit        ,
+                        const long long* n       ,
+                        const long long* record  ,
+                              int16_t* input_data,
+                              int*   stat        );
+
+    void binio_fread_i4(const int*   unit        ,
+                        const long long* n       ,
+                        const long long* record  ,
+                              int32_t* input_data,
+                              int*   stat        );
+
+    void binio_fread_i8(const int*   unit        ,
+                        const long long* n       ,
+                        const long long* record  ,
+                              int64_t* input_data,
+                              int*   stat        );
+
     void binio_fread_sp(const int*   unit      ,
                         const long long* n     ,
                         const long long* record,
@@ -33,6 +52,24 @@ cdef extern from "binio.h":
                         const long long* record ,
                               double* input_data,
                               int*   stat       );
+
+    void binio_fwrite_i2(const int*   unit         ,
+                         const long long* n        ,
+                         const long long* record   ,
+                               int16_t* output_data,
+                               int*   stat         );
+
+    void binio_fwrite_i4(const int*   unit         ,
+                         const long long* n        ,
+                         const long long* record   ,
+                               int32_t* output_data,
+                               int*   stat         );
+
+    void binio_fwrite_i8(const int*   unit         ,
+                         const long long* n        ,
+                         const long long* record   ,
+                               int64_t* output_data,
+                               int*   stat         );
 
     void binio_fwrite_sp(const int*   unit       ,
                          const long long* n      ,
@@ -75,7 +112,7 @@ cdef class _ForbitCore:
     cdef public object write
 
 
-    def __init__(self, filename, action, object shape, const int kind, const long long record, const long long recstep, endian, object recl=None):
+    def __init__(self, filename, action, object shape, const int kind, const long long record, const long long recstep, endian, object recl=None, dtype="real"):
         cdef np.ndarray shape_cp
         cdef bytes work_file
         cdef const char* c_file
@@ -145,10 +182,6 @@ cdef class _ForbitCore:
         shape_cp    = shape_raw.astype(np.intc)
         self.__ndim = shape_cp.size
 
-        if (kind != 4 and kind != 8):
-            raise ValueError("Invalid kind parameter")
-
-        
         # strncpy(self.__file  , filename, FILELEN_MAX  +1)
         strncpy(self.__action, action  , ACTIONLEN_MAX+1)
         strncpy(self.__endian, endian  , ENDIANLEN_MAX+1)
@@ -188,6 +221,42 @@ cdef class _ForbitCore:
         self.__record  = <long long>record
         self.__recstep = <long long>recstep
 
+        if (isinstance(dtype, str)):
+            dtype = dtype.lower()
+            if (dtype == "real" or dtype == "float"):
+                if (kind != 4 and kind != 8):
+                    raise ValueError(f"Invalid kind parameter: {kind}")
+
+                dispatch = kind.bit_length() - 3
+
+                fread_list = [self.fread_sp ,
+                              self.fread_dp ,
+                              self.fread_err,]
+
+                fwrite_list = [self.fwrite_sp ,
+                               self.fwrite_dp ,
+                               self.fwrite_err,]
+
+            elif (dtype == "int" or dtype == "integer"):
+                if (kind != 2 and kind != 4 and kind != 8):
+                    raise ValueError(f"Invalid kind parameter: {kind}")
+
+                dispatch = kind.bit_length() - 2
+
+                fread_list = [self.fread_i2 ,
+                              self.fread_i4 ,
+                              self.fread_i8 ,
+                              self.fread_err,]
+
+                fwrite_list = [self.fwrite_i2 ,
+                               self.fwrite_i4 ,
+                               self.fwrite_i8 ,
+                               self.fwrite_err,]
+            else:
+                raise ValueError(f"Invalid data type: {dtype}. dtype must be 'real'/'float' or 'int'/'integer'")
+        else:
+            raise TypeError("Invalid data type in the argument of forbit : dtype")
+
 
         binio_fopen(&self.__unit ,
                     &stat        ,
@@ -202,17 +271,9 @@ cdef class _ForbitCore:
 
         self.__is_open = 1
 
-        fread_list = [self.fread_sp ,
-                      self.fread_dp ,
-                      self.fread_err,]
-
-        fwrite_list = [self.fwrite_sp ,
-                       self.fwrite_dp ,
-                       self.fwrite_err,]
-
-        precision = kind >> 2
+        # precision = kind >> 2
         # dispatch  = ((self.__ndim - 1) << 1) + precision - 1
-        dispatch  = precision - 1
+        # dispatch  = precision - 1
 
         if (action_label == 1):
             self.read  =  fread_list[dispatch]
@@ -234,6 +295,63 @@ cdef class _ForbitCore:
             binio_fclose(&self.__unit)
             self.__unit    = -999999
             self.__is_open = 0
+
+
+    def fread_i2(self):
+        cdef np.ndarray[np.int16_t,ndim=1] result
+        cdef int stat
+        result = np.empty(self.__size, dtype=np.int16)
+
+        # self.__negative_record()
+
+        binio_fread_i2(&self.__unit                 ,
+                       &self.__size                 ,
+                       &self.__record               ,
+                       <int16_t*> PyArray_DATA(result),
+                       &stat                        )
+
+        self.__read_check(stat)
+        self.__record = self.__record + self.__recstep
+
+        return result.reshape(self.__shape)
+
+
+    def fread_i4(self):
+        cdef np.ndarray[np.int32_t,ndim=1] result
+        cdef int stat
+        result = np.empty(self.__size, dtype=np.int32)
+
+        # self.__negative_record()
+
+        binio_fread_i4(&self.__unit                   ,
+                       &self.__size                   ,
+                       &self.__record                 ,
+                       <int32_t*> PyArray_DATA(result),
+                       &stat                          )
+
+        self.__read_check(stat)
+        self.__record = self.__record + self.__recstep
+
+        return result.reshape(self.__shape)
+
+
+    def fread_i8(self):
+        cdef np.ndarray[np.int64_t,ndim=1] result
+        cdef int stat
+        result = np.empty(self.__size, dtype=np.int64)
+
+        # self.__negative_record()
+
+        binio_fread_i8(&self.__unit                   ,
+                       &self.__size                   ,
+                       &self.__record                 ,
+                       <int64_t*> PyArray_DATA(result),
+                       &stat                          )
+
+        self.__read_check(stat)
+        self.__record = self.__record + self.__recstep
+
+        return result.reshape(self.__shape)
 
 
     def fread_sp(self):
@@ -277,6 +395,75 @@ cdef class _ForbitCore:
     def fread_err(self):
         raise PermissionError("read operation is not permitted because the file was opened with action='write'")
         
+
+    def fwrite_i2(self, arr):
+        cdef np.ndarray[np.int16_t,ndim=1] arr_cp
+        cdef int stat
+
+        if ((not isinstance(arr, np.ndarray)) or
+            (arr.dtype != np.int16 and arr.dtype != np.int32 and arr.dtype != np.int64)):
+            raise TypeError("Invalid input type for forbit.write: Input must be a NumPy ndarray with dtype int16, int32, or int64")
+
+        arr_cp = np.ascontiguousarray(arr, dtype=np.int16).reshape(-1)
+
+        if (arr_cp.size != self.__size):
+            raise ValueError(f"Invalid array size for forbit.write: expected {self.__size}, got {arr_cp.size}")
+
+        binio_fwrite_i2(&self.__unit                   ,
+                        &self.__size                   ,
+                        &self.__record                 ,
+                        <int16_t*> PyArray_DATA(arr_cp),
+                        &stat                          )
+
+        self.__write_check(stat)
+        self.__record = self.__record + self.__recstep
+
+
+    def fwrite_i4(self, arr):
+        cdef np.ndarray[np.int32_t,ndim=1] arr_cp
+        cdef int stat
+
+        if ((not isinstance(arr, np.ndarray)) or
+            (arr.dtype != np.int16 and arr.dtype != np.int32 and arr.dtype != np.int64)):
+            raise TypeError("Invalid input type for forbit.write: Input must be a NumPy ndarray with dtype int16, int32, or int64")
+
+        arr_cp = np.ascontiguousarray(arr, dtype=np.int32).reshape(-1)
+
+        if (arr_cp.size != self.__size):
+            raise ValueError(f"Invalid array size for forbit.write: expected {self.__size}, got {arr_cp.size}")
+
+        binio_fwrite_i4(&self.__unit                   ,
+                        &self.__size                   ,
+                        &self.__record                 ,
+                        <int32_t*> PyArray_DATA(arr_cp),
+                        &stat                          )
+
+        self.__write_check(stat)
+        self.__record = self.__record + self.__recstep
+
+
+    def fwrite_i8(self, arr):
+        cdef np.ndarray[np.int64_t,ndim=1] arr_cp
+        cdef int stat
+
+        if ((not isinstance(arr, np.ndarray)) or
+            (arr.dtype != np.int16 and arr.dtype != np.int32 and arr.dtype != np.int64)):
+            raise TypeError("Invalid input type for forbit.write: Input must be a NumPy ndarray with dtype int16, int32, or int64")
+
+        arr_cp = np.ascontiguousarray(arr, dtype=np.int64).reshape(-1)
+
+        if (arr_cp.size != self.__size):
+            raise ValueError(f"Invalid array size for forbit.write: expected {self.__size}, got {arr_cp.size}")
+
+        binio_fwrite_i8(&self.__unit                   ,
+                        &self.__size                   ,
+                        &self.__record                 ,
+                        <int64_t*> PyArray_DATA(arr_cp),
+                        &stat                          )
+
+        self.__write_check(stat)
+        self.__record = self.__record + self.__recstep
+
 
     def fwrite_sp(self, arr):
         cdef np.ndarray[np.float32_t,ndim=1] arr_cp

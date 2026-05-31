@@ -6,7 +6,8 @@ import numpy as np
 import pytest
 
 
-KINDS = [4, 8]
+IKINDS = [2, 4, 8]
+RKINDS = [4, 8]
 NDIMS = [1, 2, 3, 4, 5, 10]
 ENDIANS = ["little_endian", "big_endian", "native"]
 
