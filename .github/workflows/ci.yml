@@ -49,6 +49,7 @@ jobs:
       - name: Run tests
         working-directory: test
         run: |
+          mkdir binary/
           make
           make run
           python -m pytest -q .
