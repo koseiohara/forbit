@@ -16,7 +16,7 @@ For example, users may construct their own abstractions using custom-defined cla
 - Handle no-header fixed-record binary files with explicit Fortran-style workflows
 - Return data as `numpy.ndarray`
 - Support arrays of any dimension
-- Support single precision and double precision floating-point data
+- Support single/double precision floating-point data and 2/4/8 bytes integer data
 - Support explicit endian selection through Fortran's `CONVERT` specifier
 - Keep the current record number internally and update it after each read or write
 
@@ -246,7 +246,7 @@ arr[...] = work_arr.reshape([nz,ny,nx])
 ## API
 ### `forbit.open()`
 ```python
-file = forbit.open(filename, action, shape, kind, record, recstep, endian, recl=None)
+file = forbit.open(filename, action, shape, kind, record, recstep, endian, recl=None, dtype="real")
 ```
 Open a Fortran direct-access unformatted binary file.
 
@@ -278,10 +278,11 @@ Open a Fortran direct-access unformatted binary file.
   The number of dimensions must be between 1 and 6.
 - kind  
   `type=int`  
-  Floating-point precision of the binary file.  
+  Byte size per element.  
   Accepted values:
-  - 4: single precision, returned/written as `numpy.float32`
-  - 8: double precision, returned/written as `numpy.float64`  
+  - 2: returned/written as `numpy.int16` (`dtype=int` only)
+  - 4: returned/written as `numpy.float32` or `numpy.int32`
+  - 8: returned/written as `numpy.float64` or `numpy.int64`  
 
   This parameter describes the precision stored in the binary file.
   When writing, input arrays are converted to the selected precision before being passed to the Fortran write routine.
@@ -304,11 +305,16 @@ Open a Fortran direct-access unformatted binary file.
   - `"little_endian"`
   - `"big_endian"`  
   - `"native"`
-- recl
-  `type=int`
+- recl  
+  `type=int`  
   Record length passed to Fortran's `RECL` specifier.
   If omitted, the total size of array (`recl=kind*product(shape)`) is used as the default value.
   The value must be equal or greater than the total size of array.
+- dtype  
+  `type=str`  
+  Data type of returned/written array.
+  `real`/`float` or `integer`/`int`.
+
 
 ### `close()`
 ```python
@@ -321,7 +327,7 @@ The file is also closed by the object's destructor, but explicit `close()` is re
 arr = file.read()
 ```
 Read the current record and return a NumPy array.
-The returned array has the shape specified by `shape` and dtype determined by `kind`.
+The returned array has the shape specified by `shape` and dtype determined by `kind` and `dtype`.
 Note that the output array is C-order.
 After reading, the internal record number is updated by `recstep`.
 
@@ -330,7 +336,7 @@ After reading, the internal record number is updated by `recstep`.
 file.write(arr)
 ```
 The input array must have the same shape as the `shape` specified when opening the file.
-Before writing, FORBIT converts the array to a C-contiguous NumPy array with dtype determined by `kind`.
+Before writing, FORBIT converts the array to a C-contiguous NumPy array with dtype determined by `kind` and `dtype`.
 After writing, the internal record number is updated by `recstep`.
 Note that the input array must be C-order.
 
@@ -368,14 +374,15 @@ This convention makes the returned NumPy array natural to index as:
 arr[0:nz,0:ny,0:nx]
 ```
 
-## Precision and Dtype
+## Kind parameter and Dtype
 | `kind` | File Precision | Returned dtype |
 |--------|----------------|----------------|
-| `4` | single precision (real32) | `numpy.float32` |
-| `8` | double precision (real64) | `numpy.float64` |
+| `2` | 2 byte integer (int16) | `numpy.int16` |
+| `4` | 4 byte integer (int32) or single precision (real32) | `numpy.int32`/`numpy.float32` |
+| `8` | 8 byte integer (int64) or double precision (real64) | `numpy.int64`/`numpy.float64` |
 
-Only floating-point data are supported by the public API.
-Integer, complex, logical, character, and quadruple-precision records are not supported by the current implementation.
+Only integer and floating-point data are supported by the public API.
+Complex, logical, character, and quadruple-precision records are not supported by the current implementation.
 
 ## Record Handling
 The current record number is stored inside the `forbit` object.
