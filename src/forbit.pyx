@@ -201,7 +201,7 @@ cdef class _ForbitCore:
         # dispatch  = ((self.__ndim - 1) << 1) + precision - 1
         dispatch  = precision - 1
 
-        if (action_label = 1):
+        if (action_label == 1):
             self.read  =  fread_list[dispatch]
             self.write = fwrite_list[-1]
         elif (action_label == -1):
@@ -351,10 +351,10 @@ cdef class _ForbitCore:
         raise IOError(f'Failed to write to a binary file. Record: {self.__record}, Fortran IOSTAT: {stat}')
 
 
-def open(filename, action, shape, kind, record, recstep, endian, recl=None):
-    return _ForbitCore(filename, action, shape, kind, record, recstep, endian, recl)
+# def open(filename, action, shape, kind, record, recstep, endian, recl=None):
+#     return _ForbitCore(filename, action, shape, kind, record, recstep, endian, recl)
 
-
+open   = _ForbitCore
 forbit = _ForbitCore
 
 
