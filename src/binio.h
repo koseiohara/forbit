@@ -2,6 +2,7 @@
 extern void binio_fopen(      int*  unit      ,
                               int*  stat      ,
                         const char* file      ,
+                              int*  filelen   ,
                         const char* action    ,
                         const long long*  recl,
                         const char* endian    );

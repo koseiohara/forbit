@@ -10,12 +10,13 @@ from libc.string cimport strncpy
 np.import_array()
 
 cdef extern from "binio.h":
-    void binio_fopen(      int*       unit  ,
-                           int*       stat  ,
-                     const char*      file  ,
-                     const char*      action,
-                     const long long* recl  ,
-                     const char*      endian);
+    void binio_fopen(      int*       unit   ,
+                           int*       stat   ,
+                     const char*      file   ,
+                           int*       filelen,
+                     const char*      action ,
+                     const long long* recl   ,
+                     const char*      endian );
 
 
     void binio_fclose(const int* unit);
@@ -186,12 +187,13 @@ cdef class _ForbitCore:
         self.__recstep = <long long>recstep
 
 
-        binio_fopen(&self.__unit ,
-                    &stat        ,
-                    c_file       ,
-                    self.__action,
-                    &recl_cp     ,
-                    self.__endian)
+        binio_fopen(&self.__unit  ,
+                    &stat         ,
+                    c_file        ,
+                    len(work_file),
+                    self.__action ,
+                    &recl_cp      ,
+                    self.__endian )
 
         if (stat != 0):
             raise ValueError(f"Failed to open {filename}")

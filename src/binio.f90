@@ -19,11 +19,12 @@ module binio
     contains
 
 
-    subroutine binio_fopen(unit, stat, file, action, recl, endian) bind(C)
+    subroutine binio_fopen(unit, stat, file, filelen, action, recl, endian) bind(C)
         use, intrinsic :: iso_fortran_env, only : err=>error_unit
         integer(c_int)      , intent(out) :: unit
         integer(c_int)      , intent(out) :: stat
         character(c_char)   , intent(in)  :: file(*)
+        integer(c_int)      , intent(in)  :: filelen
         character(c_char)   , intent(in)  :: action(*)
         integer(c_long_long), intent(in)  :: recl
         character(c_char)   , intent(in)  :: endian(*)
@@ -32,7 +33,7 @@ module binio
         character(:), allocatable :: file_cp
         character(16)             :: action_cp
         character(16)             :: endian_cp
-        integer :: filelen
+        ! integer :: filelen
         integer :: actlen
         integer :: endianlen
         integer :: i
@@ -47,9 +48,9 @@ module binio
 
         stat = 0
 
-        filelen   = charlen(file)
-        actlen    = charlen(action)
-        endianlen = charlen(endian)
+        ! filelen   = charlen(file  , filelen)
+        actlen    = charlen(action, 16)
+        endianlen = charlen(endian, 16)
 
         allocate(character(filelen) :: file_cp)
         file_cp   = char2f(filelen  , file  )
@@ -150,16 +151,15 @@ module binio
     end subroutine binio_fwrite_dp
 
 
-    function charlen(input) result(output)
+    function charlen(input, maxlen) result(output)
         character(C_CHAR), intent(in) :: input(*)
+        integer          , intent(in) :: maxlen
 
         integer :: output
         integer :: i
 
-        i = 1
-        do
+        do i = 1, maxlen
             if (input(i) /= C_NULL_CHAR) then
-                i = i + 1
                 cycle
             endif
             output = i - 1
