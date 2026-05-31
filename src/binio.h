@@ -1,5 +1,5 @@
 
-#include <stdlib.h>
+#include <stdint.h>
 
 extern void binio_fopen(      int*  unit      ,
                               int*  stat      ,
