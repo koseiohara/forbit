@@ -54,7 +54,6 @@ cdef extern from "binio.h":
 DEF FILELEN_MAX   = 255
 DEF ACTIONLEN_MAX = 15
 DEF ENDIANLEN_MAX = 15
-DEF DIM_MAX       = 6
 
 
 cdef class _ForbitCore:
@@ -129,9 +128,6 @@ cdef class _ForbitCore:
 
         shape_cp    = shape_raw.astype(np.intc)
         self.__ndim = shape_cp.size
-
-        if (self.__ndim > DIM_MAX or self.__ndim < 1):
-            raise ValueError("Invalid number of dimensions")
 
         if (kind != 4 and kind != 8):
             raise ValueError("Invalid kind parameter")

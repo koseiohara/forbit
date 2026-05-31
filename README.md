@@ -15,7 +15,7 @@ For example, users may construct their own abstractions using custom-defined cla
 - Read and write Fortran direct-access unformatted binary files
 - Handle no-header fixed-record binary files with explicit Fortran-style workflows
 - Return data as `numpy.ndarray`
-- Support 1D to 6D arrays
+- Support arrays of any dimension
 - Support single precision and double precision floating-point data
 - Support explicit endian selection through Fortran's `CONVERT` specifier
 - Keep the current record number internally and update it after each read or write
