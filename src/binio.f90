@@ -12,8 +12,16 @@ module binio
     private
     public :: binio_fopen
     public :: binio_fclose
-    public :: binio_fread_sp , binio_fread_dp
-    public :: binio_fwrite_sp, binio_fwrite_dp
+    public :: binio_fread_i2, &
+            & binio_fread_i4, &
+            & binio_fread_i8, &
+            & binio_fread_sp, &
+            & binio_fread_dp
+    public :: binio_fwrite_i2, &
+            & binio_fwrite_i4, &
+            & binio_fwrite_i8, &
+            & binio_fwrite_sp, &
+            & binio_fwrite_dp
 
 
     contains

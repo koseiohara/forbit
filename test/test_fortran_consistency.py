@@ -6,7 +6,6 @@ import pytest
 
 import forbit
 
-
 NX = 3
 NY = 4
 NZ = 5
@@ -17,9 +16,6 @@ FORTRAN_BIN = "./binary/"
 
 def expected_fortran_record(record: int, dtype):
     values = np.arange(1 + record, NX * NY * NZ + 1 + record, dtype=dtype)
-
-    # Fortran の reshape(..., [nx, ny, nz]) と同じ logical 配列を、
-    # forbit.read() の C-order reshape 仕様に合わせて表現する。
     return values.reshape(SHAPE)
 
 
@@ -30,9 +26,8 @@ def expected_fortran_record(record: int, dtype):
         ("fortran_real64.grd", 8, np.float64),
     ],
 )
-def test_read_fortran_direct_access_binary(binary_dir, filename, kind, dtype):
+def test_read_fortran_real_direct_access_binary(binary_dir, filename, kind, dtype):
     path = FORTRAN_BIN + filename
-
     reader = forbit.open(
         str(path),
         "read",
@@ -41,12 +36,12 @@ def test_read_fortran_direct_access_binary(binary_dir, filename, kind, dtype):
         1,
         1,
         "little_endian",
+        dtype="real",
     )
 
     for record in range(1, NR + 1):
         actual = reader.read()
         expected = expected_fortran_record(record, dtype)
-
         assert actual.dtype == dtype
         assert list(actual.shape) == SHAPE
         np.testing.assert_array_equal(actual, expected)
@@ -61,7 +56,7 @@ def test_read_fortran_direct_access_binary(binary_dir, filename, kind, dtype):
         ("fortran_real64.grd", 8, np.float64),
     ],
 )
-def test_read_fortran_direct_access_binary_with_explicit_recl(binary_dir, filename, kind, dtype):
+def test_read_fortran_real_direct_access_binary_with_explicit_recl(binary_dir, filename, kind, dtype):
     path = FORTRAN_BIN + filename
     recl = kind * NX * NY * NZ
 
@@ -74,6 +69,7 @@ def test_read_fortran_direct_access_binary_with_explicit_recl(binary_dir, filena
         1,
         "little_endian",
         recl=recl,
+        dtype="real",
     )
 
     for record in range(1, NR + 1):
@@ -91,9 +87,8 @@ def test_read_fortran_direct_access_binary_with_explicit_recl(binary_dir, filena
         ("fortran_real64.grd", 8, np.float64),
     ],
 )
-def test_read_second_fortran_record_directly(binary_dir, filename, kind, dtype):
+def test_read_second_fortran_real_record_directly(binary_dir, filename, kind, dtype):
     path = FORTRAN_BIN + filename
-
     reader = forbit.open(
         str(path),
         "read",
@@ -102,11 +97,102 @@ def test_read_second_fortran_record_directly(binary_dir, filename, kind, dtype):
         2,
         1,
         "little_endian",
+        dtype="real",
     )
 
     actual = reader.read()
     expected = expected_fortran_record(2, dtype)
+    np.testing.assert_array_equal(actual, expected)
 
+    reader.close()
+
+
+@pytest.mark.parametrize(
+    "filename,kind,dtype",
+    [
+        ("fortran_int16.grd", 2, np.int16),
+        ("fortran_int32.grd", 4, np.int32),
+        ("fortran_int64.grd", 8, np.int64),
+    ],
+)
+def test_read_fortran_integer_direct_access_binary(binary_dir, filename, kind, dtype):
+    path = FORTRAN_BIN + filename
+    reader = forbit.open(
+        str(path),
+        "read",
+        SHAPE,
+        kind,
+        1,
+        1,
+        "little_endian",
+        dtype="integer",
+    )
+
+    for record in range(1, NR + 1):
+        actual = reader.read()
+        expected = expected_fortran_record(record, dtype)
+        assert actual.dtype == dtype
+        assert list(actual.shape) == SHAPE
+        np.testing.assert_array_equal(actual, expected)
+
+    reader.close()
+
+
+@pytest.mark.parametrize(
+    "filename,kind,dtype",
+    [
+        ("fortran_int16.grd", 2, np.int16),
+        ("fortran_int32.grd", 4, np.int32),
+        ("fortran_int64.grd", 8, np.int64),
+    ],
+)
+def test_read_fortran_integer_direct_access_binary_with_explicit_recl(binary_dir, filename, kind, dtype):
+    path = FORTRAN_BIN + filename
+    recl = kind * NX * NY * NZ
+
+    reader = forbit.open(
+        str(path),
+        "read",
+        SHAPE,
+        kind,
+        1,
+        1,
+        "little_endian",
+        recl=recl,
+        dtype="integer",
+    )
+
+    for record in range(1, NR + 1):
+        actual = reader.read()
+        expected = expected_fortran_record(record, dtype)
+        np.testing.assert_array_equal(actual, expected)
+
+    reader.close()
+
+
+@pytest.mark.parametrize(
+    "filename,kind,dtype",
+    [
+        ("fortran_int16.grd", 2, np.int16),
+        ("fortran_int32.grd", 4, np.int32),
+        ("fortran_int64.grd", 8, np.int64),
+    ],
+)
+def test_read_second_fortran_integer_record_directly(binary_dir, filename, kind, dtype):
+    path = FORTRAN_BIN + filename
+    reader = forbit.open(
+        str(path),
+        "read",
+        SHAPE,
+        kind,
+        2,
+        1,
+        "little_endian",
+        dtype="integer",
+    )
+
+    actual = reader.read()
+    expected = expected_fortran_record(2, dtype)
     np.testing.assert_array_equal(actual, expected)
 
     reader.close()
