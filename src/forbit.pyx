@@ -51,14 +51,13 @@ cdef extern from "binio.h":
 #     np.float64_t
 
 
-DEF FILELEN_MAX   = 255
 DEF ACTIONLEN_MAX = 15
 DEF ENDIANLEN_MAX = 15
 
 
 cdef class _ForbitCore:
     
-    cdef char __file[FILELEN_MAX+1]
+    cdef object __file
     cdef char __action[ACTIONLEN_MAX+1]
     cdef char __endian[ENDIANLEN_MAX+1]
     cdef list __shape
@@ -77,9 +76,12 @@ cdef class _ForbitCore:
 
     def __init__(self, filename, action, object shape, const int kind, const long long record, const long long recstep, endian, object recl=None):
         cdef np.ndarray shape_cp
+        cdef bytes work_file
+        cdef const char* c_file
         cdef long long recl_cp
         cdef long long arr_byte
         cdef int stat
+        cdef int pos
         cdef int i
         cdef int action_label   # 1=read, 0=readwrite, -1=write
         cdef int precision
@@ -88,12 +90,23 @@ cdef class _ForbitCore:
         self.__is_open = 0
 
         if (isinstance(filename, str)):
-            filename = filename.encode("utf-8")
+            pos = filename.find('\0')
+            if pos != -1:
+                filename_c_view = filename[:pos]
+            else:
+                filename_c_view = filename
+
+            if filename_c_view == "":
+                raise ValueError("Invalid filename: filename is empty")
+
+            self.__file = filename
+            work_file   = filename.encode("utf-8")
+            c_file      = work_file
         else:
             raise TypeError("Invalid data type in the argument of forbit : filename")
 
-        if (len(filename) > FILELEN_MAX):
-            raise ValueError("File name is too long " + filename.decode("utf-8", "replace"))
+        # if (len(filename) > FILELEN_MAX):
+        #     raise ValueError("File name is too long " + filename)
 
         if (isinstance(action, str)):
             action = action.lower()
@@ -133,7 +146,7 @@ cdef class _ForbitCore:
             raise ValueError("Invalid kind parameter")
 
         
-        strncpy(self.__file  , filename, FILELEN_MAX  +1)
+        # strncpy(self.__file  , filename, FILELEN_MAX  +1)
         strncpy(self.__action, action  , ACTIONLEN_MAX+1)
         strncpy(self.__endian, endian  , ENDIANLEN_MAX+1)
 
@@ -175,13 +188,13 @@ cdef class _ForbitCore:
 
         binio_fopen(&self.__unit ,
                     &stat        ,
-                    self.__file  ,
+                    c_file       ,
                     self.__action,
                     &recl_cp     ,
                     self.__endian)
 
         if (stat != 0):
-            raise ValueError(f"Failed to open {filename.decode()}")
+            raise ValueError(f"Failed to open {filename}")
 
         self.__is_open = 1
 

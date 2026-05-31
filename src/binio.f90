@@ -28,10 +28,10 @@ module binio
         integer(c_long_long), intent(in)  :: recl
         character(c_char)   , intent(in)  :: endian(*)
 
-        integer, parameter :: filelen_max = 256
-        character(filelen_max) :: file_cp
-        character(16)          :: action_cp
-        character(16)          :: endian_cp
+        ! integer, parameter :: filelen_max = 256
+        character(:), allocatable :: file_cp
+        character(16)             :: action_cp
+        character(16)             :: endian_cp
         integer :: filelen
         integer :: actlen
         integer :: endianlen
@@ -47,10 +47,11 @@ module binio
 
         stat = 0
 
-        filelen   = charlen(file, filelen_max)
-        actlen    = charlen(action, 16)
-        endianlen = charlen(endian, 16)
+        filelen   = charlen(file)
+        actlen    = charlen(action)
+        endianlen = charlen(endian)
 
+        allocate(character(filelen) :: file_cp)
         file_cp   = char2f(filelen  , file  )
         action_cp = char2f(actlen   , action)
         endian_cp = char2f(endianlen, endian)
@@ -77,6 +78,8 @@ module binio
            & RECL   =recl           , &
            & CONVERT=trim(endian_cp), &
            & IOSTAT =stat             )
+
+       deallocate(file_cp)
 
     end subroutine binio_fopen
 
@@ -147,29 +150,28 @@ module binio
     end subroutine binio_fwrite_dp
 
 
-    function charlen(input, lenmax) result(output)
+    function charlen(input) result(output)
         character(C_CHAR), intent(in) :: input(*)
-        integer          , intent(in) :: lenmax
-        integer :: output
 
+        integer :: output
         integer :: i
 
-        do i = 1, lenmax
+        i = 1
+        do
             if (input(i) /= C_NULL_CHAR) then
+                i = i + 1
                 cycle
             endif
             output = i - 1
             return
         enddo
 
-        output = lenmax
-
     end function charlen
 
 
     function char2f(input_len, input) result(output)
         integer          , intent(in) :: input_len
-        character(C_CHAR), intent(in) :: input(input_len)
+        character(C_CHAR), intent(in) :: input(*)
         character(input_len) :: output
 
         integer :: i
