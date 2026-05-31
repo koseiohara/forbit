@@ -82,6 +82,7 @@ cdef class _ForbitCore:
         cdef long long arr_byte
         cdef int stat
         cdef int i
+        cdef int action_label   # 1=read, 0=readwrite, -1=write
         cdef int precision
         cdef int dispatch
 
@@ -99,6 +100,14 @@ cdef class _ForbitCore:
             action = action.lower()
             if (action != "read" and action != "write" and action != "readwrite"):
                 raise ValueError("Invalid string in the argument of forbit : action")
+
+            if (action == "read"):
+                action_label = 1
+            elif (action == "write"):
+                action_label = -1
+            else:
+                action_label = 0
+
             action = action.encode("utf-8")
         else:
             raise TypeError("Invalid data type in the argument of forbit : action")
@@ -180,17 +189,27 @@ cdef class _ForbitCore:
 
         self.__is_open = 1
 
-        fread_list = [self.fread_sp,
-                      self.fread_dp,]
+        fread_list = [self.fread_sp ,
+                      self.fread_dp ,
+                      self.fread_err,]
 
-        fwrite_list = [self.fwrite_sp,
-                       self.fwrite_dp,]
+        fwrite_list = [self.fwrite_sp ,
+                       self.fwrite_dp ,
+                       self.fwrite_err,]
 
         precision = kind >> 2
         # dispatch  = ((self.__ndim - 1) << 1) + precision - 1
         dispatch  = precision - 1
-        self.read  =  fread_list[dispatch]
-        self.write = fwrite_list[dispatch]
+
+        if (action_label = 1):
+            self.read  =  fread_list[dispatch]
+            self.write = fwrite_list[-1]
+        elif (action_label == -1):
+            self.read  =  fread_list[-1]
+            self.write = fwrite_list[dispatch]
+        else:
+            self.read  =  fread_list[dispatch]
+            self.write = fwrite_list[dispatch]
 
 
     def __del__(self):
@@ -240,6 +259,10 @@ cdef class _ForbitCore:
         self.__record = self.__record + self.__recstep
 
         return result.reshape(self.__shape)
+
+
+    def fread_err(self):
+        raise PermissionError("read operation is not permitted because the file was opened with action='write'")
         
 
     def fwrite_sp(self, arr):
@@ -287,6 +310,10 @@ cdef class _ForbitCore:
         self.__write_check(stat)
         self.__record = self.__record + self.__recstep
 
+
+    def fwrite_err(self, arr):
+        raise PermissionError("write operation is not permitted because the file was opened with action='read'")
+        
 
     def get_record(self):
         return self.__record
