@@ -273,9 +273,7 @@ Open a Fortran direct-access unformatted binary file.
   - For a 3D record returned as (nz, ny, nx): `[nz, ny, nx]`  
 
   The shape is given in normal C-order, not F-order.
-  Internally, FORBIT reverses the dimensions when calling the Fortran routines so that a Python array shaped like `[nz, ny, nx]` corresponds to a Fortran array shaped like `(nx, ny, nz)` in the low-level read/write routine.  
   All dimensions must be positive integers.
-  The number of dimensions must be between 1 and 6.
 - kind  
   `type=int`  
   Byte size per element.  
@@ -285,7 +283,7 @@ Open a Fortran direct-access unformatted binary file.
   - 8: returned/written as `numpy.float64` or `numpy.int64`  
 
   This parameter describes the precision stored in the binary file.
-  When writing, input arrays are converted to the selected precision before being passed to the Fortran write routine.
+  When writing, input arrays are converted to the selected data type before being passed to the Fortran write routine.
 - record  
   `type=int`  
   Initial Fortran direct-access record number.
