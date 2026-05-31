@@ -48,6 +48,8 @@ jobs:
 
       - name: Run tests
         run: |
+          make
+          make run
           python -m pytest -q test
 
 
