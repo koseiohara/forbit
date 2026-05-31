@@ -47,9 +47,10 @@ jobs:
           python -m pip install .
 
       - name: Run tests
+        working-directory: test
         run: |
           make
           make run
-          python -m pytest -q test
+          python -m pytest -q .
 
 
