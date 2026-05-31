@@ -84,6 +84,7 @@ cdef class _ForbitCore:
         cdef int stat
         cdef int pos
         cdef int i
+        cdef int filelen
         cdef int action_label   # 1=read, 0=readwrite, -1=write
         cdef int precision
         cdef int dispatch
@@ -103,6 +104,7 @@ cdef class _ForbitCore:
             self.__file = filename
             work_file   = filename.encode("utf-8")
             c_file      = work_file
+            filelen     = len(work_file)
         else:
             raise TypeError("Invalid data type in the argument of forbit : filename")
 
@@ -187,13 +189,13 @@ cdef class _ForbitCore:
         self.__recstep = <long long>recstep
 
 
-        binio_fopen(&self.__unit  ,
-                    &stat         ,
-                    c_file        ,
-                    len(work_file),
-                    self.__action ,
-                    &recl_cp      ,
-                    self.__endian )
+        binio_fopen(&self.__unit ,
+                    &stat        ,
+                    c_file       ,
+                    &filelen     ,
+                    self.__action,
+                    &recl_cp     ,
+                    self.__endian)
 
         if (stat != 0):
             raise ValueError(f"Failed to open {filename}")

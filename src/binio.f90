@@ -165,6 +165,7 @@ module binio
             output = i - 1
             return
         enddo
+        ERROR STOP
 
     end function charlen
 
