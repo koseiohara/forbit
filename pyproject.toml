@@ -3,7 +3,7 @@
 requires = [
     "setuptools>=77",
     "wheel",
-    "Cython>=0.29.21,<3.1",
+    "Cython>=3.0",
     "numpy>=1.21.6,<2; python_version >= '3.9' and python_version < '3.11'",
     "numpy>=1.23.5,<2; python_version >= '3.11' and python_version < '3.12'",
     "numpy>=1.26.0,<2; python_version >= '3.12' and python_version < '3.13'",
@@ -13,7 +13,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "forbit"
-version = "1.1.0"
+version = "1.1.1"
 description = "Lightweight direct-access binary I/O for NumPy arrays, based on Fortran and Cython"
 readme = "README.md"
 requires-python = ">=3.9,<3.14"

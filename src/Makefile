@@ -47,12 +47,15 @@ endif
 %.o : %.c
 	$(CC) -c $< $(CFLAGS) $(PY_INCLUDES) -I$(NP_INC) -o $@
 
-all: $(TARGET)
+all: clean cythonize $(TARGET)
 
 $(TARGET) : $(OBJS)
 	$(FC) -o $@ $^ $(LDFLAGS)
 
-.PHONY: all install prefix_check clean re distclean show
+.PHONY: all cythonize install prefix_check clean re distclean show
+
+cythonize:
+	$(CYTHON) -3 --embed-positions -o forbit.c forbit.pyx
 
 prefix_check:
 	@test -n "$(PREFIX)" || ( echo "PREFIX is required"; exit 1 )
@@ -71,7 +74,7 @@ show:
 	@echo "TARGET     = $(TARGET)"
 
 clean:
-	rm -f *.o *.mod *.so forbit.c
+	rm -vf *.o *.mod *.so forbit.c
 
 distclean: clean
 	rm -rf build dist *.egg-info
